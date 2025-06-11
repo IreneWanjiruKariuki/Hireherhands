@@ -17,8 +17,8 @@ class Client(db.Model, SerializerMixin):
     
     #relationships
     jobs = db.relationship('Job', backref='client', lazy=True) #one client can post many jobs
-    payments = db.relationship('Payment', backref='client', lazy=True) #one client can have many payments
-    ratings = db.relationship('Rating', backref='client', lazy=True) #one client can have many ratings
+    payments = db.relationship('Payment', backref='client', lazy=True) #one client can make many payments
+    ratings = db.relationship('Rating', backref='client', lazy=True) #one client can rate many workers
 
     def __repr__(self):
         return f'<Client {self.fullname}>'
