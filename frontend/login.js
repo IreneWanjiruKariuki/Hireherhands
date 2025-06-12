@@ -65,3 +65,89 @@
                 }
             }, 5000);
         }
+        // Enhanced validation functions
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function showSuccess(element, successElement, message) {
+            element.classList.remove('error');
+            element.classList.add('success');
+            successElement.innerHTML = `
+                <svg class="validation-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                ${message}
+            `;
+        }
+        function showError(element, errorElement, message) {
+            element.classList.remove('success');
+            element.classList.add('error');
+            errorElement.innerHTML = `
+                <svg class="validation-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+                ${message}`;
+        }
+        function clearValidation(element, errorElement, successElement) {
+            element.classList.remove('error', 'success');
+            errorElement.innerHTML = '';
+            if (successElement) successElement.innerHTML = '';
+        }
+
+        // Real-time validation for email and role only
+        emailInput.addEventListener('input', function() {
+            clearValidation(emailInput, emailError, emailSuccess);
+            
+            if (this.value && validateEmail(this.value)) {
+                showSuccess(emailInput, emailSuccess, 'Valid email address');
+            }
+        });
+
+        emailInput.addEventListener('blur', function() {
+            if (this.value && !validateEmail(this.value)) {
+                showError(emailInput, emailError, 'Please enter a valid email address');
+            }
+        });
+        // Clear error on password input
+        passwordInput.addEventListener('input', function() {
+            clearValidation(passwordInput, passwordError);
+        });
+
+        function validateForm() {
+            let isValid = true;
+
+            // Clear all previous validations
+            clearValidation(emailInput, emailError, emailSuccess);
+            clearValidation(roleSelect, roleError, roleSuccess);
+            clearValidation(passwordInput, passwordError);
+
+            // Email validation
+            if (!emailInput.value.trim()) {
+                showError(emailInput, emailError, 'Email is required');
+                isValid = false;
+            } else if (!validateEmail(emailInput.value)) {
+                showError(emailInput, emailError, 'Please enter a valid email address');
+                isValid = false;
+            }
+            // Basic password validation - just check if it's empty
+            if (!passwordInput.value.trim()) {
+                showError(passwordInput, passwordError, 'Password is required');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+        // Form submission
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            if (!validateForm()) {
+                return;
+            }
+            submitBtn.disabled = true;
+            submitText.innerHTML = '<div class="loading"><div class="spinner"></div>Signing in...</div>';
+        });
+
+
