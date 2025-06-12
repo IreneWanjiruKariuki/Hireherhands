@@ -6,9 +6,8 @@ class Worker(db.Model, SerializerMixin):
     __tablename__ = 'workers'
     
     worker_id = db.Column(db.Integer, primary_key=True)
-    fullname = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    phone = db.Column(db.String(15), nullable=False)
+    client_id = db.Column(db.Integer, db.ForeignKey('clients.client_id'), nullable=False)
+    
     bio = db.Column(db.Text, nullable=True)
     hashed_password = db.Column(db.String(128), nullable=False)
     hourly_rate = db.Column(db.Float, nullable=False, default=0.0)
