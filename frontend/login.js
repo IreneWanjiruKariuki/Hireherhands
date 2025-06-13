@@ -1,4 +1,4 @@
-// Define the form and its elements
+// Defining the form and its elements
         const form = document.getElementById('loginForm');
         const emailInput = document.getElementById('email');
         const passwordInput = document.getElementById('password');
@@ -55,7 +55,7 @@
             const closeBtn = alertEl.querySelector('.custom-alert-close');
             closeBtn.addEventListener('click', () => alertEl.remove());
             
-            // Auto-dismiss after 5 seconds
+            
             setTimeout(() => {
                 if (document.body.contains(alertEl)) {
                     alertEl.style.opacity = '0';
@@ -65,7 +65,7 @@
                 }
             }, 5000);
         }
-        // Enhanced validation functions
+        // validation functions
         function validateEmail(email) {
             const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return re.test(email);
@@ -96,7 +96,7 @@
             if (successElement) successElement.innerHTML = '';
         }
 
-        // Real-time validation for email and role only
+        // validation for email 
         emailInput.addEventListener('input', function() {
             clearValidation(emailInput, emailError, emailSuccess);
             
@@ -120,7 +120,6 @@
 
             // Clear all previous validations
             clearValidation(emailInput, emailError, emailSuccess);
-            clearValidation(roleSelect, roleError, roleSuccess);
             clearValidation(passwordInput, passwordError);
 
             // Email validation
@@ -139,6 +138,13 @@
 
             return isValid;
         }
+        // Mock credentials for demo purposes
+        const mockCredentials = {
+            'admin@example.com': { password: 'admin123' },
+            'client@example.com': { password: 'client123' },
+            'worker@example.com': { password: 'worker123' }
+        };
+
         // Form submission
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -148,6 +154,39 @@
             }
             submitBtn.disabled = true;
             submitText.innerHTML = '<div class="loading"><div class="spinner"></div>Signing in...</div>';
-        });
+            
+            try {
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                const email = emailInput.value.trim();
+                const password = passwordInput.value;
+                
+                // Check if credentials are valid (mock validation)
+                const user = mockCredentials[email];
+                
+                if (!user) {
+                    showAlert('Login Failed', 'Email not found. Please check your email address.', 'error');
+                    return;
+                }
+                
+                if (user.password !== password) {
+                    showAlert('Incorrect Password', 'The password you entered is incorrect. Please try again.', 'error');
+                    return;
+                }
+                
+                
+                // If we get here, login is successful
+                showAlert('Login Successful', `Welcome back! You are now signed.`, 'success');
+                window.location.href = 'dashboard.html';
+                
+                } catch (error) {
+                    showAlert('Login Error', 'An unexpected error occurred. Please try again later.', 'error');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitText.textContent = 'Sign in';
+               }
+            });
+        
 
 
