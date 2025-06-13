@@ -1,8 +1,8 @@
 from flask import Flask
 from config import Config
-from extensions import db, bcrypt, cors
-"""
-from resources.Authentication import AuthenticationResource
+from extensions import db, bcrypt, cors, migrate, jwt
+from resources.Authentication import SignupResource, LoginResource
+""" the following will be uncommented when the resources are implemented
 from resources.Job import JobResource
 from resources.Client import ClientResource
 from resources.Worker import WorkerResource
@@ -19,11 +19,15 @@ def create_app():
     db.init_app(app)
     bcrypt.init_app(app)
     cors.init_app(app)
+    migrate.init_app(app, db)
+    jwt.init_app(app)
 
     api = Api(app)
 
-    """registering resources
-    api.add_resource(AuthenticationResource, '/auth')
+    api.add_resource(SignupResource, '/auth/register')
+    api.add_resource(LoginResource, '/auth/login')
+
+    """registering resources will be uncommented when the resources are implemented
     api.add_resource(JobResource, '/jobs')
     api.add_resource(ClientResource, '/clients')
     api.add_resource(WorkerResource, '/workers')
