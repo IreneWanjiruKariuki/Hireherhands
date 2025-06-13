@@ -276,3 +276,35 @@
 .phone-number-input {
     width: 70%;
 }
+.password-strength {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+}
+.strength-bar {
+    height: 0.25rem;
+    background-color: #e5e7eb;
+    border-radius: 0.125rem;
+    margin-top: 0.25rem;
+    overflow: hidden;
+}
+.strength-fill {
+    height: 100%;
+    transition: all 0.3s ease-in-out;
+    border-radius: 0.125rem;
+}
+.strength-weak { 
+    background-color: #ef4444;
+    width: 25%;
+}
+.strength-fair { 
+    background-color: #f59e0b; 
+    width: 50%; 
+}
+.strength-good { 
+    background-color: #10b981; 
+    width: 75%; 
+}
+.strength-strong { 
+    background-color: #def2c9; 
+    width: 100%; 
+}

@@ -176,7 +176,7 @@
                 }
                 
                 
-                // If we get here, login is successful
+                // If login is successful
                 showAlert('Login Successful', `Welcome back! You are now signed.`, 'success');
                 window.location.href = 'dashboard.html';
                 
