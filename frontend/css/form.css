@@ -244,3 +244,13 @@
         font-size: 1.5rem;
     }
 }
+.signup-container {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 480px;
+    border: 1px solid rgba(222, 242, 201, 0.3);
+}
+
