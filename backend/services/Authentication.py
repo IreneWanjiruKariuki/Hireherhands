@@ -1,17 +1,16 @@
 from models.Client import Client
 from models.Worker import Worker
-from models.Admin import Admin
-from extensions import db
+from extensions import db, bcrypt
 from flask_jwt_extended import create_access_token
 
 class AuthenticationService:
 #client registration
     @staticmethod
-    def register_client(data):
+    def register(data):
         fullname = data.get('fullname')
         email = data.get('email')
-        password = data.get('password')
         phone = data.get('phone')
+        password = data.get('password')
 
         #validation on inputs
         #missing fields
@@ -28,40 +27,51 @@ class AuthenticationService:
         client = Client(
             fullname=fullname,
             email=email,
-            hashed_password=hashed_password,
-            phone=phone
+            phone=phone,
+            hashed_password=hashed_password
         )
         db.session.add(client)
         db.session.commit()
-        return {'message': 'Client registered successfully'}, 201
+        return {'message': 'Registered successfully'}, 201
 
-#worker registration
+#login for client and worker
     @staticmethod
-    def register_worker(data):
-        fullname = data.get('fullname')
-        email = data.get('email')
+    def login(data):
+        email =data.get('email')
         password = data.get('password')
-        phone = data.get('phone')
-
+    
         #validation on inputs
         #missing fields
-        if not all([fullname, email, password, phone]):
+        if not all([email, password]):
             return {'error': 'Missing required fields'}, 400
 
-        #email already exists
-        if Worker.query.filter_by(email=email).first():
-            return {'error': 'Worker with this email already exists'}, 400
-        
-        #hash the password for secure storage
-        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-        
-        worker = Worker(
-            fullname=fullname,
-            email=email,
-            hashed_password=hashed_password,
-            phone=phone
-        )
-        db.session.add(worker)
-        db.session.commit()
-        return {'message': 'Worker registered successfully'}, 201
-        
+        user = Client.query.filter_by(email=email).first()
+
+        #check if user exists
+        if not user:
+            return {'error': 'Account not found'}, 404
+
+        #check if password is correct
+        if not bcrypt.check_password_hash(user.hashed_password, password):
+            return {'error': 'Invalid password'}, 401
+
+        #check if this user applied to be a worker
+        worker = Worker.query.filter_by(client_id=user.client_id).first()
+
+        worker_status = None
+        if worker:
+            worker_status = 'approved' if worker.is_approved else 'pending'
+
+        #create access token
+        access_token = create_access_token(identity={
+            'client_id': user.client_id,
+            'email': user.email,
+            'worker_status': worker_status
+        })
+
+        return {
+            'message': 'Login successful!',
+            'access_token': access_token,
+            'worker_status': worker_status
+        }, 200
+
