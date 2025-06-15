@@ -200,4 +200,35 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         return isValid;
     }
+    // Submit button
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        if (!validateForm()) {
+            return;
+        }
+        submitBtn.disabled = true;
+        submitText.innerHTML = '<div class="loading"><div class="spinner"></div>Creating account...</div>';
+        try {
+            const formData = {
+                name: nameInput.value.trim(),
+                email: emailInput.value.trim(),
+                phone: countryCodeSelect.value + phoneInput.value.trim(),
+                password: passwordInput.value
+            };
+                    
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            console.log('Account created:', formData);
+                    
+            showAlert('Account Created', 'Your account has been created successfully! Redirecting to dashboard...', 'success');
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 1500);         
+        } catch (error) {
+            console.error('Signup error:', error);
+            showAlert('Signup Failed', 'There was a problem creating your account. Please try again.', 'error');    
+            submitBtn.disabled = false;
+            submitText.textContent = 'Create Account';
+        }
+    });
 });
