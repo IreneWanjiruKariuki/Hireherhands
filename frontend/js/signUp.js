@@ -97,4 +97,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 return { strength, feedback };
             }
+            function updatePasswordStrength(password) {
+                if (!password) {
+                    passwordStrength.style.display = 'none';
+                    return;
+                }
+                passwordStrength.style.display = 'block';
+                const { strength, feedback } = checkPasswordStrength(password);
+                strengthFill.className = 'strength-fill';
+                if (strength <= 1) {
+                    strengthFill.classList.add('strength-weak');
+                    strengthText.textContent = 'Weak password';
+                } else if (strength <= 2) {
+                    strengthFill.classList.add('strength-fair');
+                    strengthText.textContent = 'Fair password';
+                } else if (strength <= 3) {
+                    strengthFill.classList.add('strength-good');
+                    strengthText.textContent = 'Good password';
+                } else {
+                    strengthFill.classList.add('strength-strong');
+                    strengthText.textContent = 'Strong password';
+                }
+            }
 });
