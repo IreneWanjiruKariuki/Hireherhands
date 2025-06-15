@@ -76,4 +76,25 @@ document.addEventListener('DOMContentLoaded', function() {
     function validatePhone(phone) {
         return phone.length >= 6 && /^[0-9\s\-\+$$$$]+$/.test(phone);
     }
+    function checkPasswordStrength(password) {
+                let strength = 0;
+                let feedback = [];
+
+                if (password.length >= 8) strength++;
+                else feedback.push('at least 8 characters');
+
+                if (/[a-z]/.test(password)) strength++;
+                else feedback.push('lowercase letter');
+
+                if (/[A-Z]/.test(password)) strength++;
+                else feedback.push('uppercase letter');
+
+                if (/[0-9]/.test(password)) strength++;
+                else feedback.push('number');
+
+                if (/[^a-zA-Z0-9]/.test(password)) strength++;
+                else feedback.push('special character');
+
+                return { strength, feedback };
+            }
 });
