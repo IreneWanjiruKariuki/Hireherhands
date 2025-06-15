@@ -179,6 +179,25 @@ document.addEventListener('DOMContentLoaded', function() {
             isValid = false;
         }
 
-                
+        if (!phoneInput.value.trim()) {
+            showError(phoneInput, phoneError, 'Please enter your phone number');
+            isValid = false;
+        } else if (!validatePhone(phoneInput.value)) {
+            showError(phoneInput, phoneError, 'Please enter a valid phone number');
+            isValid = false;
+        }
+
+        // Password validation
+        if (!passwordInput.value) {
+            showError(passwordInput, passwordError, 'Please create a password');
+            isValid = false;
+        } else {
+            const { strength, feedback } = checkPasswordStrength(passwordInput.value);
+            if (strength < 3) {
+                showError(passwordInput, passwordError, `Password is too weak. Please include ${feedback.join(', ')}.`);
+                isValid = false;
             }
+        }
+        return isValid;
+    }
 });
