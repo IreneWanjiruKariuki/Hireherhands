@@ -53,5 +53,19 @@ document.addEventListener('DOMContentLoaded', function() {
             </svg>
         </button>
         `;
+
+        document.body.appendChild(alertEl);
+                
+        const closeBtn = alertEl.querySelector('.custom-alert-close');
+        closeBtn.addEventListener('click', () => alertEl.remove());
+                
+        setTimeout(() => {
+            if (document.body.contains(alertEl)) {
+                alertEl.style.opacity = '0';
+                alertEl.style.transform = 'translate(-50%, -20px)';
+                alertEl.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+                setTimeout(() => alertEl.remove(), 300);
+            }
+        }, 5000);
     }
 });
