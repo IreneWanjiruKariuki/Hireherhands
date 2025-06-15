@@ -29,4 +29,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 
         passwordToggle.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${icon}</svg>`;
     });
+
+    // Show custom alert
+    function showAlert(title, message, type = 'error') {
+        const existingAlerts = document.querySelectorAll('.custom-alert');
+        existingAlerts.forEach(alert => alert.remove());
+        const alertEl = document.createElement('div');
+        alertEl.className = `custom-alert ${type === 'success' ? 'success' : ''}`;
+    }
 });
