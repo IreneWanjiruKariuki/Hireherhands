@@ -132,4 +132,53 @@ document.addEventListener('DOMContentLoaded', function() {
         ${message}
         `;
     }
+    function clearError(element, errorElement) {
+        element.classList.remove('error');
+        errorElement.innerHTML = '';
+    }
+
+    nameInput.addEventListener('input', function() {
+        clearError(nameInput, nameError);
+    });
+    emailInput.addEventListener('input', function() {
+        clearError(emailInput, emailError);
+    });
+    phoneInput.addEventListener('input', function() {
+        clearError(phoneInput, phoneError);
+    });
+    countryCodeSelect.addEventListener('change', function() {
+        clearError(phoneInput, phoneError);
+    });
+    passwordInput.addEventListener('input', function() {
+        clearError(passwordInput, passwordError);
+        updatePasswordStrength(this.value);
+    });
+
+    // Form validation
+    function validateForm() {
+        let isValid = true;
+
+        // Name validation
+        if (!nameInput.value.trim()) {
+            showError(nameInput, nameError, 'Please enter your name');
+            isValid = false;
+        }
+
+        // Email validation
+        if (!emailInput.value.trim()) {
+            showError(emailInput, emailError, 'Please enter your email address');
+            isValid = false;
+        } else if (!validateEmail(emailInput.value)) {
+            showError(emailInput, emailError, 'Please enter a valid email address');
+            isValid = false;
+        }
+
+        // Phone validation
+        if (!countryCodeSelect.value) {
+            showError(phoneInput, phoneError, 'Please select a country code');
+            isValid = false;
+        }
+
+                
+            }
 });
