@@ -68,4 +68,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }, 5000);
     }
+    // Validation functions for email, phone, and password
+    function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
 });
