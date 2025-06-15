@@ -77,56 +77,59 @@ document.addEventListener('DOMContentLoaded', function() {
         return phone.length >= 6 && /^[0-9\s\-\+$$$$]+$/.test(phone);
     }
     function checkPasswordStrength(password) {
-                let strength = 0;
-                let feedback = [];
+        let strength = 0;
+        let feedback = [];
 
-                if (password.length >= 8) strength++;
-                else feedback.push('at least 8 characters');
+        if (password.length >= 8) strength++;
+        else feedback.push('at least 8 characters');
 
-                if (/[a-z]/.test(password)) strength++;
-                else feedback.push('lowercase letter');
+        if (/[a-z]/.test(password)) strength++;
+        else feedback.push('lowercase letter');
 
-                if (/[A-Z]/.test(password)) strength++;
-                else feedback.push('uppercase letter');
+        if (/[A-Z]/.test(password)) strength++;
+        else feedback.push('uppercase letter');
 
-                if (/[0-9]/.test(password)) strength++;
-                else feedback.push('number');
+        if (/[0-9]/.test(password)) strength++;
+        else feedback.push('number');
 
-                if (/[^a-zA-Z0-9]/.test(password)) strength++;
-                else feedback.push('special character');
+        if (/[^a-zA-Z0-9]/.test(password)) strength++;
+        else feedback.push('special character');
 
-                return { strength, feedback };
-            }
-            function updatePasswordStrength(password) {
-                if (!password) {
-                    passwordStrength.style.display = 'none';
-                    return;
-                }
-                passwordStrength.style.display = 'block';
-                const { strength, feedback } = checkPasswordStrength(password);
-                strengthFill.className = 'strength-fill';
-                if (strength <= 1) {
-                    strengthFill.classList.add('strength-weak');
-                    strengthText.textContent = 'Weak password';
-                } else if (strength <= 2) {
-                    strengthFill.classList.add('strength-fair');
-                    strengthText.textContent = 'Fair password';
-                } else if (strength <= 3) {
-                    strengthFill.classList.add('strength-good');
-                    strengthText.textContent = 'Good password';
-                } else {
-                    strengthFill.classList.add('strength-strong');
-                    strengthText.textContent = 'Strong password';
-                }
-            }
-            function showError(element, errorElement, message) {
-                element.classList.remove('success');
-                element.classList.add('error');
-                errorElement.innerHTML = `
-                    <svg class="validation-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                    ${message}
-                `;
-            }
+        return { strength, feedback };
+    }
+    function updatePasswordStrength(password) {
+        if (!password) {
+            passwordStrength.style.display = 'none';
+            return;
+        }
+
+        passwordStrength.style.display = 'block';
+        const { strength, feedback } = checkPasswordStrength(password);
+
+        strengthFill.className = 'strength-fill';
+                
+        if (strength <= 1) {
+            strengthFill.classList.add('strength-weak');
+            strengthText.textContent = 'Weak password';
+        } else if (strength <= 2) {
+            strengthFill.classList.add('strength-fair');
+            strengthText.textContent = 'Fair password';
+        } else if (strength <= 3) {
+            strengthFill.classList.add('strength-good');
+            strengthText.textContent = 'Good password';
+        } else {
+            strengthFill.classList.add('strength-strong');
+            strengthText.textContent = 'Strong password';
+        }
+    }
+    function showError(element, errorElement, message) {
+        element.classList.remove('success');
+        element.classList.add('error');
+        errorElement.innerHTML = `
+        <svg class="validation-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+        ${message}
+        `;
+    }
 });
