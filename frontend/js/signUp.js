@@ -36,5 +36,22 @@ document.addEventListener('DOMContentLoaded', function() {
         existingAlerts.forEach(alert => alert.remove());
         const alertEl = document.createElement('div');
         alertEl.className = `custom-alert ${type === 'success' ? 'success' : ''}`;
+
+        const iconSvg = type === 'success' 
+        ? '<svg class="custom-alert-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>'
+        : '<svg class="custom-alert-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+                
+        alertEl.innerHTML = `
+        ${iconSvg}
+        <div class="custom-alert-content">
+            <div class="custom-alert-title">${title}</div>
+            <div class="custom-alert-message">${message}</div>
+        </div>
+        <button class="custom-alert-close">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 6L6 18M6 6l12 12"></path>
+            </svg>
+        </button>
+        `;
     }
 });
