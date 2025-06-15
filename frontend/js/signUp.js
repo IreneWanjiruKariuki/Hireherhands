@@ -73,4 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return re.test(email);
     }
+    function validatePhone(phone) {
+        return phone.length >= 6 && /^[0-9\s\-\+$$$$]+$/.test(phone);
+    }
 });
