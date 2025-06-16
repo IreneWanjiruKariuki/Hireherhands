@@ -1,3 +1,6 @@
+//base url for the API
+const BASE_URL = 'http://127.0.0.1:5000';
+
 // Defining the form and its elements
         const form = document.getElementById('loginForm');
         const emailInput = document.getElementById('email');
@@ -7,10 +10,8 @@
         const submitText = document.getElementById('submitText');
         const emailError = document.getElementById('emailError');
         const passwordError = document.getElementById('passwordError');
-        const roleSelect = document.getElementById('role');
-        const roleError = document.getElementById('roleError');
         const emailSuccess = document.getElementById('emailSuccess');
-        const roleSuccess = document.getElementById('roleSuccess');
+       
 
         // Password visibility toggle
         passwordToggle.addEventListener('click', function() {
@@ -156,37 +157,32 @@
             submitText.innerHTML = '<div class="loading"><div class="spinner"></div>Signing in...</div>';
             
             try {
-                // Simulate API call
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                
-                const email = emailInput.value.trim();
-                const password = passwordInput.value;
-                
-                // Check if credentials are valid (mock validation)
-                const user = mockCredentials[email];
-                
-                if (!user) {
-                    showAlert('Login Failed', 'Email not found. Please check your email address.', 'error');
-                    return;
+                const payLoad ={
+                    email: emailInput.value.trim(),
+                    password: passwordInput.value
+                };
+                const response = await fetch(`${BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json'},
+                    body: JSON.stringify(payLoad)
+                });
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message || 'Login failed');
                 }
-                
-                if (user.password !== password) {
-                    showAlert('Incorrect Password', 'The password you entered is incorrect. Please try again.', 'error');
-                    return;
-                }
-                
-                
-                // If login is successful
-                showAlert('Login Successful', `Welcome back! You are now signed.`, 'success');
-                window.location.href = 'dashboard.html';
-                
-                } catch (error) {
-                    showAlert('Login Error', 'An unexpected error occurred. Please try again later.', 'error');
-                } finally {
-                    submitBtn.disabled = false;
-                    submitText.textContent = 'Sign in';
-               }
-            });
-        
+
+                localStorage.setItem('access_token', data.access_token);
+                showAlert('Login Successful', 'Welcome back! You are now signed in.', 'success');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 2000);
+            } catch (error) {
+                console.error('Login error:', error);
+                showAlert('Login Error', error.message || 'Please try again later.', 'error');
+            } finally{
+                submitBtn.disabled = false;
+                submitText.textContent = 'Sign in';
+            }
+        });
 
 

@@ -1,6 +1,7 @@
 from flask import Flask
 from config import Config
 from extensions import db, bcrypt, cors, migrate, jwt
+from models import *
 from resources.Authentication import SignupResource, LoginResource
 from resources.Job import (
     CreateJobResource,
@@ -11,12 +12,6 @@ from resources.Job import (
     WorkerMarkDoneResource,
     ClientConfirmCompletionResource
 )
-""" the following will be uncommented when the resources are implemented
-from resources.Client import ClientResource
-from resources.Worker import WorkerResource
-from resources.Admin import AdminResource
-from resources.Rating import RatingResource
-"""
 from flask_restful import Api
 
 #creating the flask application and initializing extensions
@@ -26,7 +21,7 @@ def create_app():
     #attaching the extensions to the app
     db.init_app(app)
     bcrypt.init_app(app)
-    cors.init_app(app)
+    cors.init_app(app, resources={r"/*": {"origins": "http://127.0.0.1:5500"}})
     migrate.init_app(app, db)
     jwt.init_app(app)
 
@@ -42,12 +37,6 @@ def create_app():
     api.add_resource(WorkerMarkDoneResource, '/jobs/<int:job_id>/worker-complete')
     api.add_resource(ClientConfirmCompletionResource, '/jobs/<int:job_id>/client-complete')
 
-
-    """registering resources will be uncommented when the resources are implemented
-    api.add_resource(ClientResource, '/clients')
-    api.add_resource(WorkerResource, '/workers')
-    api.add_resource(AdminResource, '/admin')
-    api.add_resource(RatingResource, '/ratings') """
 
 
     @app.route('/')

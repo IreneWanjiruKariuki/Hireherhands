@@ -18,7 +18,7 @@ class Worker(db.Model, SerializerMixin):
     client = db.relationship('Client', back_populates='workers')
     jobs = db.relationship('Job', back_populates='worker', cascade='all, delete-orphan')
     portfolio = db.relationship('WorkerPortfolio', back_populates='worker', cascade='all, delete-orphan')
-    certifications = db.relationship('WorkerCertification', back_populates='worker', cascade='all, delete-orphan')
+    certifications = db.relationship('Certification', back_populates='worker', cascade='all, delete-orphan')
     skills = db.relationship('Skill',secondary='worker_skills', back_populates='workers')
 
     def __repr__(self):

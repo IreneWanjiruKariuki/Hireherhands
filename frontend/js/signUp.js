@@ -1,3 +1,6 @@
+//base url
+const BASE_URL = 'http://127.0.0.1:5000';
+
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('signupForm');
     const nameInput = document.getElementById('name');
@@ -211,22 +214,28 @@ document.addEventListener('DOMContentLoaded', function() {
         submitText.innerHTML = '<div class="loading"><div class="spinner"></div>Creating account...</div>';
         try {
             const formData = {
-                name: nameInput.value.trim(),
+                fullname: nameInput.value.trim(),
                 email: emailInput.value.trim(),
                 phone: countryCodeSelect.value + phoneInput.value.trim(),
                 password: passwordInput.value
             };
-                    
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            console.log('Account created:', formData);
-                    
-            showAlert('Account Created', 'Your account has been created successfully! Redirecting to dashboard...', 'success');
+            const response = await fetch(`${BASE_URL}/auth/register`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(formData)
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.message || 'Signup failed');
+            }
+            showAlert('Account Created', 'Your account has been created successfully! ', 'success');
             setTimeout(() => {
                 window.location.href = 'dashboard.html';
-            }, 1500);         
+            }, 1500);
         } catch (error) {
-            console.error('Signup error:', error);
-            showAlert('Signup Failed', 'There was a problem creating your account. Please try again.', 'error');    
+            console.error ('Signup error:', error);
+            showAlert('Signup Failed', error.message, 'error');
+        } finally {
             submitBtn.disabled = false;
             submitText.textContent = 'Create Account';
         }

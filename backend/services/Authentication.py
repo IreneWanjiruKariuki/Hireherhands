@@ -72,3 +72,4 @@ class AuthenticationService:
             'worker_status': worker_status
         }, 200
 
+
