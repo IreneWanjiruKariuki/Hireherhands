@@ -9,12 +9,17 @@ class Worker(db.Model, SerializerMixin):
     client_id = db.Column(db.Integer, db.ForeignKey('clients.client_id'), nullable=False)
     
     bio = db.Column(db.Text, nullable=True)
-    hashed_password = db.Column(db.String(128), nullable=False)
     hourly_rate = db.Column(db.Float, nullable=False, default=0.0)
+    status = db.Column(db.String(50), nullable=False, default='available') 
+    is_approved = db.Column(db.Boolean, default=False)  
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    #exclude hashed_password from serialization
-    serialize_rules = ('-hashed_password',)
+
+    #relationships
+    client = db.relationship('Client', back_populates='workers')
+    jobs = db.relationship('Job', back_populates='worker', cascade='all, delete-orphan')
+    portfolio = db.relationship('WorkerPortfolio', back_populates='worker', cascade='all, delete-orphan')
+    certifications = db.relationship('WorkerCertification', back_populates='worker', cascade='all, delete-orphan')
+    skills = db.relationship('Skill',secondary='worker_skills', back_populates='workers')
 
     def __repr__(self):
-        return f'<Worker {self.fullname}>'
+        return f'<Worker {self.worker_id}>'

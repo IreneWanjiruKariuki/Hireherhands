@@ -2,8 +2,16 @@ from flask import Flask
 from config import Config
 from extensions import db, bcrypt, cors, migrate, jwt
 from resources.Authentication import SignupResource, LoginResource
+from resources.Job import (
+    CreateJobResource,
+    MatchingWorkersResource,
+    RequestWorkerResource,
+    AcceptJobResource,
+    RejectJobResource,
+    WorkerMarkDoneResource,
+    ClientConfirmCompletionResource
+)
 """ the following will be uncommented when the resources are implemented
-from resources.Job import JobResource
 from resources.Client import ClientResource
 from resources.Worker import WorkerResource
 from resources.Admin import AdminResource
@@ -26,9 +34,16 @@ def create_app():
 
     api.add_resource(SignupResource, '/auth/register')
     api.add_resource(LoginResource, '/auth/login')
+    api.add_resource(CreateJobResource, '/jobs')
+    api.add_resource(MatchingWorkersResource, '/jobs/<int:job_id>/workers')
+    api.add_resource(RequestWorkerResource, '/jobs/<int:job_id>/request')
+    api.add_resource(AcceptJobResource, '/jobs/<int:job_id>/accept')
+    api.add_resource(RejectJobResource, '/jobs/<int:job_id>/reject')
+    api.add_resource(WorkerMarkDoneResource, '/jobs/<int:job_id>/worker-complete')
+    api.add_resource(ClientConfirmCompletionResource, '/jobs/<int:job_id>/client-complete')
+
 
     """registering resources will be uncommented when the resources are implemented
-    api.add_resource(JobResource, '/jobs')
     api.add_resource(ClientResource, '/clients')
     api.add_resource(WorkerResource, '/workers')
     api.add_resource(AdminResource, '/admin')

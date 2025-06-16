@@ -22,6 +22,10 @@ class Certification(db.Model, SerializerMixin):
     verified_by_admin_id = db.Column(db.Integer, db.ForeignKey('admins.admin_id'), nullable=True)
     verified_at = db.Column(db.DateTime)
 
+    #relationships
+    worker = db.relationship("Worker", back_populates="certifications")
+    admin = db.relationship("Admin", backref="verified_certifications")
+
 
     def __repr__(self):
         return f'<Certification {self.certification_name} for Worker {self.worker_id}>'

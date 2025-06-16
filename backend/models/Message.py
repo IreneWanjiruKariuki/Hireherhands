@@ -21,5 +21,8 @@ class Message(db.Model, SerializerMixin):
     content = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
+    #relationships
+    job = db.relationship('Job', back_populates='messages')
+
     def __repr__(self):
         return f'<Message {self.message_id}: {self.sender_type}:{self.sender_id} -> {self.receiver_type}:{self.receiver_id}>'

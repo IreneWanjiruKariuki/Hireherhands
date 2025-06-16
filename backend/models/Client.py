@@ -12,8 +12,13 @@ class Client(db.Model, SerializerMixin):
     hashed_password = db.Column(db.String(128), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    #relationships
+    workers = db.relationship('Worker', back_populates='client', uselist=False)
+    jobs = db.relationship('Job', back_populates='client', cascade='all, delete-orphan')
+
     #exclude hashed_password from serialization
     serialize_rules = ('-hashed_password',)
+
 
     def __repr__(self):
         return f'<Client {self.fullname}>'

@@ -22,5 +22,8 @@ class Rating(db.Model, SerializerMixin):
     feedback = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    #relationships
+    job = db.relationship('Job', back_populates='ratings')
+
     def __repr__(self):
         return f'<Rating {self.stars} for Job {self.job_id} by {self.rater_type} {self.rater_id}>'

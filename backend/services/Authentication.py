@@ -57,10 +57,7 @@ class AuthenticationService:
 
         #check if this user applied to be a worker
         worker = Worker.query.filter_by(client_id=user.client_id).first()
-
-        worker_status = None
-        if worker:
-            worker_status = 'approved' if worker.is_approved else 'pending'
+        worker_status = 'approved' if worker and worker.is_approved else 'pending' if worker else None
 
         #create access token
         access_token = create_access_token(identity={
