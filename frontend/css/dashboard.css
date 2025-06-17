@@ -1,0 +1,51 @@
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+.header {
+    background: white;
+    padding: 1.5rem 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2rem;
+    border: 1px solid rgba(222, 242, 201, 0.3);
+}
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.welcome-section h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 0.5rem;
+}
+.welcome-section p {
+    color: #6b7280;
+    font-size: 0.95rem;
+}
+.user-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+.logout-btn {
+    background: none;
+    border: 1px solid #d1d5db;
+    color: #6b7280;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.15s ease-in-out;
+    text-decoration: none;
+    display: inline-block;
+}
+.logout-btn:hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+}
