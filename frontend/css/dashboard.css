@@ -49,3 +49,36 @@
     background: #f9fafb;
     border-color: #9ca3af;
 }
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+.action-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(222, 242, 201, 0.3);
+    text-align: center;
+    transition: transform 0.15s ease-in-out;
+}
+.action-card:hover {
+    transform: translateY(-2px);
+}
+.action-card.primary {
+    background: linear-gradient(135deg, rgba(222, 242, 201, 0.1) 0%, rgba(222, 242, 201, 0.05) 100%);
+    border-color: rgba(222, 242, 201, 0.5);
+}
+.action-icon {
+    width: 3rem;
+    height: 3rem;
+    margin: 0 auto 1rem;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
