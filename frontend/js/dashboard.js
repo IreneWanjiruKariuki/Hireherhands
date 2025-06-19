@@ -93,3 +93,21 @@ function createJobCard(job) {
     </div>
     `;
 }
+function displayJobs(jobsToShow = null) {
+    const jobsContainer = document.getElementById('jobsContainer');
+    const jobs = jobsToShow || getJobsFromStorage();
+
+    //console.log('Displaying jobs:', jobs);
+    if (jobs.length === 0) {
+        jobsContainer.innerHTML = `
+        <div class="no-jobs">
+            <h3>No jobs found</h3>
+            <p>You haven't posted any jobs yet. Click "Create Job Post" to get started!</p>
+        </div>
+      `;
+        return;
+    }
+    const jobsHTML = jobs.map(job => createJobCard(job)).join('');
+    jobsContainer.innerHTML = jobsHTML; 
+    //console.log('Jobs HTML generated:', jobsHTML); 
+}
