@@ -10,8 +10,18 @@ from resources.Job import (
     AcceptJobResource,
     RejectJobResource,
     WorkerMarkDoneResource,
-    ClientConfirmCompletionResource
+    ClientConfirmCompletionResource,
+    ClientJobHistoryResource,
+    WorkerJobHistoryResource
 )
+from resources.Admin import (
+    AdminRegisterResource, AdminLoginResource,
+    AdminClientsResource, AdminWorkersResource,
+    AdminSkillsResource, AdminAddSkillResource, AdminDeleteSkillResource,
+    AdminWorkerApplicationsResource, AdminApproveRejectWorkerResource,
+    AdminJobsResource, AdminMessagesResource, AdminRatingsResource
+)
+
 from flask_restful import Api
 
 #creating the flask application and initializing extensions
@@ -36,8 +46,20 @@ def create_app():
     api.add_resource(RejectJobResource, '/jobs/<int:job_id>/reject')
     api.add_resource(WorkerMarkDoneResource, '/jobs/<int:job_id>/worker-complete')
     api.add_resource(ClientConfirmCompletionResource, '/jobs/<int:job_id>/client-complete')
-
-
+    api.add_resource(ClientJobHistoryResource, '/client/jobs')
+    api.add_resource(WorkerJobHistoryResource, '/worker/jobs')
+    api.add_resource(AdminRegisterResource, "/admin/register")
+    api.add_resource(AdminLoginResource, "/admin/login")
+    api.add_resource(AdminClientsResource, "/admin/clients")
+    api.add_resource(AdminWorkersResource, "/admin/workers")
+    api.add_resource(AdminSkillsResource, "/admin/skills")
+    api.add_resource(AdminAddSkillResource, "/admin/skills/add")
+    api.add_resource(AdminDeleteSkillResource, "/admin/skills/<int:skill_id>")
+    api.add_resource(AdminWorkerApplicationsResource, "/admin/applications")
+    api.add_resource(AdminApproveRejectWorkerResource, "/admin/applications/<int:worker_id>")
+    api.add_resource(AdminJobsResource, "/admin/jobs")
+    api.add_resource(AdminMessagesResource, "/admin/messages")
+    api.add_resource(AdminRatingsResource, "/admin/ratings")
 
     @app.route('/')
     def hello():

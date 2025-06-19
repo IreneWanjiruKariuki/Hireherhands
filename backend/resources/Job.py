@@ -1,15 +1,18 @@
 from flask_restful import Resource
 from flask import request
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from services.Job import Job
+from flask_jwt_extended import jwt_required, get_jwt
+from services.Job import JobService
 
 # POST /jobs - create job (client only)
 class CreateJobResource(Resource):
     @jwt_required()
     def post(self):
         data = request.get_json()
-        identity = get_jwt_identity()
-        client_id = identity['client_id']
+        claims = get_jwt()
+        if claims.get("role") != "client":
+            return {"error": "Only clients can create jobs"}, 403
+        data = request.get_json()
+        client_id = claims.get("client_id")
         return JobService.create_job(data, client_id)
 
 
@@ -24,6 +27,9 @@ class MatchingWorkersResource(Resource):
 class RequestWorkerResource(Resource):
     @jwt_required()
     def post(self, job_id):
+        claims = get_jwt()
+        if claims.get("role") != "client":
+            return {"error": "Only clients can request workers"}, 403
         data = request.get_json()
         worker_id = data.get('worker_id')
         return JobService.request_worker(job_id, worker_id)
@@ -33,8 +39,11 @@ class RequestWorkerResource(Resource):
 class AcceptJobResource(Resource):
     @jwt_required()
     def post(self, job_id):
-        identity = get_jwt_identity()
-        worker_id = identity['client_id']  # worker linked to client account
+        claims = get_jwt()
+        if claims.get("role") != "worker":
+            return {"error": "Only workers can accept jobs"}, 403
+
+        worker_id = claims.get("worker_id")  # worker linked to client account
         return JobService.accept_job(job_id, worker_id)
 
 
@@ -42,8 +51,11 @@ class AcceptJobResource(Resource):
 class RejectJobResource(Resource):
     @jwt_required()
     def post(self, job_id):
-        identity = get_jwt_identity()
-        worker_id = identity['client_id']
+        claims = get_jwt()
+        if claims.get("role") != "worker":
+            return {"error": "Only workers can reject jobs"}, 403
+
+        worker_id = claims.get("worker_id")  # worker linked to client account
         return JobService.reject_job(job_id, worker_id)
 
 
@@ -51,8 +63,11 @@ class RejectJobResource(Resource):
 class WorkerMarkDoneResource(Resource):
     @jwt_required()
     def post(self, job_id):
-        identity = get_jwt_identity()
-        worker_id = identity['client_id']
+        claims = get_jwt()
+        if claims.get("role") != "worker":
+            return {"error": "Only workers can mark jobs as done"}, 403
+
+        worker_id = claims("worker_id")  # worker linked to client account
         return JobService.worker_mark_done(job_id, worker_id)
 
 
@@ -60,6 +75,24 @@ class WorkerMarkDoneResource(Resource):
 class ClientConfirmCompletionResource(Resource):
     @jwt_required()
     def post(self, job_id):
-        identity = get_jwt_identity()
-        client_id = identity['client_id']
+        claims = get_jwt()
+        if claims.get("role") != "client":
+            return {"error": "Only clients can confirm job completion"}, 403
+
+        client_id = claims("client_id")
         return JobService.client_confirm_completion(job_id, client_id)
+
+class ClientJobHistoryResource(Resource):
+    @jwt_required()
+    def get(self):
+        claims = get_jwt()
+        client_id = claims.get("client_id")
+        return JobService.get_client_job_history(client_id)
+
+
+class WorkerJobHistoryResource(Resource):
+    @jwt_required()
+    def get(self):
+        claims = get_jwt()
+        worker_id = claims.get("worker_id")
+        return JobService.get_worker_job_history(worker_id)
