@@ -69,3 +69,27 @@ function initializeSampleJobs() {
     }
     return existingJobs;
 }
+function createJobCard(job) {
+    const statusClass = `status-${job.status}`;
+    const formattedDate = new Date(job.datePosted).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+    return `
+    <div class="job-card" data-status="${job.status}">
+        <div class="job-header">
+            <div>
+                <div class="job-title">${job.title}</div>
+                <div class="job-date">Posted on ${formattedDate}</div>
+            </div>
+                <span class="job-status ${statusClass}">${job.status.charAt(0).toUpperCase() + job.status.slice(1)}</span>
+        </div>
+        <div class="job-description">${job.description}</div>
+        <div class="job-meta">
+            <div class="job-budget">Budget: ${job.budget}</div>
+            <a href="viewDetails.html?id=${job.id}" class="view-details-btn">View Details</a>
+        </div>
+    </div>
+    `;
+}
