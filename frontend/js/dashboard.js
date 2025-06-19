@@ -133,3 +133,18 @@ function filterJobs(status, event) {
 
     displayJobs(filteredJobs);
 }
+function addNewJob(jobData) {
+    const jobs = getJobsFromStorage();
+    const newJob = {
+        id: Date.now(), 
+        ...jobData,
+        datePosted: new Date().toISOString().split('T')[0],
+        status: 'open'
+     }; 
+    jobs.unshift(newJob); 
+    saveJobsToStorage(jobs);
+            
+    if (document.getElementById('jobsContainer')) {
+        displayJobs();
+    }
+}
