@@ -19,7 +19,7 @@
         <div class="header">
             <div class="header-content">
                 <div class="welcome-section">
-                    <h1>Welcome back, Irene!</h1>
+                    <h1 id="welcomeMessage">Welcome , Loading...</h1>
                     <p>Manage your jobs and find skilled workers for your projects</p>
                 </div>
                 <div class="user-actions">
@@ -63,13 +63,19 @@
             <div class="section-header">
                 <h2>Your Job History</h2>
                 <div class="filter-tabs">
-                    <a href="#" class="filter-tab active">All</a>
-                    <a href="#" class="filter-tab">Open</a>
-                    <a href="#" class="filter-tab">Assigned</a>
-                    <a href="#" class="filter-tab">Complete</a>
+                    <a href="#" class="filter-tab active" onclick="filterJobs('all', event)">All</a>
+                    <a href="#" class="filter-tab" onclick="filterJobs('open', event)">Open</a>
+                    <a href="#" class="filter-tab" onclick="filterJobs('assigned', event)">Assigned</a>
+                    <a href="#" class="filter-tab" onclick="filterJobs('complete', event)">Complete</a>
+                </div>
+            </div>
+            <div class="jobs-grid" id="jobsContainer">
+                <div class="loading">
+                   Loading jobs...
                 </div>
             </div>
         </div>
     </div>
+    <script src="js/dashboard.js"></script>
 </body>
 </html>

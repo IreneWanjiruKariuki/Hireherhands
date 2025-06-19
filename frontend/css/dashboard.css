@@ -255,6 +255,16 @@
     border-color: rgba(222, 242, 201, 0.5);
     color: #065f46;
 }
+.loading {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+.no-jobs {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+}
 @media (max-width: 768px) {
     .dashboard-container {
         padding: 1rem;
