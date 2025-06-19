@@ -1,6 +1,14 @@
+import enum
 from extensions import db
 from datetime import datetime
 from sqlalchemy_serializer import SerializerMixin
+
+#job status
+class JobStatus(enum.Enum):
+    OPEN = 'open'
+    REQUESTED = 'requested'
+    IN_PROGRESS = 'in_progress'
+    COMPLETED = 'completed'
 
 class Job(db.Model, SerializerMixin):
     __tablename__ = 'jobs'
@@ -15,7 +23,7 @@ class Job(db.Model, SerializerMixin):
     location = db.Column(db.String(255), nullable=True)
     scheduled_date = db.Column(db.Date, nullable=True)  # Date when the job is scheduled to start
     scheduled_time = db.Column(db.Time, nullable=True)  # Time when the job is scheduled to start
-    status = db.Column(db.String(50), nullable=False)  # e.g., 'open', 'in_progress', 'completed'
+    status = db.Column(db.Enum(JobStatus), nullable=False, default=JobStatus.OPEN)
     worker_completion_confirmed = db.Column(db.Boolean, default=False)
     client_completion_confirmed = db.Column(db.Boolean, default=False)
 
