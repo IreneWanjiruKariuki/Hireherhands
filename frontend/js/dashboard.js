@@ -148,3 +148,24 @@ function addNewJob(jobData) {
         displayJobs();
     }
 }
+function checkForNewJobs() {
+    displayJobs();
+}
+
+// Initialize dashboard when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+    console.log('Dashboard loading...'); // Debug log
+            
+// Check if user is logged in and update welcome message
+    updateWelcomeMessage();
+            
+// Initialize sample jobs if none exist
+    const jobs = initializeSampleJobs();
+    console.log('Initialized jobs:', jobs); // Debug log
+            
+// Display jobs
+    displayJobs();
+            
+// Set up periodic check for new jobs (every 30 seconds)
+    setInterval(checkForNewJobs, 30000);
+});
