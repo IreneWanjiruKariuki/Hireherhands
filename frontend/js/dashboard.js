@@ -111,3 +111,25 @@ function displayJobs(jobsToShow = null) {
     jobsContainer.innerHTML = jobsHTML; 
     //console.log('Jobs HTML generated:', jobsHTML); 
 }
+function filterJobs(status, event) {
+    if (event) {
+        event.preventDefault();
+    } 
+    // Update active tab
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    if (event) {
+        event.target.classList.add('active');
+    }
+    const allJobs = getJobsFromStorage();
+    let filteredJobs;
+            
+    if (status === 'all') {
+        filteredJobs = allJobs;
+    } else {
+        filteredJobs = allJobs.filter(job => job.status === status);
+    }
+
+    displayJobs(filteredJobs);
+}
