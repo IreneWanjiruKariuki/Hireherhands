@@ -154,14 +154,14 @@ function checkForNewJobs() {
 
 // Initialize dashboard when page loads
     document.addEventListener('DOMContentLoaded', function() {
-    console.log('Dashboard loading...'); // Debug log
+    console.log('Dashboard loading...'); 
             
 // Check if user is logged in and update welcome message
     updateWelcomeMessage();
             
 // Initialize sample jobs if none exist
     const jobs = initializeSampleJobs();
-    console.log('Initialized jobs:', jobs); // Debug log
+    console.log('Initialized jobs:', jobs); 
             
 // Display jobs
     displayJobs();
