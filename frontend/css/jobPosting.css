@@ -47,3 +47,26 @@ body {
     position: relative;
     z-index: 1;
 }
+.form-container {
+    padding: 2.5rem;
+}
+.form-group {
+    margin-bottom: 2rem;
+    position: relative;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 0.75rem;
+    color: #2d5016;
+    font-weight: 600;
+    font-size: 1rem;
+}
+.success-message {
+    background: linear-gradient(135deg, #def2c9 0%, #c8e6c9 100%);
+    color: #2d5016;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    display: none;
+    border: 1px solid #c8e6c9;
+}

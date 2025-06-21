@@ -12,6 +12,31 @@
             <h1>Post a Job</h1>
             <p>Find the perfect worker for your project</p>
         </div>
+
+        <div class="form-container">
+            <div class="success-message" id="successMessage">
+                Job posted successfully! Redirecting to find workers...
+            </div>
+            <form id="jobPostingForm">
+                <div class="form-group">
+                    <label for="jobCategory">Job Category *</label>
+                    <select id="jobCategory" name="jobCategory" required>
+                        <option value="">Select a category</option>
+                        <option value="construction">Construction</option>
+                        <option value="plumbing">Plumbing</option>
+                        <option value="electrical">Electrical</option>
+                        <option value="carpentry">Carpentry</option>
+                        <option value="painting">Painting</option>
+                        <option value="landscaping">Landscaping</option>
+                        <option value="cleaning">Cleaning</option>
+                        <option value="roofing">Roofing</option>
+                        <option value="masonry">Masonry</option>
+                        <option value="welding">Welding</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+            </form>
+        </div>
     </div>
 </body>
 </html>
