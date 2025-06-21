@@ -102,3 +102,18 @@ body {
     background-size: 20px;
     appearance: none;
 }
+.budget-input-container {
+    position: relative;
+}
+.currency-symbol {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #4a7c59;
+    font-weight: 600;
+    font-size: 1rem;
+}
+.budget-input-container input {
+    padding-left: 3rem;
+}
