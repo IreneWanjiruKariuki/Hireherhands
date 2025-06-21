@@ -120,3 +120,24 @@ function loadJobData() {
         filterWorkersByJob(currentJob);
     }
 }
+function displayJobSummary(job) {
+    const jobDetails = document.getElementById('jobDetails');
+    jobDetails.innerHTML = `
+        <div class="job-detail">
+            <span class="job-detail-label">Category:</span>
+            <span class="job-detail-value">${job.category.charAt(0).toUpperCase() + job.category.slice(1)}</span>
+        </div>
+        <div class="job-detail">
+            <span class="job-detail-label">Location:</span>
+            <span class="job-detail-value">${job.location}</span>
+        </div>
+        <div class="job-detail">
+            <span class="job-detail-label">Duration:</span>
+            <span class="job-detail-value">${job.duration}</span>
+        </div>
+        <div class="job-detail">
+            <span class="job-detail-label">Budget:</span>
+            <span class="job-detail-value">KSh ${parseInt(job.budget).toLocaleString()}</span>
+        </div>
+    `;
+}
