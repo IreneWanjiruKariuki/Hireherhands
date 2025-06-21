@@ -249,3 +249,19 @@ function applyFilters() {
     }
     displayWorkers(filtered);
 }
+function contactWorker(workerId) {
+    const worker = workers.find(w => w.id === workerId);
+    if (worker && currentJob) {
+                
+        alert(`Contacting ${worker.name}...\n\nYour job details will be sent to ${worker.name} for review. They will contact you within 24 hours if interested.`);
+                
+        const contacts = JSON.parse(localStorage.getItem('workerContacts') || '[]');
+        contacts.push({
+            workerId: workerId,
+            workerName: worker.name,
+            jobData: currentJob,
+            contactedAt: new Date().toISOString()
+        });
+        localStorage.setItem('workerContacts', JSON.stringify(contacts));
+    }
+ }
