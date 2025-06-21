@@ -221,3 +221,31 @@ function createWorkerCard(worker) {
         </div>
     `;
 }
+function setupFilters() {
+    const experienceFilter = document.getElementById('experienceFilter');
+    const ratingFilter = document.getElementById('ratingFilter');
+    const budgetFilter = document.getElementById('budgetFilter');
+            
+    [experienceFilter, ratingFilter, budgetFilter].forEach(filter => {
+        filter.addEventListener('change', applyFilters);
+    });
+}
+
+function applyFilters() {
+    const experienceFilter = document.getElementById('experienceFilter').value;
+    const ratingFilter = parseFloat(document.getElementById('ratingFilter').value) || 0;
+    const budgetFilter = parseInt(document.getElementById('budgetFilter').value) || Infinity;
+            
+    let filtered = [...filteredWorkers];
+            
+    if (experienceFilter) {
+        filtered = filtered.filter(worker => worker.experience === experienceFilter);
+    }
+    if (ratingFilter > 0) {
+        filtered = filtered.filter(worker => worker.rating >= ratingFilter);
+    }
+    if (budgetFilter < Infinity) {
+        filtered = filtered.filter(worker => worker.rate <= budgetFilter);
+    }
+    displayWorkers(filtered);
+}
