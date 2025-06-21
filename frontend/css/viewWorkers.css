@@ -161,3 +161,43 @@ body {
     font-size: 0.9rem;
     font-weight: 500;
 }
+.stars {
+    color: #fbbf24;
+}
+.rating-text {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+.worker-details {
+    margin-bottom: 1.5rem;
+}
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+.detail-label {
+    color: #6b7280;
+}
+.detail-value {
+    color: #2d5016;
+    font-weight: 500;
+}
+.worker-skills {
+    margin-bottom: 1.5rem;
+}
+.skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+.skill-tag {
+    background: rgba(222, 242, 201, 0.3);
+    color: #2d5016;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    border: 1px solid #def2c9;
+}
