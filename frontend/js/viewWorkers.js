@@ -141,3 +141,18 @@ function displayJobSummary(job) {
         </div>
     `;
 }
+function filterWorkersByJob(job) {
+    filteredWorkers = workers.filter(worker => {
+        // Filter by category
+        if (job.category !== 'other' && worker.category !== job.category) {
+            return false;
+        }
+        // Filter by location
+        const jobLocation = job.location.toLowerCase();
+        const workerLocation = worker.location.toLowerCase();
+        if (!workerLocation.includes(jobLocation.split(',')[0].toLowerCase())) {}
+                
+        return true;
+    });  
+    displayWorkers(filteredWorkers);
+}
