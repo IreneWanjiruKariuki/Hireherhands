@@ -156,3 +156,17 @@ function filterWorkersByJob(job) {
     });  
     displayWorkers(filteredWorkers);
 }
+function displayWorkers(workersToShow) {
+    const workersGrid = document.getElementById('workersGrid');
+    const noWorkers = document.getElementById('noWorkers');
+            
+    if (workersToShow.length === 0) {
+        workersGrid.style.display = 'none';
+        noWorkers.style.display = 'block';
+        return;
+    }
+    workersGrid.style.display = 'grid';
+    noWorkers.style.display = 'none';
+            
+    workersGrid.innerHTML = workersToShow.map(worker => createWorkerCard(worker)).join('');
+}
