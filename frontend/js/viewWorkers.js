@@ -170,3 +170,54 @@ function displayWorkers(workersToShow) {
             
     workersGrid.innerHTML = workersToShow.map(worker => createWorkerCard(worker)).join('');
 }
+function createWorkerCard(worker) {
+    const stars = '★'.repeat(Math.floor(worker.rating)) + '☆'.repeat(5 - Math.floor(worker.rating));
+    const initials = worker.name.split(' ').map(n => n[0]).join('');
+            
+    return `
+        <div class="worker-card">
+            <div class="worker-header">
+                <div class="worker-avatar">${initials}</div>
+                <div class="worker-info">
+                    <h4>${worker.name}</h4>
+                    <div class="worker-category">${worker.category.charAt(0).toUpperCase() + worker.category.slice(1)} Specialist</div>
+                </div>
+            </div>
+                    
+            <div class="worker-rating">
+                <span class="stars">${stars}</span>
+                <span class="rating-text">${worker.rating} (${worker.reviews} reviews)</span>
+            </div>
+                    
+            <div class="worker-details">
+                <div class="detail-row">
+                    <span class="detail-label">Experience:</span>
+                    <span class="detail-value">${worker.experience.charAt(0).toUpperCase() + worker.experience.slice(1)}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Location:</span>
+                    <span class="detail-value">${worker.location}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Rate:</span>
+                    <span class="detail-value">KSh ${worker.rate.toLocaleString()}/day</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Availability:</span>
+                    <span class="detail-value">${worker.availability}</span>
+                </div>
+            </div>
+                    
+            <div class="worker-skills">
+                <div class="detail-label">Skills:</div>
+                <div class="skills-list">
+                    ${worker.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                </div>
+            </div>
+                    
+            <button class="contact-btn" onclick="contactWorker(${worker.id})">
+                Contact ${worker.name.split(' ')[0]}
+            </button>
+        </div>
+    `;
+}
