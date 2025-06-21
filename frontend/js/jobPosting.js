@@ -33,3 +33,29 @@ document.getElementById('jobPostingForm').addEventListener('submit', function(e)
         }, 1500);
     }, 2000);
 });
+// formatting for budget
+document.getElementById('budget').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/,/g, '');
+    if (value) {
+        e.target.value = parseInt(value).toLocaleString();
+    }
+});
+
+// character counter
+const descriptionField = document.getElementById('jobDescription');
+const maxLength = 500;
+        
+descriptionField.addEventListener('input', function(e) {
+    const remaining = maxLength - e.target.value.length;
+            
+    let counter = document.getElementById('charCounter');
+    if (!counter) {
+        counter = document.createElement('div');
+        counter.id = 'charCounter';
+        counter.style.cssText = 'font-size: 0.875rem; color: #6b7280; text-align: right; margin-top: 0.5rem;';
+        e.target.parentNode.appendChild(counter);
+    }
+            
+    counter.textContent = `${remaining} characters remaining`;
+    counter.style.color = remaining < 50 ? '#dc2626' : '#6b7280';
+});
