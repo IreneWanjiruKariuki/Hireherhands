@@ -103,3 +103,20 @@ const workers = [{
     skills: ["Garden Design", "Plant Care", "Irrigation", "Lawn Maintenance"],
     description: "Landscape designer with 6 years experience in residential and commercial landscaping."
 }];
+let filteredWorkers = [...workers];
+let currentJob = null;
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadJobData();
+    displayWorkers(filteredWorkers);
+    setupFilters();
+});
+function loadJobData() {
+    const jobData = localStorage.getItem('currentJobPosting');
+    if (jobData) {
+        currentJob = JSON.parse(jobData);
+        displayJobSummary(currentJob);
+        filterWorkersByJob(currentJob);
+    }
+}
