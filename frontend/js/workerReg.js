@@ -101,6 +101,8 @@ function clearError(fieldId) {
         field.style.borderColor = '#e8f5e8';
     }
 }
+
+//Form validation
 function validateForm() {
     let isValid = true;
     
@@ -119,5 +121,13 @@ function validateForm() {
         showError('fullName', 'Full name must be at least 2 characters');
         isValid = false;
     }
-    
+
+    const email = document.getElementById('email').value.trim();
+    if (!email) {
+        showError('email', 'Email is required');
+        isValid = false;
+    } else if (!validateEmail(email)) {
+        showError('email', 'Please enter a valid email address');
+        isValid = false;
+    }
 }   
