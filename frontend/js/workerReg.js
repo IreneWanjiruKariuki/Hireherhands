@@ -150,4 +150,12 @@ function validateForm() {
         showError('skills', 'Please add at least one skill');
         isValid = false;
     }
+
+    const portfolio = document.getElementById('portfolio').value.trim();
+    if (portfolio && !validateURL(portfolio)) {
+        showError('portfolio', 'Please enter a valid URL');
+        isValid = false;
+    }
+
+    return isValid;
 }   
