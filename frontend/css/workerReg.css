@@ -103,3 +103,83 @@ select:focus {
 .phone-number {
     flex: 1;
 }
+.file-upload {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+.file-upload input[type="file"] {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+.file-upload-label {
+    display: block;
+    padding: 12px 15px;
+    border: 2px dashed #def2c970;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: #fafafa;
+    color: #666;
+}
+.file-upload-label:hover {
+    border-color: #4caf50;
+    background-color: #def2c970;
+}
+.file-upload-label i {
+    font-size: 2rem;
+    color: #4caf50;
+    margin-bottom: 10px;
+    display: block;
+}
+.skills-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+.skill-tag {
+    background: #def2c970;
+    color: #333;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.skill-tag .remove-skill {
+    background: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.skill-input-container {
+    display: flex;
+    gap: 10px;
+}
+.add-skill-btn {
+    background: #4caf50;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s ease;
+    flex-shrink: 0;
+}
+.add-skill-btn:hover {
+    background: #45a049;
+}
