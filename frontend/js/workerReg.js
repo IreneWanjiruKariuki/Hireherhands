@@ -25,3 +25,7 @@ function updateSkillsDisplay() {
         container.appendChild(skillTag);
     });
 }
+function removeSkill(index) {
+    skills.splice(index, 1);
+    updateSkillsDisplay();
+}
