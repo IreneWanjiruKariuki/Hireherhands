@@ -220,3 +220,28 @@ select:focus {
     transform: none;
     box-shadow: none;
 }
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.loading p {
+    color: #666;
+    margin-top: 10px;
+}
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 2rem;
+    }
+    .form-container {
+        padding: 20px;
+    }
+    .skill-input-container {
+        flex-direction: column;
+    }
+    .phone-container {
+        flex-direction: column;
+    }
+    .country-code {
+        flex: none;
+    }
+}
