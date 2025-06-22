@@ -139,4 +139,15 @@ function validateForm() {
         showError('phone', 'Please enter a valid phone number');
         isValid = false;
     }
+
+    const location = document.getElementById('location').value.trim();
+    if (!location) {
+        showError('location', 'Location is required');
+        isValid = false;
+    }
+
+    if (skills.length === 0) {
+        showError('skills', 'Please add at least one skill');
+        isValid = false;
+    }
 }   
