@@ -54,5 +54,10 @@ class AuthenticationService:
         return {
             "message": "Login successful!",
             "access_token": token,
-            "role": claims["role"]
+            "role": claims["role"],
+            "user": {
+                "client_id" : user.client_id,
+                "fullname": user.fullname,
+                "email": user.email
+            }
         }, 200

@@ -172,6 +172,8 @@ const BASE_URL = 'http://127.0.0.1:5000';
                 }
 
                 localStorage.setItem('access_token', data.access_token);
+                localStorage.setItem('currentUser', JSON.stringify(data.user));
+
                 showAlert('Login Successful', 'Welcome back! You are now signed in.', 'success');
                 setTimeout(() => {
                     window.location.href = 'dashboard.html';

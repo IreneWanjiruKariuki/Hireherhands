@@ -76,3 +76,30 @@ class AdminService:
     def get_all_ratings():
         ratings = Rating.query.order_by(Rating.created_at.desc()).all()
         return {"ratings": [r.to_dict() for r in ratings]}, 200
+    @staticmethod
+    def verify_worker(worker_id):
+        worker = Worker.query.get(worker_id)
+        if not worker:
+            return {"error": "Worker not found"}, 404
+        worker.is_verified = True
+        db.session.commit()
+        return {"message": "Worker verified"}, 200
+
+    @staticmethod
+    def delete_rating(rating_id):
+        rating = Rating.query.get(rating_id)
+        if not rating:
+            return {"error": "Rating not found"}, 404
+        db.session.delete(rating)
+        db.session.commit()
+        return {"message": "Rating deleted"}, 200
+
+    @staticmethod
+    def delete_message(message_id):
+        message = Message.query.get(message_id)
+        if not message:
+            return {"error": "Message not found"}, 404
+        db.session.delete(message)
+        db.session.commit()
+        return {"message": "Message deleted"}, 200
+

@@ -14,11 +14,13 @@ from resources.Job import (
     ClientJobHistoryResource,
     WorkerJobHistoryResource
 )
+
 from resources.Admin import (
     AdminClientsResource, AdminWorkersResource,
     AdminSkillsResource, AdminAddSkillResource, AdminDeleteSkillResource,
     AdminWorkerApplicationsResource, AdminApproveRejectWorkerResource,
-    AdminJobsResource, AdminMessagesResource, AdminRatingsResource
+    AdminJobsResource, AdminMessagesResource, AdminRatingsResource,
+    AdminDeleteRatingResource, AdminDeleteMessageResource
 )
 
 from flask_restful import Api
@@ -59,6 +61,8 @@ def create_app():
     api.add_resource(AdminJobsResource, "/admin/jobs")
     api.add_resource(AdminMessagesResource, "/admin/messages")
     api.add_resource(AdminRatingsResource, "/admin/ratings")
+    api.add_resource(AdminDeleteRatingResource, "/admin/ratings/<int:rating_id>")
+    api.add_resource(AdminDeleteMessageResource, "/admin/messages/<int:message_id>")
 
     @app.route('/')
     def hello():
