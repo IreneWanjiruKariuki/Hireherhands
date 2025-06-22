@@ -110,4 +110,14 @@ function validateForm() {
     document.querySelectorAll('input, textarea, select').forEach(field => {
         field.style.borderColor = '#e8f5e8';
     });
+
+    const fullName = document.getElementById('fullName').value.trim();
+    if (!fullName) {
+        showError('fullName', 'Full name is required');
+        isValid = false;
+    } else if (fullName.length < 2) {
+        showError('fullName', 'Full name must be at least 2 characters');
+        isValid = false;
+    }
+    
 }   
