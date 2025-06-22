@@ -159,3 +159,52 @@ function validateForm() {
 
     return isValid;
 }   
+
+//Form submission handler
+document.getElementById('applicationForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+        return;
+    }
+
+    // loading
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('submitBtn').disabled = true;
+
+    const formData = new FormData(this);
+    const countryCode = document.getElementById('countryCode').value;
+    const phoneNumber = document.getElementById('phone').value;
+    const fullPhoneNumber = countryCode + ' ' + phoneNumber;
+
+    console.log('Form submitted with data:', {
+        fullName: formData.get('fullName'),
+        email: formData.get('email'),
+        phone: fullPhoneNumber,
+        location: formData.get('location'),
+        skills: skills,
+        portfolio: formData.get('portfolio')
+    });
+
+    // Simulate form submission
+    setTimeout(() => {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('submitBtn').disabled = false;
+
+        document.getElementById('successMessage').style.display = 'block';
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        document.getElementById('applicationForm').reset();
+        skills = [];
+        updateSkillsDisplay();
+        document.querySelectorAll('.file-info').forEach(info => {
+            info.style.display = 'none';
+        });
+
+        setTimeout(() => {
+            document.getElementById('successMessage').style.display = 'none';
+        }, 5000);
+
+    }, 2000);
+});
