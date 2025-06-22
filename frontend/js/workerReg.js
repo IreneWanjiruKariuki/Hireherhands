@@ -29,3 +29,9 @@ function removeSkill(index) {
     skills.splice(index, 1);
     updateSkillsDisplay();
 }
+document.getElementById('skillInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        addSkill();
+    }
+});
