@@ -11,37 +11,6 @@ from sqlalchemy.exc import SQLAlchemyError
 
 class AdminService:
     @staticmethod
-    def register_admin(data):
-        if Admin.query.filter_by(email=data["email"]).first():
-            return {"error": "Admin email already exists"}, 400
-
-        hashed_password = bcrypt.generate_password_hash(data["password"]).decode("utf-8")
-        admin = Admin(
-            fullname=data["fullname"],
-            email=data["email"],
-            hashed_password=hashed_password
-        )
-        db.session.add(admin)
-        db.session.commit()
-        return {"message": "Admin registered"}, 201
-
-    @staticmethod
-    def login_admin(data):
-        admin = Admin.query.filter_by(email=data["email"]).first()
-        if not admin or not bcrypt.check_password_hash(admin.hashed_password, data["password"]):
-            return {"error": "Invalid credentials"}, 401
-
-        token = create_access_token(
-            identity=str(admin.admin_id),
-            additional_claims={"admin_id": admin.admin_id, "role": "admin"}
-        )
-        return {
-            "message": "Login successful",
-            "access_token": token,
-            "role": "admin"
-        }, 200
-
-    @staticmethod
     def get_all_clients():
         clients = Client.query.all()
         return {"clients": [c.to_dict() for c in clients]}, 200

@@ -14,22 +14,6 @@ def admin_only():
         return {"error": "Admin access only"}, 403
     return None
 
-class AdminRegisterResource(Resource):
-    def post(self):
-        try:
-            data = signup_schema.load(request.get_json())
-        except ValidationError as err:
-            return {"errors": err.messages}, 400
-        return AdminService.register_admin(data)
-
-class AdminLoginResource(Resource):
-    def post(self):
-        try:
-            data = login_schema.load(request.get_json())
-        except ValidationError as err:
-            return {"errors": err.messages}, 400
-        return AdminService.login_admin(data)
-
 class AdminClientsResource(Resource):
     @jwt_required()
     def get(self):

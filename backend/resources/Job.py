@@ -67,7 +67,7 @@ class WorkerMarkDoneResource(Resource):
         if claims.get("role") != "worker":
             return {"error": "Only workers can mark jobs as done"}, 403
 
-        worker_id = claims("worker_id")  # worker linked to client account
+        worker_id = claims.get("worker_id")  # worker linked to client account
         return JobService.worker_mark_done(job_id, worker_id)
 
 
