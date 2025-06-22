@@ -101,3 +101,13 @@ function clearError(fieldId) {
         field.style.borderColor = '#e8f5e8';
     }
 }
+function validateForm() {
+    let isValid = true;
+    
+    document.querySelectorAll('.error-message').forEach(error => {
+        error.style.display = 'none';
+    });
+    document.querySelectorAll('input, textarea, select').forEach(field => {
+        field.style.borderColor = '#e8f5e8';
+    });
+}   
