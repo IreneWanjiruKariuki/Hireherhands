@@ -1,5 +1,6 @@
 from models.Client import Client
 from models.Worker import Worker
+from models.Admin import Admin
 from extensions import db, bcrypt
 from flask_jwt_extended import create_access_token
 from sqlalchemy.exc import SQLAlchemyError
@@ -54,5 +55,46 @@ class AuthenticationService:
         return {
             "message": "Login successful!",
             "access_token": token,
-            "role": claims["role"]
+            "role": claims["role"],
+            "user": {
+                "client_id" : user.client_id,
+                "fullname": user.fullname,
+                "email": user.email
+            }
+        }, 200
+
+    @staticmethod
+    def login(data):
+        email = data["email"]
+        password = data["password"]
+        
+        admin = Admin.query.filter_by(email=email).first()
+        if admin and bcrypt.check_password_hash(admin.hashed_password, password):
+            claims = {
+                "admin_id": admin.admin_id,
+                "role": "admin"
+        }
+        token = create_access_token(identity=str(admin.admin_id), additional_claims=claims)
+        return {
+            "message": "Login successful!",
+            "access_token": token,
+            "role": "admin",
+            "user": admin.to_dict()
+        }, 200
+
+    # Fallback to client
+        user = Client.query.filter_by(email=email).first()
+        if not user or not bcrypt.check_password_hash(user.hashed_password, password):
+            return {'error': 'Invalid credentials'}, 401
+            claims = {
+                "client_id": user.client_id,
+                 "role": "client"
+    }
+
+        token = create_access_token(identity=str(user.client_id), additional_claims=claims)
+        return {
+            "message": "Login successful!",
+            "access_token": token,
+            "role": "client",
+            "user": user.to_dict()
         }, 200

@@ -6,16 +6,16 @@ function updateWelcomeMessage() {
     const user = getCurrentUser();
     const welcomeElement = document.getElementById('welcomeMessage');
             
-    if (user && user.name) {
-        welcomeElement.textContent = `Welcome , ${user.name}!`;
+    if (user && user.fullname) {
+        welcomeElement.textContent = `Welcome , ${user.fullname}!`;
     } else {
         const defaultUser = {
-            id: 'default-user',
-            name: 'Default',
+            client_id: 'default-user',
+            fullname: 'Default',
             email: 'Default@text.com'
         };
         localStorage.setItem('currentUser', JSON.stringify(defaultUser));
-        welcomeElement.textContent = `Welcome back, ${defaultUser.name}!`;
+        welcomeElement.textContent = `Welcome back, ${user.fullname}!`;
     }
 }
 function getJobsFromStorage() {

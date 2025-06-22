@@ -13,6 +13,7 @@ class Worker(db.Model, SerializerMixin):
     status = db.Column(db.String(50), nullable=False, default='available') 
     is_approved = db.Column(db.Boolean, default=False)  
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    is_verified = db.Column(db.Boolean, default=False)
     is_deleted = db.Column(db.Boolean, default=False) 
 
     #relationships

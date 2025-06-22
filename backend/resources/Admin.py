@@ -14,22 +14,6 @@ def admin_only():
         return {"error": "Admin access only"}, 403
     return None
 
-class AdminRegisterResource(Resource):
-    def post(self):
-        try:
-            data = signup_schema.load(request.get_json())
-        except ValidationError as err:
-            return {"errors": err.messages}, 400
-        return AdminService.register_admin(data)
-
-class AdminLoginResource(Resource):
-    def post(self):
-        try:
-            data = login_schema.load(request.get_json())
-        except ValidationError as err:
-            return {"errors": err.messages}, 400
-        return AdminService.login_admin(data)
-
 class AdminClientsResource(Resource):
     @jwt_required()
     def get(self):
@@ -101,3 +85,23 @@ class AdminRatingsResource(Resource):
         check = admin_only()
         if check: return check
         return AdminService.get_all_ratings()
+class AdminVerifyWorkerResource(Resource):
+    @jwt_required()
+    def post(self, worker_id):
+        check = admin_only()
+        if check: return check
+        return AdminService.verify_worker(worker_id)
+
+class AdminDeleteRatingResource(Resource):
+    @jwt_required()
+    def delete(self, rating_id):
+        check = admin_only()
+        if check: return check
+        return AdminService.delete_rating(rating_id)
+
+class AdminDeleteMessageResource(Resource):
+    @jwt_required()
+    def delete(self, message_id):
+        check = admin_only()
+        if check: return check
+        return AdminService.delete_message(message_id)

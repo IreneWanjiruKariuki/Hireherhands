@@ -11,37 +11,6 @@ from sqlalchemy.exc import SQLAlchemyError
 
 class AdminService:
     @staticmethod
-    def register_admin(data):
-        if Admin.query.filter_by(email=data["email"]).first():
-            return {"error": "Admin email already exists"}, 400
-
-        hashed_password = bcrypt.generate_password_hash(data["password"]).decode("utf-8")
-        admin = Admin(
-            fullname=data["fullname"],
-            email=data["email"],
-            hashed_password=hashed_password
-        )
-        db.session.add(admin)
-        db.session.commit()
-        return {"message": "Admin registered"}, 201
-
-    @staticmethod
-    def login_admin(data):
-        admin = Admin.query.filter_by(email=data["email"]).first()
-        if not admin or not bcrypt.check_password_hash(admin.hashed_password, data["password"]):
-            return {"error": "Invalid credentials"}, 401
-
-        token = create_access_token(
-            identity=str(admin.admin_id),
-            additional_claims={"admin_id": admin.admin_id, "role": "admin"}
-        )
-        return {
-            "message": "Login successful",
-            "access_token": token,
-            "role": "admin"
-        }, 200
-
-    @staticmethod
     def get_all_clients():
         clients = Client.query.all()
         return {"clients": [c.to_dict() for c in clients]}, 200
@@ -107,3 +76,30 @@ class AdminService:
     def get_all_ratings():
         ratings = Rating.query.order_by(Rating.created_at.desc()).all()
         return {"ratings": [r.to_dict() for r in ratings]}, 200
+    @staticmethod
+    def verify_worker(worker_id):
+        worker = Worker.query.get(worker_id)
+        if not worker:
+            return {"error": "Worker not found"}, 404
+        worker.is_verified = True
+        db.session.commit()
+        return {"message": "Worker verified"}, 200
+
+    @staticmethod
+    def delete_rating(rating_id):
+        rating = Rating.query.get(rating_id)
+        if not rating:
+            return {"error": "Rating not found"}, 404
+        db.session.delete(rating)
+        db.session.commit()
+        return {"message": "Rating deleted"}, 200
+
+    @staticmethod
+    def delete_message(message_id):
+        message = Message.query.get(message_id)
+        if not message:
+            return {"error": "Message not found"}, 404
+        db.session.delete(message)
+        db.session.commit()
+        return {"message": "Message deleted"}, 200
+

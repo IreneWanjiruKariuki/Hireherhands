@@ -14,12 +14,13 @@ from resources.Job import (
     ClientJobHistoryResource,
     WorkerJobHistoryResource
 )
+
 from resources.Admin import (
-    AdminRegisterResource, AdminLoginResource,
     AdminClientsResource, AdminWorkersResource,
     AdminSkillsResource, AdminAddSkillResource, AdminDeleteSkillResource,
     AdminWorkerApplicationsResource, AdminApproveRejectWorkerResource,
-    AdminJobsResource, AdminMessagesResource, AdminRatingsResource
+    AdminJobsResource, AdminMessagesResource, AdminRatingsResource,
+    AdminDeleteRatingResource, AdminDeleteMessageResource
 )
 
 from flask_restful import Api
@@ -36,9 +37,10 @@ def create_app():
     jwt.init_app(app)
 
     api = Api(app)
-
+    #Authenitication
     api.add_resource(SignupResource, '/auth/register')
     api.add_resource(LoginResource, '/auth/login')
+    #Job
     api.add_resource(CreateJobResource, '/jobs')
     api.add_resource(MatchingWorkersResource, '/jobs/<int:job_id>/workers')
     api.add_resource(RequestWorkerResource, '/jobs/<int:job_id>/request')
@@ -48,8 +50,7 @@ def create_app():
     api.add_resource(ClientConfirmCompletionResource, '/jobs/<int:job_id>/client-complete')
     api.add_resource(ClientJobHistoryResource, '/client/jobs')
     api.add_resource(WorkerJobHistoryResource, '/worker/jobs')
-    api.add_resource(AdminRegisterResource, "/admin/register")
-    api.add_resource(AdminLoginResource, "/admin/login")
+    #Admin
     api.add_resource(AdminClientsResource, "/admin/clients")
     api.add_resource(AdminWorkersResource, "/admin/workers")
     api.add_resource(AdminSkillsResource, "/admin/skills")
@@ -60,6 +61,8 @@ def create_app():
     api.add_resource(AdminJobsResource, "/admin/jobs")
     api.add_resource(AdminMessagesResource, "/admin/messages")
     api.add_resource(AdminRatingsResource, "/admin/ratings")
+    api.add_resource(AdminDeleteRatingResource, "/admin/ratings/<int:rating_id>")
+    api.add_resource(AdminDeleteMessageResource, "/admin/messages/<int:message_id>")
 
     @app.route('/')
     def hello():
