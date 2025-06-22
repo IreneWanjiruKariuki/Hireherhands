@@ -130,4 +130,13 @@ function validateForm() {
         showError('email', 'Please enter a valid email address');
         isValid = false;
     }
+
+    const phone = document.getElementById('phone').value.trim();
+    if (!phone) {
+        showError('phone', 'Phone number is required');
+        isValid = false;
+    } else if (!validatePhone(phone)) {
+        showError('phone', 'Please enter a valid phone number');
+        isValid = false;
+    }
 }   
