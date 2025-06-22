@@ -40,6 +40,21 @@
                     </div>
                     <div class="error-message" id="phoneError"></div>
                 </div>
+                <div class="form-group">
+                    <label for="location">Location <span class="required">*</span></label>
+                    <input type="text" id="location" name="location" placeholder="City, State/Country" required>
+                    <div class="error-message" id="locationError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="skills">Skills <span class="required">*</span></label>
+                    <div class="skill-input-container">
+                        <input type="text" id="skillInput" placeholder="Enter a skill and click Add">
+                        <button type="button" class="add-skill-btn" onclick="addSkill()">Add Skill</button>
+                    </div>
+                    <div class="skills-container" id="skillsContainer"></div>
+                    <div class="error-message" id="skillsError"></div>
+                </div>
             </form>  
         </div>
     </div>

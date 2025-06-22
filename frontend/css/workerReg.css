@@ -49,6 +49,12 @@ body {
     text-align: center;
     font-weight: 600;
 }
+.error-message {
+    color: #e53e3e;
+    font-size: 0.9rem;
+    margin-top: 5px;
+    display: none;
+}
 .form-group {
     margin-bottom: 25px;
     position: relative;
