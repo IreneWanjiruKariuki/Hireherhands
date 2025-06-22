@@ -208,3 +208,33 @@ document.getElementById('applicationForm').addEventListener('submit', function(e
 
     }, 2000);
 });
+document.getElementById('fullName').addEventListener('blur', function() {
+    const value = this.value.trim();
+    if (value && value.length >= 2) {
+        clearError('fullNameError');
+    }
+});
+document.getElementById('email').addEventListener('blur', function() {
+    const value = this.value.trim();
+    if (value && validateEmail(value)) {
+        clearError('emailError');
+    }
+});
+document.getElementById('phone').addEventListener('blur', function() {
+    const value = this.value.trim();
+    if (value && validatePhone(value)) {
+        clearError('phoneError');
+    }
+});
+document.getElementById('location').addEventListener('blur', function() {
+    const value = this.value.trim();
+    if (value) {
+        clearError('locationError');
+    }
+});
+document.getElementById('portfolio').addEventListener('blur', function() {
+    const value = this.value.trim();
+    if (!value || validateURL(value)) {
+        clearError('portfolioError');
+    }
+});
