@@ -49,3 +49,51 @@ body {
     text-align: center;
     font-weight: 600;
 }
+.form-group {
+    margin-bottom: 25px;
+    position: relative;
+}
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 600;
+    font-size: 1rem;
+}
+.required {
+    color: #e53e3e;
+}
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+textarea,
+select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e8f5e8;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: #fafafa;
+    color: #333;
+}
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: #def2c970;
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(222, 242, 201, 0.3);
+}
+.phone-container {
+    display: flex;
+    gap: 10px;
+}
+.country-code {
+    flex: 0 0 120px;
+}
+.phone-number {
+    flex: 1;
+}
