@@ -61,3 +61,43 @@ function handleFileUpload(input, infoId) {
         infoDiv.style.display = 'none';
     }
 }
+function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+}
+
+function validatePhone(phone) {
+    const re = /^[\d\s\-$$$$]{7,15}$/;
+    return re.test(phone.trim());
+}
+
+function validateURL(url) {
+    if (!url) return true; // Optional field
+    try {
+        new URL(url);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+function showError(fieldId, message) {
+    const errorDiv = document.getElementById(fieldId + 'Error');
+    errorDiv.textContent = message;
+    errorDiv.style.display = 'block';
+    const field = document.getElementById(fieldId);
+    if (field) {
+        field.style.borderColor = '#e53e3e';
+    }
+}
+
+function clearError(fieldId) {
+    const errorDiv = document.getElementById(fieldId);
+    if (errorDiv) {
+        errorDiv.style.display = 'none';
+    }
+    const field = document.getElementById(fieldId.replace('Error', ''));
+    if (field) {
+        field.style.borderColor = '#e8f5e8';
+    }
+}
