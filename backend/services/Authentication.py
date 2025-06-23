@@ -29,72 +29,36 @@ class AuthenticationService:
         except SQLAlchemyError:
             db.session.rollback()
             return {'error': 'Database error'}, 500
-
     @staticmethod
     def login(data):
         email = data["email"]
         password = data["password"]
-
-        user = Client.query.filter_by(email=email).first()
-
-        if not user or not bcrypt.check_password_hash(user.hashed_password, password):
-            return {'error': 'Invalid credentials'}, 401
-
-        claims = {
-            "client_id": user.client_id,
-            "role": "client"
-        }
-
-        worker = Worker.query.filter_by(client_id=user.client_id).first()
-        if worker:
-            claims["role"] = "worker"
-            claims["worker_id"] = worker.worker_id
-
-        token = create_access_token(identity=str(user.client_id), additional_claims=claims)
-
-        return {
-            "message": "Login successful!",
-            "access_token": token,
-            "role": claims["role"],
-            "user": {
-                "client_id" : user.client_id,
-                "fullname": user.fullname,
-                "email": user.email
-            }
-        }, 200
-
-    @staticmethod
-    def login(data):
-        email = data["email"]
-        password = data["password"]
-        
+        # Try Admin login 
         admin = Admin.query.filter_by(email=email).first()
         if admin and bcrypt.check_password_hash(admin.hashed_password, password):
-            claims = {
-                "admin_id": admin.admin_id,
-                "role": "admin"
-        }
-        token = create_access_token(identity=str(admin.admin_id), additional_claims=claims)
-        return {
-            "message": "Login successful!",
+            claims = {"admin_id": admin.admin_id, "role": "admin"}
+            token = create_access_token(identity=admin.admin_id, additional_claims=claims)
+            return {
+            "message": "Admin login successful!",
             "access_token": token,
             "role": "admin",
             "user": admin.to_dict()
         }, 200
-
-    # Fallback to client
-        user = Client.query.filter_by(email=email).first()
-        if not user or not bcrypt.check_password_hash(user.hashed_password, password):
-            return {'error': 'Invalid credentials'}, 401
-            claims = {
-                "client_id": user.client_id,
-                 "role": "client"
-    }
-
-        token = create_access_token(identity=str(user.client_id), additional_claims=claims)
-        return {
-            "message": "Login successful!",
-            "access_token": token,
-            "role": "client",
-            "user": user.to_dict()
-        }, 200
+        # Try Client login
+        client = Client.query.filter_by(email=email).first()
+        if client and bcrypt.check_password_hash(client.hashed_password, password):
+            claims = {"client_id": client.client_id, "role": "client"}
+            # Check if the client is also a worker
+            worker = Worker.query.filter_by(client_id=client.client_id).first()
+            if worker:
+                claims["role"] = "worker"
+                claims["worker_id"] = worker.worker_id
+            token = create_access_token(identity=client.client_id, additional_claims=claims)
+            return {
+                "message": "Client login successful!",
+                "access_token": token,
+                "role": claims["role"],
+                "user": client.to_dict()
+            }, 200
+            # If neither admin nor client login succeeded
+        return {"error": "Invalid credentials"}, 401

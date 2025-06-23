@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required, get_jwt
-from services.WorkerPortfolioService import WorkerPortfolioService
+from services.WorkerPortfolio import WorkerPortfolioService
 
 class WorkerPortfolioResource(Resource):
     @jwt_required()

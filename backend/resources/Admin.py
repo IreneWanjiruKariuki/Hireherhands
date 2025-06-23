@@ -1,7 +1,15 @@
 from flask_restful import Resource
 from flask import request
 from flask_jwt_extended import jwt_required, get_jwt
-from services.Admin import AdminService
+from services.AdminClientService import AdminClientService
+from services.AdminWorkerService import AdminWorkerService
+from services.AdminJobService import AdminJobService
+from services.AdminSkillService import AdminSkillService
+from services.AdminMessageService import AdminMessageService
+from services.AdminRatingService import AdminRatingService
+from services.AdminCertificationService import AdminCertificationService
+
+
 from marshmallow import ValidationError
 from models.schemas.Auth import SignupSchema, LoginSchema
 
@@ -19,21 +27,21 @@ class AdminClientsResource(Resource):
     def get(self):
         check = admin_only()
         if check: return check
-        return AdminService.get_all_clients()
+        return AdminClientService.get_all_clients()
 
 class AdminWorkersResource(Resource):
     @jwt_required()
     def get(self):
         check = admin_only()
         if check: return check
-        return AdminService.get_all_workers()
+        return AdminWorkerService.get_all_workers()
 
 class AdminSkillsResource(Resource):
     @jwt_required()
     def get(self):
         check = admin_only()
         if check: return check
-        return AdminService.get_all_skills()
+        return AdminSkillService.get_all_skills()
 
 class AdminAddSkillResource(Resource):
     @jwt_required()
@@ -41,21 +49,21 @@ class AdminAddSkillResource(Resource):
         check = admin_only()
         if check: return check
         name = request.get_json().get("name")
-        return AdminService.create_skill(name)
+        return AdminSkillService.create_skill(name)
 
 class AdminDeleteSkillResource(Resource):
     @jwt_required()
     def delete(self, skill_id):
         check = admin_only()
         if check: return check
-        return AdminService.delete_skill(skill_id)
+        return AdminSkillService.delete_skill(skill_id)
 
 class AdminWorkerApplicationsResource(Resource):
     @jwt_required()
     def get(self):
         check = admin_only()
         if check: return check
-        return AdminService.get_all_worker_applications()
+        return AdminWorkerService.get_all_worker_applications()
 
 class AdminApproveRejectWorkerResource(Resource):
     @jwt_required()
@@ -63,45 +71,97 @@ class AdminApproveRejectWorkerResource(Resource):
         check = admin_only()
         if check: return check
         action = request.get_json().get("action")
-        return AdminService.approve_or_reject_worker(worker_id, action)
+        return AdminWorkerService.approve_or_reject_worker(worker_id, action)
 
 class AdminJobsResource(Resource):
     @jwt_required()
     def get(self):
         check = admin_only()
         if check: return check
-        return AdminService.get_all_jobs()
+        return AdminJobService.get_all_jobs()
 
 class AdminMessagesResource(Resource):
     @jwt_required()
     def get(self):
         check = admin_only()
         if check: return check
-        return AdminService.get_all_messages()
+        return AdminMessageService.get_all_messages()
 
 class AdminRatingsResource(Resource):
     @jwt_required()
     def get(self):
         check = admin_only()
         if check: return check
-        return AdminService.get_all_ratings()
+        return AdminRatingService.get_all_ratings()
+
+class AdminRatingsDeleteResource(Resource):
+    @jwt_required()
+    def delete(self, rating_id):
+        check = admin_only()
+        if check: return check
+        return AdminRatingService.delete_rating(rating_id)
+
+
 class AdminVerifyWorkerResource(Resource):
     @jwt_required()
     def post(self, worker_id):
         check = admin_only()
         if check: return check
-        return AdminService.verify_worker(worker_id)
+        return AdminWorkerService.verify_worker(worker_id)
+
+class AdminCertificationResource(Resource):
+    @jwt_required()
+    def get(self):
+        check = admin_only()
+        if check: return check
+        return AdminCertificationService.get_all_certifications()
+
+class ApproveCertificationResource(Resource):
+    @jwt_required()
+    def post(self, cert_id):
+        check = admin_only()
+        if check: return check
+        return AdminCertificationService.approve_certification(cert_id)
+
+class RejectCertificationResource(Resource):
+    @jwt_required()
+    def post(self, cert_id):
+        check = admin_only()
+        if check: return check
+        return AdminCertificationService.reject_certification(cert_id)
 
 class AdminDeleteRatingResource(Resource):
     @jwt_required()
     def delete(self, rating_id):
         check = admin_only()
         if check: return check
-        return AdminService.delete_rating(rating_id)
+        return AdminRatingService.delete_rating(rating_id)
+
+class AdminMessageResource(Resource):
+    @jwt_required()
+    def get(self):
+        check = admin_only()
+        if check: return check
+
+        # Optional query parameters
+        client_id = request.args.get("client_id")
+        worker_id = request.args.get("worker_id")
+
+        if client_id:
+            messages = Message.query.filter_by(client_id=client_id).order_by(Message.timestamp.desc()).all()
+            return {"messages": [m.to_dict() for m in messages]}, 200
+
+        if worker_id:
+            messages = Message.query.filter_by(worker_id=worker_id).order_by(Message.timestamp.desc()).all()
+            return {"messages": [m.to_dict() for m in messages]}, 200
+
+        # Default: return all messages
+        return AdminMessageService.get_all_messages()
+
 
 class AdminDeleteMessageResource(Resource):
     @jwt_required()
     def delete(self, message_id):
         check = admin_only()
         if check: return check
-        return AdminService.delete_message(message_id)
+        return AdminMessageService.delete_message(message_id)
