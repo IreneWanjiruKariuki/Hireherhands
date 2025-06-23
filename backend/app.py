@@ -22,7 +22,8 @@ from resources.Admin import (
     AdminJobsResource, AdminMessagesResource, AdminRatingsResource,
     AdminDeleteRatingResource, AdminDeleteMessageResource
 )
-
+from resources.Portfolio import WorkerPortfolioResource
+from resources.Certifications import CertificationSubmissionResource
 from flask_restful import Api
 
 #creating the flask application and initializing extensions
@@ -63,7 +64,11 @@ def create_app():
     api.add_resource(AdminRatingsResource, "/admin/ratings")
     api.add_resource(AdminDeleteRatingResource, "/admin/ratings/<int:rating_id>")
     api.add_resource(AdminDeleteMessageResource, "/admin/messages/<int:message_id>")
-
+    #Portfolio
+    api.add_resource(WorkerPortfolioResource, '/worker/portfolio')
+    #Certifications
+    api.add_resource(CertificationSubmissionResource, '/worker/certifications')
+    
     @app.route('/')
     def hello():
         return "Hire Her!"
