@@ -16,13 +16,28 @@ from resources.Job import (
 )
 
 from resources.Admin import (
-    AdminClientsResource, AdminWorkersResource,
-    AdminSkillsResource, AdminAddSkillResource, AdminDeleteSkillResource,
-    AdminWorkerApplicationsResource, AdminApproveRejectWorkerResource,
-    AdminJobsResource, AdminMessagesResource, AdminRatingsResource,
-    AdminDeleteRatingResource, AdminDeleteMessageResource
+    AdminClientsResource,
+    AdminWorkersResource,
+    AdminWorkerApplicationsResource,
+    AdminApproveRejectWorkerResource,
+    AdminJobsResource,
+    AdminMessageResource,
+    AdminRatingsResource,
+    AdminRatingsDeleteResource,
+    AdminVerifyWorkerResource,
+    AdminDeleteRatingResource,
+    AdminDeleteMessageResource,
+    AdminSkillsResource,
+    AdminAddSkillResource,
+    AdminDeleteSkillResource,
+    AdminCertificationResource,
+    ApproveCertificationResource,
+    RejectCertificationResource
 )
 
+
+from resources.WorkerPortfolio import WorkerPortfolioResource
+from resources.Certification import CertificationSubmissionResource
 from flask_restful import Api
 
 #creating the flask application and initializing extensions
@@ -32,7 +47,7 @@ def create_app():
     #attaching the extensions to the app
     db.init_app(app)
     bcrypt.init_app(app)
-    cors.init_app(app, resources={r"/*": {"origins": "http://127.0.0.1:5500"}})
+    cors.init_app(app, resources={r"/*": {"origins": "http://127.0.0.1:5500"}}, supports_credentials=True)
     migrate.init_app(app, db)
     jwt.init_app(app)
 
@@ -51,18 +66,40 @@ def create_app():
     api.add_resource(ClientJobHistoryResource, '/client/jobs')
     api.add_resource(WorkerJobHistoryResource, '/worker/jobs')
     #Admin
-    api.add_resource(AdminClientsResource, "/admin/clients")
-    api.add_resource(AdminWorkersResource, "/admin/workers")
-    api.add_resource(AdminSkillsResource, "/admin/skills")
-    api.add_resource(AdminAddSkillResource, "/admin/skills/add")
-    api.add_resource(AdminDeleteSkillResource, "/admin/skills/<int:skill_id>")
-    api.add_resource(AdminWorkerApplicationsResource, "/admin/applications")
-    api.add_resource(AdminApproveRejectWorkerResource, "/admin/applications/<int:worker_id>")
-    api.add_resource(AdminJobsResource, "/admin/jobs")
-    api.add_resource(AdminMessagesResource, "/admin/messages")
-    api.add_resource(AdminRatingsResource, "/admin/ratings")
-    api.add_resource(AdminDeleteRatingResource, "/admin/ratings/<int:rating_id>")
-    api.add_resource(AdminDeleteMessageResource, "/admin/messages/<int:message_id>")
+    # Clients
+    api.add_resource(AdminClientsResource, '/admin/clients')
+
+    # Workers
+    api.add_resource(AdminWorkersResource, '/admin/workers')
+    api.add_resource(AdminWorkerApplicationsResource, '/admin/workers/applications')
+    api.add_resource(AdminApproveRejectWorkerResource, '/admin/workers/<int:worker_id>/<string:action>')  # approve/reject
+    api.add_resource(AdminVerifyWorkerResource, '/admin/workers/<int:worker_id>/verify')
+
+    # Jobs
+    api.add_resource(AdminJobsResource, '/admin/jobs')
+
+    # Skills
+    api.add_resource(AdminSkillsResource, '/admin/skills')  # GET all
+    api.add_resource(AdminAddSkillResource, '/admin/skills/add')  # POST
+    api.add_resource(AdminDeleteSkillResource, '/admin/skills/<int:skill_id>/delete')  # DELETE
+
+    # Messages
+    api.add_resource(AdminMessageResource, '/admin/messages')
+    api.add_resource(AdminDeleteMessageResource, '/admin/messages/<int:message_id>/delete')
+
+    # Ratings
+    api.add_resource(AdminRatingsResource, '/admin/ratings')
+    api.add_resource(AdminRatingsDeleteResource, '/admin/ratings/<int:rating_id>/delete')
+
+    # Certifications
+    api.add_resource(AdminCertificationResource, '/admin/certifications')  # GET all
+    api.add_resource(ApproveCertificationResource, '/admin/certifications/<int:cert_id>/approve')
+    api.add_resource(RejectCertificationResource, '/admin/certifications/<int:cert_id>/reject')
+
+    #Portfolio
+    api.add_resource(WorkerPortfolioResource, '/worker/portfolio')
+    #Certifications
+    api.add_resource(CertificationSubmissionResource, '/worker/certifications')
 
     @app.route('/')
     def hello():
