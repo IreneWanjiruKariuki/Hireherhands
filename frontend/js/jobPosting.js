@@ -1,38 +1,87 @@
-document.getElementById('jobPostingForm').addEventListener('submit', function(e) {
+document.addEventListener('DOMContentLoaded', () => {
+  const token = localStorage.getItem('access_token');
+  fetch(`${BASE_URL}/admin/skills`, {
+    headers: {
+      'Authorization': 'Bearer ' + token
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+    const dropdown = document.getElementById('jobCategory');
+    data.skills.forEach(skill => {
+      const option = document.createElement('option');
+      option.value = skill.skill_id; // now value = ID
+      option.textContent = skill.skill_name;
+      dropdown.appendChild(option);
+    });
+  });
+});
+
+document.getElementById('jobPostingForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-            
+
     const submitBtn = document.getElementById('submitBtn');
     const loadingSpinner = document.getElementById('loadingSpinner');
     const btnText = document.getElementById('btnText');
     const successMessage = document.getElementById('successMessage');
-            
+
     const formData = new FormData(this);
     const jobData = {
-        category: formData.get('jobCategory'),
+        skill_id: parseInt(formData.get('jobCategory')),
         description: formData.get('jobDescription'),
         location: formData.get('location'),
-        duration: formData.get('duration'),
-        budget: formData.get('budget')
+        budget: formData.get('budget'),
+        scheduled_date: formData.get('scheduled_date'),
+        scheduled_time: formData.get('scheduled_time')
     };
-            
-    if (!jobData.category || !jobData.description || !jobData.location || 
-        !jobData.duration || !jobData.budget) {
+
+    if (!jobData.skill_id || !jobData.description || !jobData.location || 
+        !jobData.budget || !jobData.scheduled_date || !jobData.scheduled_time) {
         alert('Please fill in all required fields');
         return;
     }
-            
+
+    const token = localStorage.getItem('access_token');
+
     submitBtn.disabled = true;
     loadingSpinner.style.display = 'inline-block';
     btnText.textContent = 'Processing...';
-            
-    setTimeout(() => {
-        localStorage.setItem('currentJobPosting', JSON.stringify(jobData));
+
+    try {
+        const response = await fetch(`${BASE_URL}/jobs`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify(jobData)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Job post failed');
+        }
+
         successMessage.style.display = 'block';
+
         setTimeout(() => {
-            window.location.href = 'viewWorkers.html';
-        }, 1500);
-    }, 2000);
+            localStorage.setItem('currentJobPosting', JSON.stringify(jobData));
+            successMessage.style.display = 'block';
+            setTimeout(() => {
+                window.location.href = 'viewWorkers.html';
+            }, 1500);
+        }, 2000);
+    } catch (err) {
+        alert('Error: ' + err.message);
+    } finally {
+        submitBtn.disabled = false;
+        btnText.textContent = 'Find Workers';
+        loadingSpinner.style.display = 'none';
+    }
 });
+
+
 // formatting for budget
 document.getElementById('budget').addEventListener('input', function(e) {
     let value = e.target.value.replace(/,/g, '');
@@ -59,3 +108,4 @@ descriptionField.addEventListener('input', function(e) {
     counter.textContent = `${remaining} characters remaining`;
     counter.style.color = remaining < 50 ? '#dc2626' : '#6b7280';
 });
+

@@ -22,17 +22,6 @@
                     <label for="jobCategory">Job Category *</label>
                     <select id="jobCategory" name="jobCategory" required>
                         <option value="">Select a category</option>
-                        <option value="construction">Construction</option>
-                        <option value="plumbing">Plumbing</option>
-                        <option value="electrical">Electrical</option>
-                        <option value="carpentry">Carpentry</option>
-                        <option value="painting">Painting</option>
-                        <option value="landscaping">Landscaping</option>
-                        <option value="cleaning">Cleaning</option>
-                        <option value="roofing">Roofing</option>
-                        <option value="masonry">Masonry</option>
-                        <option value="welding">Welding</option>
-                        <option value="other">Other</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -68,6 +57,15 @@
                         <input type="number" id="budget" name="budget" required 
                                placeholder="0" min="100" step="100" maxlength="5">
                     </div>
+                </div>
+                <div class="form-group">
+                    <label for="scheduled_date">Scheduled Date *</label>
+                    <input type="date" id="scheduled_date" name="scheduled_date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="scheduled_time">Scheduled Time *</label>
+                    <input type="time" id="scheduled_time" name="scheduled_time" required>
                 </div>
                 <button type="submit" class="submit-btn" id="submitBtn">
                     <span class="loading-spinner" id="loadingSpinner"></span>
