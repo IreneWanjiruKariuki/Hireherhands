@@ -6,9 +6,11 @@ class CertificationService:
     def submit_certification(worker_id, data):
         cert = Certification(
             worker_id=worker_id,
-            name=data.get("name"),
-            description=data.get("description"),
-            status="pending"
+            certification_name=data.get("certification_name"),
+            issued_by=data.get("issued_by"),
+            issue_date=data.get("issue_date"),
+            expiration_date=data.get("expiration_date"),
+            status=CertificationStatus.PENDING
         )
         db.session.add(cert)
         db.session.commit()

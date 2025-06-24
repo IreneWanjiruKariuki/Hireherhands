@@ -1,8 +1,8 @@
-"""Initial migration
+"""initial
 
-Revision ID: 8e92e20fdc82
+Revision ID: 1cbf45c745d3
 Revises: 
-Create Date: 2025-06-16 18:12:41.829728
+Create Date: 2025-06-23 21:23:19.475399
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '8e92e20fdc82'
+revision = '1cbf45c745d3'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -33,6 +33,7 @@ def upgrade():
     sa.Column('phone', sa.String(length=15), nullable=False),
     sa.Column('hashed_password', sa.String(length=128), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('is_deleted', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('client_id'),
     sa.UniqueConstraint('email')
     )
@@ -47,9 +48,11 @@ def upgrade():
     sa.Column('client_id', sa.Integer(), nullable=False),
     sa.Column('bio', sa.Text(), nullable=True),
     sa.Column('hourly_rate', sa.Float(), nullable=False),
-    sa.Column('status', sa.String(length=50), nullable=False),
+    sa.Column('status', sa.Enum('AVAILABLE', 'BUSY', 'OFFLINE', name='workerstatus'), nullable=False),
     sa.Column('is_approved', sa.Boolean(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('is_verified', sa.Boolean(), nullable=True),
+    sa.Column('is_deleted', sa.Boolean(), nullable=True),
     sa.ForeignKeyConstraint(['client_id'], ['clients.client_id'], ),
     sa.PrimaryKeyConstraint('worker_id')
     )
@@ -77,7 +80,7 @@ def upgrade():
     sa.Column('location', sa.String(length=255), nullable=True),
     sa.Column('scheduled_date', sa.Date(), nullable=True),
     sa.Column('scheduled_time', sa.Time(), nullable=True),
-    sa.Column('status', sa.String(length=50), nullable=False),
+    sa.Column('status', sa.Enum('OPEN', 'REQUESTED', 'IN_PROGRESS', 'COMPLETED', name='jobstatus'), nullable=False),
     sa.Column('worker_completion_confirmed', sa.Boolean(), nullable=True),
     sa.Column('client_completion_confirmed', sa.Boolean(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),

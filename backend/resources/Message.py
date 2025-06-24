@@ -3,7 +3,7 @@ from flask import request
 from flask_jwt_extended import jwt_required, get_jwt
 from marshmallow import ValidationError
 from services.Message import MessageService
-from models.schemas.MessageSchema import MessageCreateSchema
+from models.schemas.Message import MessageCreateSchema
 
 message_schema = MessageCreateSchema()
 

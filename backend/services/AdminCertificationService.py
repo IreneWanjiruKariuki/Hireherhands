@@ -1,4 +1,4 @@
-from models.Certification import Certification
+from models.Certification import CertificationStatus
 from extensions import db
 
 class AdminCertificationService:
@@ -13,7 +13,7 @@ class AdminCertificationService:
         if not cert:
             return {"error": "Certification not found"}, 404
 
-        cert.status = "approved"
+        cert.status = CertificationStatus.APPROVED
         db.session.commit()
         return {"message": "Certification approved"}, 200
 
@@ -23,6 +23,7 @@ class AdminCertificationService:
         if not cert:
             return {"error": "Certification not found"}, 404
 
-        cert.status = "rejected"
+        cert.status = CertificationStatus.REJECTED
         db.session.commit()
         return {"message": "Certification rejected"}, 200
+ 

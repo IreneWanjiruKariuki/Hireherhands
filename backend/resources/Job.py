@@ -11,7 +11,6 @@ class CreateJobResource(Resource):
         claims = get_jwt()
         if claims.get("role") != "client":
             return {"error": "Only clients can create jobs"}, 403
-        data = request.get_json()
         client_id = claims.get("client_id")
         return JobService.create_job(data, client_id)
 
@@ -79,7 +78,7 @@ class ClientConfirmCompletionResource(Resource):
         if claims.get("role") != "client":
             return {"error": "Only clients can confirm job completion"}, 403
 
-        client_id = claims("client_id")
+        client_id = claims.get("client_id")
         return JobService.client_confirm_completion(job_id, client_id)
 
 class ClientJobHistoryResource(Resource):

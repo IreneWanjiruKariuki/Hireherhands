@@ -23,7 +23,7 @@ class WorkerService:
 
     @staticmethod
     def get_profile(worker_id):
-        worker = Worker.query.get(worker_id)
+        worker = Worker.query.filter_by(worker_id=worker_id, is_deleted=False).first()
         if not worker:
             return {"error": "Worker not found"}, 404
         return {
@@ -36,7 +36,7 @@ class WorkerService:
 
     @staticmethod
     def update_profile(worker_id, data):
-        worker = Worker.query.get(worker_id)
+        worker = Worker.query.filter_by(worker_id=worker_id, is_deleted=False).first()
         if not worker:
             return {"error": "Worker not found"}, 404
 
@@ -47,10 +47,10 @@ class WorkerService:
 
     @staticmethod
     def deactivate(worker_id):
-        worker = Worker.query.get(worker_id)
+        worker = Worker.query.filter_by(worker_id=worker_id, is_deleted=False).first()
         if not worker:
             return {"error": "Worker not found"}, 404
-        db.session.delete(worker)
+        worker.is_deleted = True
         db.session.commit()
         return {"message": "Worker account deleted"}, 200
 
@@ -66,7 +66,11 @@ class WorkerService:
     @staticmethod
     def get_skills(worker_id):
         skills = WorkerSkill.query.filter_by(worker_id=worker_id).all()
-        return {"skills": [s.skill_id for s in skills]}, 200
+        skill_ids = [s.skill_id for s in skills]
+        skills = Skill.query.filter(Skill.skill_id.in_(skill_ids)).all()
+        return {
+            "skills": [{"skill_id": s.skill_id, "name": s.name} for s in skills]
+        }, 200
 
     @staticmethod
     def remove_skill(worker_id, skill_id):
