@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('access_token');
-  fetch(`${BASE_URL}/admin/skills`, {
+  fetch(`${BASE_URL}/skills`, {
     headers: {
       'Authorization': 'Bearer ' + token
     }

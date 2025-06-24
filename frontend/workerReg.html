@@ -17,7 +17,7 @@
             <div class="success-message" id="successMessage">
                 Application submitted successfully! We'll get back to you soon.
             </div>
-            <form id="appplicationForm">
+            <form id="applicationForm">
                 <div class="form-group">
                     <label for="fullName">Full Name <span class="required">*</span></label>
                     <input type="text" id="fullName" name="fullName" required>
@@ -48,26 +48,9 @@
 
                 <div class="form-group">
                     <label for="skills">Skills <span class="required">*</span></label>
-                    <div class="skill-input-container">
-                        <input type="text" id="skillInput" placeholder="Enter a skill and click Add">
-                        <button type="button" class="add-skill-btn" onclick="addSkill()">Add Skill</button>
-                    </div>
-                    <div class="skills-container" id="skillsContainer"></div>
+                    <div id="skillsContainer" class="skills-checkbox-list"></div>
                     <div class="error-message" id="skillsError"></div>
                 </div>
-                <div class="form-group">
-                    <label for="certification">Upload Certification</label>
-                    <div class="file-upload">
-                        <input type="file" id="certification" name="certification" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onchange="handleFileUpload(this, 'certificationInfo')">
-                        <label for="certification" class="file-upload-label">
-                            <i>📄</i>
-                            <span>Click to upload certification files</span>
-                            <small style="display: block; margin-top: 5px; color: #666;">PDF, DOC, DOCX, JPG, PNG (Max 5MB)</small>
-                        </label>
-                    </div>
-                    <div class="file-info" id="certificationInfo"></div>
-                </div>
-
                 <div class="form-group">
                     <label for="portfolio">Portfolio URL</label>
                     <input type="text" id="portfolio" name="portfolio" placeholder="https://your-portfolio.com">
@@ -82,5 +65,6 @@
             </form>  
         </div>
     </div>
+    <script src="js/workerReg.js"></script>
 </body>
 </html>

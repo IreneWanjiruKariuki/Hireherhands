@@ -4,6 +4,7 @@ from marshmallow import ValidationError
 from models.schemas.Auth import SignupSchema, LoginSchema
 from services.Authentication import AuthenticationService
 
+
 # Instantiate schema objects
 signup_schema = SignupSchema()
 login_schema = LoginSchema()

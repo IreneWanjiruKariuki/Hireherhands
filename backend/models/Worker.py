@@ -16,6 +16,7 @@ class Worker(db.Model, SerializerMixin):
     
     bio = db.Column(db.Text, nullable=True)
     hourly_rate = db.Column(db.Float, nullable=False, default=0.0)
+    location = db.Column(db.String(120), nullable=False)
     status = db.Column(db.Enum(WorkerStatus), nullable=False, default=WorkerStatus.AVAILABLE)
     is_approved = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -26,7 +27,6 @@ class Worker(db.Model, SerializerMixin):
     client = db.relationship('Client', back_populates='workers')
     jobs = db.relationship('Job', back_populates='worker', cascade='all, delete-orphan')
     portfolio = db.relationship('WorkerPortfolio', back_populates='worker', cascade='all, delete-orphan')
-    certifications = db.relationship('Certification', back_populates='worker', cascade='all, delete-orphan')
     skills = db.relationship('Skill',secondary='worker_skills', back_populates='workers')
 
     serialize_rules = ('-client.hashed_password', )

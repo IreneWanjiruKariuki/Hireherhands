@@ -4,6 +4,9 @@ from models.Admin import Admin
 from extensions import db, bcrypt
 from flask_jwt_extended import create_access_token
 from sqlalchemy.exc import SQLAlchemyError
+import os
+
+ALLOWED_ADMIN_EMAILS = os.getenv("ALLOWED_ADMIN_EMAILS").split(",")
 
 class AuthenticationService:
 
@@ -34,11 +37,16 @@ class AuthenticationService:
         email = data["email"]
         password = data["password"]
 
-        # Try Admin login 
         admin = Admin.query.filter_by(email=email).first()
         if admin and admin.email in ALLOWED_ADMIN_EMAILS and bcrypt.check_password_hash(admin.hashed_password, password):
-            claims = {"admin_id": admin.admin_id, "role": "admin"}
-            token = create_access_token(identity=admin.admin_id, additional_claims=claims)
+            identity = str(admin.admin_id)  # make sure it's a string
+            claims = {
+                "admin_id": admin.admin_id,  # int is fine
+                "role": "admin"
+            }
+            print("identity:", identity, "type:", type(identity))
+            print("claims:", claims)
+            token = create_access_token(identity=identity, additional_claims=claims)
             return {
                 "message": "Admin login successful!",
                 "access_token": token,
@@ -60,7 +68,7 @@ class AuthenticationService:
                 claims["role"] = "worker"
                 claims["worker_id"] = worker.worker_id
                 claims["roles"] = ["client", "worker"]
-            token = create_access_token(identity=client.client_id, additional_claims=claims)
+            token = create_access_token(identity=str(client.client_id), additional_claims=claims)
             return {
                 "message": "Client login successful!",
                 "access_token": token,
