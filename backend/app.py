@@ -1,7 +1,7 @@
 from flask import Flask
 from dotenv import load_dotenv
 load_dotenv() 
-
+import os
 from config import Config
 from extensions import db, bcrypt, cors, migrate, jwt
 from models import *

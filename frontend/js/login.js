@@ -164,7 +164,6 @@ const BASE_URL = 'http://127.0.0.1:5000';
                 const response = await fetch(`${BASE_URL}/auth/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json'},
-                    credentials: 'include',
                     body: JSON.stringify(payLoad)
                 });
                 const data = await response.json();
@@ -174,10 +173,18 @@ const BASE_URL = 'http://127.0.0.1:5000';
 
                 localStorage.setItem('access_token', data.access_token);
                 localStorage.setItem('currentUser', JSON.stringify(data.user));
+                localStorage.setItem('role', data.role);
 
                 showAlert('Login Successful', 'Welcome back! You are now signed in.', 'success');
                 setTimeout(() => {
-                    window.location.href = 'dashboard.html';
+                    const role = data.role;
+                    if (role === 'admin') {
+                        window.location.href = 'admin-dashboard.html';
+                    } else if (role === 'worker') {
+                        window.location.href = 'worker-dashboard.html';
+                    } else {
+                        window.location.href = 'dashboard.html';
+                    }
                 }, 2000);
             } catch (error) {
                 console.error('Login error:', error);
