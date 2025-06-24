@@ -1,6 +1,12 @@
 from extensions import db
+from enum import Enum
 from datetime import datetime
 from sqlalchemy_serializer import SerializerMixin
+
+class WorkerStatus(Enum):
+    AVAILABLE = 'available'
+    BUSY = 'busy'
+    OFFLINE = 'offline'
 
 class Worker(db.Model, SerializerMixin):
     __tablename__ = 'workers'
@@ -10,8 +16,8 @@ class Worker(db.Model, SerializerMixin):
     
     bio = db.Column(db.Text, nullable=True)
     hourly_rate = db.Column(db.Float, nullable=False, default=0.0)
-    status = db.Column(db.String(50), nullable=False, default='available') 
-    is_approved = db.Column(db.Boolean, default=False)  
+    status = db.Column(db.Enum(WorkerStatus), nullable=False, default=WorkerStatus.AVAILABLE)
+    is_approved = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_verified = db.Column(db.Boolean, default=False)
     is_deleted = db.Column(db.Boolean, default=False) 
@@ -22,6 +28,8 @@ class Worker(db.Model, SerializerMixin):
     portfolio = db.relationship('WorkerPortfolio', back_populates='worker', cascade='all, delete-orphan')
     certifications = db.relationship('Certification', back_populates='worker', cascade='all, delete-orphan')
     skills = db.relationship('Skill',secondary='worker_skills', back_populates='workers')
+
+    serialize_rules = ('-client.hashed_password', )
 
     def __repr__(self):
         return f'<Worker {self.worker_id}>'

@@ -1,5 +1,5 @@
 from marshmallow import ValidationError
-from models.Job import Job
+from models.Job import Job, JobStatus
 from models.Worker import Worker
 from models.WorkerSkills import WorkerSkill
 from models.Skill import Skill
@@ -8,6 +8,7 @@ from extensions import db
 
 job_input_schema = JobCreateSchema()
 job_output_schema = JobOutputSchema()
+job_output_many = JobOutputSchema(many=True)
 
 class JobService:
     @staticmethod
@@ -69,9 +70,9 @@ class JobService:
         db.session.commit()
 
         return {
-            'message': 'Worker requested successfully', 
-            'job': JobOutputSchema.dump(job)
-            }, 200
+            'message': 'Worker requested successfully',
+            'job': job_output_schema.dump(job)
+        }, 200
 
     @staticmethod
     def accept_job(job_id, worker_id):
@@ -86,7 +87,7 @@ class JobService:
 
         return {
             'message': 'Job accepted successfully',
-            'job': JobOutputSchema.dump(job)
+            'job': job_output_schema.dump(job)
         }, 200
 
     @staticmethod
@@ -105,7 +106,7 @@ class JobService:
         #an alternative workers list 
         return {
             'message': 'Worker rejected the job. It is now open again.',
-            'job': JobOutputSchema().dump(job)
+            'job': job_output_schema.dump(job)
         }, 200
     
     @staticmethod
@@ -121,7 +122,7 @@ class JobService:
 
         return {
             'message': 'Worker has marked job as complete, waiting for client confirmation',
-            'job': JobOutputSchema.dump(job)
+            'job': job_output_schema.dump(job)
         }, 200
 
     @staticmethod
@@ -140,22 +141,22 @@ class JobService:
 
        return {
            'message': 'Job marked as fully completed',
-           'job': JobOutputSchema.dump(job)
+           'job': job_output_schema.dump(job)
        }, 200
 
-@staticmethod
-def get_client_job_history(client_id):
-    jobs = Job.query.filter_by(client_id=client_id).order_by(Job.created_at.desc()).all()
-    return {
-        'message': f'{len(jobs)} jobs found for client',
-        'jobs': JobOutputSchema(many=True).dump(jobs)
-    }, 200
+    @staticmethod
+    def get_client_job_history(client_id):
+        jobs = Job.query.filter_by(client_id=client_id).order_by(Job.created_at.desc()).all()
+        return {
+            'message': f'{len(jobs)} jobs found for client',
+            'jobs': job_output_many.dump(jobs)
+        }, 200
 
 
-@staticmethod
-def get_worker_job_history(worker_id):
-    jobs = Job.query.filter_by(worker_id=worker_id).order_by(Job.created_at.desc()).all()
-    return {
-        'message': f'{len(jobs)} jobs found for worker',
-        'jobs': JobOutputSchema(many=True).dump(jobs)
-    }, 200
+    @staticmethod
+    def get_worker_job_history(worker_id):
+        jobs = Job.query.filter_by(worker_id=worker_id).order_by(Job.created_at.desc()).all()
+        return {
+            'message': f'{len(jobs)} jobs found for worker',
+            'jobs': job_output_many.dump(jobs)
+        }, 200

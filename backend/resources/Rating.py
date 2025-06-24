@@ -2,7 +2,7 @@ from flask_restful import Resource
 from flask import request
 from flask_jwt_extended import jwt_required, get_jwt
 from marshmallow import ValidationError
-from models.schemas.RatingSchema import RatingSchema
+from models.schemas.Rating import RatingSchema
 from services.Rating import RatingService
 
 rating_schema = RatingSchema()

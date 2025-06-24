@@ -2,7 +2,7 @@ from flask_restful import Resource
 from flask import request
 from flask_jwt_extended import jwt_required, get_jwt
 from marshmallow import ValidationError
-from models.schemas.WorkerSchema import WorkerRegisterSchema, WorkerUpdateSchema, WorkerSkillSchema
+from models.schemas.Worker import WorkerRegisterSchema, WorkerUpdateSchema, WorkerSkillSchema
 from services.Worker import WorkerService
 
 worker_register_schema = WorkerRegisterSchema()

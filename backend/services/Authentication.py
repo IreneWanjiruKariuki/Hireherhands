@@ -33,6 +33,7 @@ class AuthenticationService:
     def login(data):
         email = data["email"]
         password = data["password"]
+
         # Try Admin login 
         admin = Admin.query.filter_by(email=email).first()
         if admin and bcrypt.check_password_hash(admin.hashed_password, password):
@@ -44,10 +45,12 @@ class AuthenticationService:
             "role": "admin",
             "user": admin.to_dict()
         }, 200
+
         # Try Client login
         client = Client.query.filter_by(email=email).first()
         if client and bcrypt.check_password_hash(client.hashed_password, password):
             claims = {"client_id": client.client_id, "role": "client"}
+            
             # Check if the client is also a worker
             worker = Worker.query.filter_by(client_id=client.client_id).first()
             if worker:

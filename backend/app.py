@@ -1,8 +1,17 @@
 from flask import Flask
+from dotenv import load_dotenv
+load_dotenv() 
+
 from config import Config
 from extensions import db, bcrypt, cors, migrate, jwt
 from models import *
+from flask_restful import Api
+# Import all resources
 from resources.Authentication import SignupResource, LoginResource
+from resources.Client import ClientProfileResource
+from resources.Worker import WorkerRegisterResource, WorkerProfileResource, WorkerSkillsResource
+from resources.WorkerPortfolio import WorkerPortfolioResource
+from resources.Certification import CertificationSubmissionResource
 from resources.Job import (
     CreateJobResource,
     MatchingWorkersResource,
@@ -14,7 +23,8 @@ from resources.Job import (
     ClientJobHistoryResource,
     WorkerJobHistoryResource
 )
-
+from resources.Message import MessageListResource, JobMessagesResource
+from resources.Rating import JobRatingResource
 from resources.Admin import (
     AdminClientsResource,
     AdminWorkersResource,
@@ -36,14 +46,11 @@ from resources.Admin import (
 )
 
 
-from resources.WorkerPortfolio import WorkerPortfolioResource
-from resources.Certification import CertificationSubmissionResource
-from flask_restful import Api
-
 #creating the flask application and initializing extensions
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+
     #attaching the extensions to the app
     db.init_app(app)
     bcrypt.init_app(app)
@@ -52,9 +59,21 @@ def create_app():
     jwt.init_app(app)
 
     api = Api(app)
+
     #Authenitication
     api.add_resource(SignupResource, '/auth/register')
     api.add_resource(LoginResource, '/auth/login')
+
+    #Client
+    api.add_resource(ClientProfileResource, '/client/profile')
+
+    #Worker
+    api.add_resource(WorkerRegisterResource, '/worker/register')
+    api.add_resource(WorkerProfileResource, '/worker/profile')
+    api.add_resource(WorkerSkillsResource, '/worker/skills')
+    api.add_resource(WorkerPortfolioResource, '/worker/portfolio')
+    api.add_resource(CertificationSubmissionResource, '/worker/certifications')
+
     #Job
     api.add_resource(CreateJobResource, '/jobs')
     api.add_resource(MatchingWorkersResource, '/jobs/<int:job_id>/workers')
@@ -65,7 +84,14 @@ def create_app():
     api.add_resource(ClientConfirmCompletionResource, '/jobs/<int:job_id>/client-complete')
     api.add_resource(ClientJobHistoryResource, '/client/jobs')
     api.add_resource(WorkerJobHistoryResource, '/worker/jobs')
-    #Admin
+    
+    #Messages
+    api.add_resource(MessageListResource, '/messages')
+    api.add_resource(JobMessagesResource, '/jobs/<int:job_id>/messages')
+
+    #Ratings
+    api.add_resource(JobRatingResource, '/jobs/<int:job_id>/rate')
+    #ADMIN
     # Clients
     api.add_resource(AdminClientsResource, '/admin/clients')
 
@@ -95,11 +121,6 @@ def create_app():
     api.add_resource(AdminCertificationResource, '/admin/certifications')  # GET all
     api.add_resource(ApproveCertificationResource, '/admin/certifications/<int:cert_id>/approve')
     api.add_resource(RejectCertificationResource, '/admin/certifications/<int:cert_id>/reject')
-
-    #Portfolio
-    api.add_resource(WorkerPortfolioResource, '/worker/portfolio')
-    #Certifications
-    api.add_resource(CertificationSubmissionResource, '/worker/certifications')
 
     @app.route('/')
     def hello():
