@@ -16,8 +16,7 @@ class WorkerService:
             bio=data["bio"],
             location=data["location"],
             hourly_rate=data["hourly_rate"],
-            is_approved=False,
-            status="available"
+            is_approved=False
         )
         db.session.add(worker)
         db.session.commit()

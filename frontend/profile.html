@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile page</title>
+    <link rel="stylesheet" href="css/profile.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="profile-avatar">
+                👤
+            </div>
+            <h1>User Profile</h1>
+            <p>Manage your personal information</p>
+        </div>
+        <div class="content">
+            <div id="statusMessage" class="status-message"></div>
+
+            <div class="form-section">
+                <h2 class="section-title">Personal Information</h2>
+                
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" disabled>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" disabled>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" disabled>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" id="editBtn" class="btn btn-primary">Edit Profile</button>
+                        <button type="submit" id="saveBtn" class="btn btn-success" style="display: none;">Save Changes</button>
+                        <button type="button" id="cancelBtn" class="btn btn-secondary" style="display: none;">Cancel</button>
+                    </div>
+                </form>
+            </div>
+            <div class="dashboard-section">
+                <h3>Worker Dashboard</h3>
+                <p>Access your worker dashboard to manage tasks, view schedules, and track your progress.</p>
+                <a href="worker-dash.html" class="btn btn-dashboard">Enter Worker Dashboard</a>
+            </div>
+        </div>
+    </div>
+    <script src="js/profile.js"></script>
+</body>
+</html>

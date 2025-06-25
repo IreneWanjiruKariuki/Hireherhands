@@ -34,47 +34,59 @@ class AuthenticationService:
             return {'error': 'Database error'}, 500
     @staticmethod
     def login(data):
-        email = data["email"]
-        password = data["password"]
+        try:
+            email = data["email"]
+            password = data["password"]
+            # Attempt admin login
+            admin = Admin.query.filter_by(email=email).first()
+            if admin and admin.email in ALLOWED_ADMIN_EMAILS and bcrypt.check_password_hash(admin.hashed_password, password):
+                identity = str(admin.admin_id)
+                claims = {
+                    "admin_id": admin.admin_id,
+                    "role": "admin"
+                }
+                token = create_access_token(identity=identity, additional_claims=claims)
 
-        admin = Admin.query.filter_by(email=email).first()
-        if admin and admin.email in ALLOWED_ADMIN_EMAILS and bcrypt.check_password_hash(admin.hashed_password, password):
-            identity = str(admin.admin_id)  # make sure it's a string
-            claims = {
-                "admin_id": admin.admin_id,  # int is fine
-                "role": "admin"
-            }
-            print("identity:", identity, "type:", type(identity))
-            print("claims:", claims)
-            token = create_access_token(identity=identity, additional_claims=claims)
-            return {
-                "message": "Admin login successful!",
-                "access_token": token,
-                "role": "admin",
-                "user": admin.to_dict()
-            }, 200
+                admin_data = admin.to_dict(only=("admin_id", "email", "created_at"))
+                return {
+                    "message": "Admin login successful!",
+                    "access_token": token,
+                    "role": "admin",
+                    "user": admin_data
+                }, 200
 
-            # Try Client login
-        client = Client.query.filter_by(email=email).first()
-        if client and bcrypt.check_password_hash(client.hashed_password, password):
-            # Create claims starting with client
-            claims = {
-                "client_id": client.client_id,
-                "role": "client"
-            }
-            # Check if client is also a worker
-            worker = Worker.query.filter_by(client_id=client.client_id).first()
-            if worker:
-                claims["role"] = "worker"
-                claims["worker_id"] = worker.worker_id
-                claims["roles"] = ["client", "worker"]
-            token = create_access_token(identity=str(client.client_id), additional_claims=claims)
-            return {
-                "message": "Client login successful!",
-                "access_token": token,
-                "role": claims["role"],  # Will be 'client' or 'worker'
-                "user": client.to_dict()
-            }, 200
+            # Attempt client login
+            client = Client.query.filter_by(email=email).first()
+            if client and bcrypt.check_password_hash(client.hashed_password, password):
+                claims = {
+                    "client_id": client.client_id,
+                    "role": "client"
+                }
 
-        # If neither admin nor client login succeeded
-        return {"error": "Invalid credentials"}, 401
+                """ Build basic client data
+                client_data = client.to_dict(only=("client_id", "fullname", "email", "phone", "created_at"))"""
+
+                # Check if client is also a worker
+                worker = Worker.query.filter_by(client_id=client.client_id).first()
+                if worker:
+                    claims["role"] = "worker"
+                    claims["worker_id"] = worker.worker_id
+                    claims["roles"] = ["client", "worker"]
+
+                token = create_access_token(identity=str(client.client_id), additional_claims=claims)
+                client_data = client.to_dict(only=("client_id", "fullname", "email", "phone", "created_at"))
+                if worker:
+                    worker_data = worker.to_dict(only=("worker_id", "bio", "hourly_rate", "location", "status", "is_verified", "is_approved"))
+                    client_data["worker"] = worker_data
+                return {
+                    "message": "Client login successful!",
+                    "access_token": token,
+                    "role": claims["role"],  # "client" or "worker"
+                     "user": client_data
+                }, 200
+
+            return {"error": "Invalid credentials"}, 401
+
+        except Exception as e:
+            print("Login exception:", str(e))
+            return {"error": "Internal server error"}, 500
