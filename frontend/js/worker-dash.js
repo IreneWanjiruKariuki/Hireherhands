@@ -54,3 +54,18 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeBio()
   initializeRate()
 })
+
+function toggleBioEdit() {
+  const bioText = document.getElementById("bioText")
+  const bioEditor = document.getElementById("bioEditor")
+  const bioActions = document.querySelector(".bio-actions")
+  const editBtn = document.querySelector(".bio-card .edit-btn")
+
+  originalBioText = bioText.textContent
+  bioEditor.value = originalBioText
+
+  bioText.style.display = "none"
+  bioEditor.style.display = "block"
+  bioActions.style.display = "flex"
+  editBtn.style.display = "none"
+}
