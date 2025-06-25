@@ -151,3 +151,39 @@ body {
   gap: 0.5rem;
   margin-top: 1rem;
 }
+.save-btn {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 500;
+  transition: all 0.15s ease-in-out;
+}
+.save-btn:hover {
+  background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+}
+.cancel-btn {
+  background: none;
+  border: 1px solid #d1d5db;
+  color: #6b7280;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: all 0.15s ease-in-out;
+}
+.cancel-btn:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+.rate-display {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111827;
+}
