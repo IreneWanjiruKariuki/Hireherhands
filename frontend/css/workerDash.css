@@ -187,3 +187,21 @@ body {
   font-weight: 700;
   color: #111827;
 }
+.currency {
+  font-size: 1.5rem;
+  color: #6b7280;
+}
+.rate-unit {
+  font-size: 1rem;
+  color: #6b7280;
+  font-weight: 400;
+}
+.rate-editor input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  box-sizing: border-box;
+}
