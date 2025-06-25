@@ -166,10 +166,16 @@ const BASE_URL = 'http://127.0.0.1:5000';
                     headers: { 'Content-Type': 'application/json'},
                     body: JSON.stringify(payLoad)
                 });
-                const data = await response.json();
-                if (!response.ok) {
-                    throw new Error(data.message || 'Login failed');
+                let data;
+                try {
+                    data = await response.json()
+                } catch (jsonErr) {
+                    throw new Error('Invalid server response');
                 }
+
+                if (!response.ok || !data.access_token) {
+                    throw new Error(data.error || 'Login failed');
+           }
 
                 localStorage.setItem('access_token', data.access_token);
                 localStorage.setItem('currentUser', JSON.stringify(data.user));
@@ -181,7 +187,7 @@ const BASE_URL = 'http://127.0.0.1:5000';
                     if (role === 'admin') {
                         window.location.href = 'admin-dashboard.html';
                     } else if (role === 'worker') {
-                        window.location.href = 'worker-dashboard.html';
+                        window.location.href = 'worker-dash.html';
                     } else {
                         window.location.href = 'dashboard.html';
                     }

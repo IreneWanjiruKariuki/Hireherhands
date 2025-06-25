@@ -29,7 +29,7 @@ class Worker(db.Model, SerializerMixin):
     portfolio = db.relationship('WorkerPortfolio', back_populates='worker', cascade='all, delete-orphan')
     skills = db.relationship('Skill',secondary='worker_skills', back_populates='workers')
 
-    serialize_rules = ('-client.hashed_password', )
+    serialize_rules = ('-client.workers', '-client.jobs', '-client.hashed_password',)
 
     def __repr__(self):
         return f'<Worker {self.worker_id}>'

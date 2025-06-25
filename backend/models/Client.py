@@ -18,8 +18,8 @@ class Client(db.Model, SerializerMixin):
     jobs = db.relationship('Job', back_populates='client', cascade='all, delete-orphan')
 
     #exclude hashed_password from serialization
-    serialize_rules = ('-hashed_password',)
-
-
+    serialize_rules = ('-hashed_password', '-workers.client',)
+    
     def __repr__(self):
         return f'<Client {self.fullname}>'
+    

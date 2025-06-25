@@ -14,3 +14,9 @@ class Skill(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f"<Skill {self.skill_name}>"
+    
+    def to_dict(self):
+        return {
+            "skill_id": self.skill_id,
+            "skill_name": self.skill_name
+        }
