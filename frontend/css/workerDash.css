@@ -257,6 +257,47 @@ body {
   display: grid;
   gap: 1rem;
 }
+.job-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  transition: all 0.15s ease-in-out;
+  background: white;
+}
+.job-card:hover {
+  border-color: rgba(222, 242, 201, 0.5);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+.job-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.job-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+.job-client {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+.job-status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.status-requests {
+  background: rgba(59, 130, 246, 0.1);
+  color: #2563eb;
+}
 @media (max-width: 768px) {
   .dashboard-container {
     padding: 1rem;
