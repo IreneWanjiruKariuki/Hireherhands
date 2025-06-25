@@ -275,7 +275,7 @@ function toggleSkill(id) {
 
 // Main form logic
 document.addEventListener('DOMContentLoaded', () => {
-    loadSkills();
+    loadSkillsAsCheckboxes('skillsContainer', toggleSkill);
 
     const form = document.getElementById('applicationForm');
     form.addEventListener('submit', async function (e) {
@@ -321,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Your application was submitted. An admin will review and approve your profile. You will be notified once approved.');
             form.reset();
             selectedSkills = [];
-            loadSkills();
+            loadSkillsAsCheckboxes('skillsContainer', toggleSkill);
         } catch (err) {
             console.error(err);
             alert(err.message);
