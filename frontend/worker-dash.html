@@ -92,6 +92,22 @@
                 </div>
             </div>
         </div>
+        <div class="jobs-section">
+            <div class="section-header">
+                <h2>My Jobs</h2>
+                <div class="filter-tabs">
+                    <a href="#" class="filter-tab active" onclick="filterJobs('all', event)">All</a>
+                    <a href="#" class="filter-tab" onclick="filterJobs('requests', event)">Requests</a>
+                    <a href="#" class="filter-tab" onclick="filterJobs('ongoing', event)">Ongoing</a>
+                    <a href="#" class="filter-tab" onclick="filterJobs('completed', event)">Completed</a>
+                </div>
+            </div>
+            <div class="jobs-grid" id="jobsContainer">
+                <div class="loading">
+                   Loading jobs...
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>
