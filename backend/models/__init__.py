@@ -1,5 +1,4 @@
 from .Admin import Admin
-from .Certification import Certification
 from .Client import Client
 from .Job import Job
 from .Message import Message

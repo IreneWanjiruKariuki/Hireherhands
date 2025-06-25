@@ -1,5 +1,7 @@
 from models.Worker import Worker
 from models.WorkerSkills import WorkerSkill
+from models.Skill import Skill
+
 from extensions import db
 
 class WorkerService:
@@ -19,7 +21,13 @@ class WorkerService:
         )
         db.session.add(worker)
         db.session.commit()
-        return {"message": "Worker profile created"}, 201
+
+        # Attach skills immediately
+        skills = data.get("skills", [])
+        for skill_id in skills:
+            db.session.add(WorkerSkill(worker_id=worker.worker_id, skill_id=skill_id))
+        db.session.commit()
+        return {"message": "Worker profile created and skills attached"}, 201
 
     @staticmethod
     def get_profile(worker_id):

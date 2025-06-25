@@ -8,6 +8,8 @@ class JobCreateSchema(Schema):
     location = fields.Str(required=True)
     scheduled_date = fields.Date(required=True)
     scheduled_time = fields.Time(required=True)
+    category = fields.Str()
+    duration = fields.Str()
 
 
 class JobOutputSchema(Schema):

@@ -4,6 +4,9 @@ from models.Admin import Admin
 from extensions import db, bcrypt
 from flask_jwt_extended import create_access_token
 from sqlalchemy.exc import SQLAlchemyError
+import os
+
+ALLOWED_ADMIN_EMAILS = os.getenv("ALLOWED_ADMIN_EMAILS").split(",")
 
 class AuthenticationService:
 
@@ -34,34 +37,44 @@ class AuthenticationService:
         email = data["email"]
         password = data["password"]
 
-        # Try Admin login 
         admin = Admin.query.filter_by(email=email).first()
-        if admin and bcrypt.check_password_hash(admin.hashed_password, password):
-            claims = {"admin_id": admin.admin_id, "role": "admin"}
-            token = create_access_token(identity=admin.admin_id, additional_claims=claims)
+        if admin and admin.email in ALLOWED_ADMIN_EMAILS and bcrypt.check_password_hash(admin.hashed_password, password):
+            identity = str(admin.admin_id)  # make sure it's a string
+            claims = {
+                "admin_id": admin.admin_id,  # int is fine
+                "role": "admin"
+            }
+            print("identity:", identity, "type:", type(identity))
+            print("claims:", claims)
+            token = create_access_token(identity=identity, additional_claims=claims)
             return {
-            "message": "Admin login successful!",
-            "access_token": token,
-            "role": "admin",
-            "user": admin.to_dict()
-        }, 200
+                "message": "Admin login successful!",
+                "access_token": token,
+                "role": "admin",
+                "user": admin.to_dict()
+            }, 200
 
-        # Try Client login
+            # Try Client login
         client = Client.query.filter_by(email=email).first()
         if client and bcrypt.check_password_hash(client.hashed_password, password):
-            claims = {"client_id": client.client_id, "role": "client"}
-            
-            # Check if the client is also a worker
+            # Create claims starting with client
+            claims = {
+                "client_id": client.client_id,
+                "role": "client"
+            }
+            # Check if client is also a worker
             worker = Worker.query.filter_by(client_id=client.client_id).first()
             if worker:
                 claims["role"] = "worker"
                 claims["worker_id"] = worker.worker_id
-            token = create_access_token(identity=client.client_id, additional_claims=claims)
+                claims["roles"] = ["client", "worker"]
+            token = create_access_token(identity=str(client.client_id), additional_claims=claims)
             return {
                 "message": "Client login successful!",
                 "access_token": token,
-                "role": claims["role"],
+                "role": claims["role"],  # Will be 'client' or 'worker'
                 "user": client.to_dict()
             }, 200
-            # If neither admin nor client login succeeded
+
+        # If neither admin nor client login succeeded
         return {"error": "Invalid credentials"}, 401

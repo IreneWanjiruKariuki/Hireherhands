@@ -1,4 +1,4 @@
-let skills = [];
+/*let skills = [];
 
 function addSkill() {
     const skillInput = document.getElementById('skillInput');
@@ -237,4 +237,97 @@ document.getElementById('portfolio').addEventListener('blur', function() {
     if (!value || validateURL(value)) {
         clearError('portfolioError');
     }
+}); */
+const BASE_URL = 'http://127.0.0.1:5000';
+let selectedSkills = [];
+
+// Fetch skills from API and display as checkboxes
+async function loadSkills() {
+    try {
+        const response = await fetch(`${BASE_URL}/skills`);
+        const data = await response.json();
+
+        const container = document.getElementById('skillsContainer');
+        container.innerHTML = '';
+
+        data.skills.forEach(skill => {
+            const label = document.createElement('label');
+            label.classList.add('skill-option');
+            label.innerHTML = `
+                <input type="checkbox" value="${skill.skill_id}" onchange="toggleSkill(${skill.skill_id})">
+                ${skill.skill_name}
+            `;
+            container.appendChild(label);
+        });
+    } catch (error) {
+        console.error("Failed to load skills:", error);
+    }
+}
+
+// Handle skill selection
+function toggleSkill(id) {
+    if (selectedSkills.includes(id)) {
+        selectedSkills = selectedSkills.filter(s => s !== id);
+    } else {
+        selectedSkills.push(id);
+    }
+}
+
+// Main form logic
+document.addEventListener('DOMContentLoaded', () => {
+    loadSkillsAsCheckboxes('skillsContainer', toggleSkill);
+
+    const form = document.getElementById('applicationForm');
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const bio = "Submitted via form"; // Optional: pull from a <textarea id="bio">
+        const location = document.getElementById('location').value.trim();
+        const rate = parseFloat(document.getElementById('hourlyRate')?.value || 0);
+        const token = localStorage.getItem('access_token');
+
+        if (!token) {
+            alert("You must be logged in to apply as a worker.");
+            return;
+        }
+
+        if (!location || selectedSkills.length === 0) {
+            alert("Please fill all required fields and select at least one skill.");
+            return;
+        }
+
+        try {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('submitBtn').disabled = true;
+
+            // Register worker with attached skills
+            const res = await fetch(`${BASE_URL}/worker/register`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    bio: bio,
+                    location: location,
+                    hourly_rate: rate,
+                    skills: selectedSkills
+                })
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Failed to register as worker');
+
+            alert('Your application was submitted. An admin will review and approve your profile. You will be notified once approved.');
+            form.reset();
+            selectedSkills = [];
+            loadSkillsAsCheckboxes('skillsContainer', toggleSkill);
+        } catch (err) {
+            console.error(err);
+            alert(err.message);
+        } finally {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('submitBtn').disabled = false;
+        }
+    });
 });

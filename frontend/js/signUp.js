@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             showAlert('Account Created', 'Your account has been created successfully! ', 'success');
             setTimeout(() => {
-                window.location.href = 'dashboard.html';
+                window.location.href = 'login.html';
             }, 1500);
         } catch (error) {
             console.error ('Signup error:', error);

@@ -6,4 +6,5 @@ class Config:
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False #disables track modifications to save resources
     SECRET_KEY = os.getenv('SECRET_KEY', 'supersecretkey')
-    JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'supersecretkey')
+    JWT_SECRET_KEY = 'supersecretkey'
+    ALLOWED_ADMIN_EMAILS = os.getenv('ALLOWED_ADMIN_EMAILS', '').split(',')
