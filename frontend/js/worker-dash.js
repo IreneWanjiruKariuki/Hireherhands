@@ -45,3 +45,12 @@ const jobsData = [
     date: "2023-12-28",
   },
 ]
+let currentFilter = "all"
+let originalBioText = ""
+let originalRate = ""
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadJobs()
+  initializeBio()
+  initializeRate()
+})
