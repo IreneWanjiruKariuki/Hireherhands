@@ -54,6 +54,30 @@ function showJobDetails(jobId) {
     : "Not scheduled"
 
   const scheduledTime = job.scheduledTime || "Not specified"
+  content.innerHTML = `
+  <div class="job-detail-grid">
+    <div class="detail-item">
+        <label>Job Title:</label>
+        <span>${job.title}</span>
+    </div>
+    <div class="detail-item">
+        <label>Category:</label>
+        <span>${job.category || "General"}</span>
+    </div>
+    <div class="detail-item">
+        <label>Description:</label>
+        <span>${job.description}</span>
+    </div>
+    <div class="detail-item">
+        <label>Location:</label>
+        <span>${job.location || "Not specified"}</span>
+    </div>
+    <div class="detail-item">
+        <label>Duration:</label>
+        <span>${job.duration || "Not specified"}</span>
+    </div>
+  </div>
+  `
 }
 
 function displayJobs(jobs = []) {
