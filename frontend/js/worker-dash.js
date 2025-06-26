@@ -139,6 +139,14 @@ function closeJobDetails() {
   popup.style.display = "none"
   document.body.style.overflow = "auto"
 }
+
+// Close popup when clicking outside
+document.addEventListener("click", (event) => {
+  const popup = document.getElementById("jobDetailsPopup")
+  if (event.target === popup) {
+    closeJobDetails()
+  }
+})
 function toggleBioEdit() {
   const bioText = document.getElementById("bioText")
   const bioEditor = document.getElementById("bioEditor")
