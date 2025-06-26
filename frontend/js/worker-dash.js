@@ -97,3 +97,8 @@ function cancelBioEdit() {
   bioActions.style.display = "none"
   editBtn.style.display = "flex"
 }
+function initializeBio() {
+  const bioEditor = document.getElementById("bioEditor")
+  const bioText = document.getElementById("bioText")
+  bioEditor.value = bioText.textContent
+}
