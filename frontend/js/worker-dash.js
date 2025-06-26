@@ -83,7 +83,6 @@ function saveBio() {
   bioActions.style.display = "none"
   editBtn.style.display = "flex"
 
-  // Here you would typically save to a backend
   console.log("Bio saved:", bioEditor.value)
 }
 function cancelBioEdit() {
@@ -116,4 +115,23 @@ function toggleRateEdit() {
   rateEditor.style.display = "block"
   editBtn.style.display = "none"
   rateInput.focus()
+}
+function saveRate() {
+  const rateDisplay = document.querySelector(".rate-display")
+  const rateEditor = document.querySelector(".rate-editor")
+  const editBtn = document.querySelector(".rate-card .edit-btn")
+  const rateInput = document.getElementById("rateInput")
+  const currentRate = document.getElementById("hourlyRate")
+
+  if (rateInput.value && rateInput.value > 0) {
+    currentRate.textContent = rateInput.value
+
+    rateDisplay.style.display = "flex"
+    rateEditor.style.display = "none"
+    editBtn.style.display = "flex"
+
+    console.log("Rate saved:", rateInput.value)
+  } else {
+    alert("Please enter a valid hourly rate")
+  }
 }
