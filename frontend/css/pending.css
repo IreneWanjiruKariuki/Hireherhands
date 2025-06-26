@@ -85,3 +85,14 @@ p:last-of-type {
     border-color: #def2c970;
     box-shadow: 0 0 0 3px rgba(222, 242, 201, 0.3);
 }
+.container::after {
+    content: '⏳';
+    position: absolute;
+    top: -10px;
+    right: 20px;
+    font-size: 2rem;
+    background: white;
+    padding: 8px;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
