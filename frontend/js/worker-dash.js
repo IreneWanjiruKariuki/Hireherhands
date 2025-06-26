@@ -133,6 +133,12 @@ function showJobDetails(jobId) {
   popup.style.display = "flex"
   document.body.style.overflow = "hidden"
 }
+
+function closeJobDetails() {
+  const popup = document.getElementById("jobDetailsPopup")
+  popup.style.display = "none"
+  document.body.style.overflow = "auto"
+}
 function toggleBioEdit() {
   const bioText = document.getElementById("bioText")
   const bioEditor = document.getElementById("bioEditor")
