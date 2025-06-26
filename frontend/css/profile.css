@@ -28,3 +28,33 @@ body {
     height: 4px;
     background: #def2c970;
 }
+.header {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    color: white;
+    padding: 3rem 2rem;
+    text-align: center;
+    position: relative;
+}
+.profile-avatar {
+    font-size: 4rem;
+    background: rgba(255, 255, 255, 0.1);
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    border: 3px solid rgba(222, 242, 201, 0.3);
+    backdrop-filter: blur(10px);
+}
+.header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+.header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    font-weight: 300;
+}
