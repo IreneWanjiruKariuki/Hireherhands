@@ -149,3 +149,18 @@ function initializeRate() {
   const currentRate = document.getElementById("hourlyRate")
   rateInput.value = currentRate.textContent
 }
+
+//Job display functions
+function filterJobs(status, event) {
+  if (event) {
+    event.preventDefault()
+
+    document.querySelectorAll(".filter-tab").forEach((tab) => {
+      tab.classList.remove("active")
+    })
+    event.target.classList.add("active")
+  }
+
+  currentFilter = status
+  loadJobs()
+}
