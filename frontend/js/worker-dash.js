@@ -215,3 +215,11 @@ function createJobCard(job) {
   </div>
   `
 }
+function acceptJob(jobId) {
+  const job = jobsData.find((j) => j.id === jobId)
+  if (job) {
+    job.status = "ongoing"
+    loadJobs()
+    console.log("Job accepted:", jobId)
+  }
+}
