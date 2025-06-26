@@ -95,3 +95,21 @@ class WorkerJobHistoryResource(Resource):
         claims = get_jwt()
         worker_id = claims.get("worker_id")
         return JobService.get_worker_job_history(worker_id)
+
+class JobDetailResource(Resource):
+    @jwt_required()
+    def get(self, job_id):
+        job = Job.query.get(job_id)
+        if not job:
+            return {"error": "Job not found"}, 404
+        return job_output_schema.dump(job), 200
+
+# GET /jobs/worker-requests - jobs in "requested" state for this worker
+class WorkerRequestedJobsResource(Resource):
+    @jwt_required()
+    def get(self):
+        claims = get_jwt()
+        worker_id = claims.get("worker_id")
+        return JobService.get_worker_requested_jobs(worker_id)
+
+
