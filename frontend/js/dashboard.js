@@ -174,6 +174,11 @@ async function fetchClientJobs() {
             status: job.status.toLowerCase(),
             datePosted: job.created_at,
             location: job.location,
+            category: job.category || job.skill?.category,
+            duration: job.duration,
+            scheduledDate: job.scheduled_date,
+            scheduledTime: job.scheduled_time,
+            assignedWorker: job.assigned_worker_name,
         }));
 
         window.allJobs = jobs;
