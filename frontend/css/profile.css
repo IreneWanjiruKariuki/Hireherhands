@@ -212,3 +212,20 @@ body {
         width: 100%;
     }
 }
+@media (max-width: 480px) {
+    .header {
+        padding: 1.5rem 1rem;
+    }
+    .header h1 {
+        font-size: 1.75rem;
+    }
+    .content {
+        padding: 1.5rem 1rem;
+    }
+    .form-section {
+        padding: 1rem;
+    }  
+    .section-title {
+        font-size: 1.25rem;
+    }
+}
