@@ -176,3 +176,42 @@ function loadJobs() {
     container.innerHTML = filteredJobs.map((job) => createJobCard(job)).join("")
   }, 500)
 }
+function createJobCard(job) {
+  const statusClass = `status-${job.status}`
+  const statusText = job.status.charAt(0).toUpperCase() + job.status.slice(1)
+
+  let actionButtons = ""
+  if (job.status === "requests") {
+    actionButtons = `
+    <button class="action-btn primary" onclick="acceptJob(${job.id})">Accept</button>
+    <button class="action-btn" onclick="declineJob(${job.id})">Decline</button>
+    `
+  } else if (job.status === "ongoing") {
+    actionButtons = `
+    <button class="action-btn primary" onclick="completeJob(${job.id})">Mark Complete</button>
+    <button class="action-btn" onclick="viewJobDetails(${job.id})">View Details</button>
+    `
+  } else {
+    actionButtons = `
+    <button class="action-btn" onclick="viewJobDetails(${job.id})">View Details</button>
+    `
+  }
+  return `
+  <div class="job-card" data-status="${job.status}">
+    <div class="job-header">
+      <div class="job-info">
+        <h3 class="job-title">${job.title}</h3>
+        <p class="job-client">Client: ${job.client}</p>
+      </div>
+      <span class="job-status ${statusClass}">${statusText}</span>
+    </div>
+    <p class="job-description">${job.description}</p>
+    <div class="job-meta">
+      <span class="job-payment">${job.payment}</span>
+      <div class="job-actions">
+        ${actionButtons}
+      </div>
+    </div>
+  </div>
+  `
+}
