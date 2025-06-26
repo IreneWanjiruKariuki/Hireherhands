@@ -109,8 +109,29 @@ function showJobDetails(jobId) {
       <label>Status:</label>
       <span class="status-badge status-${job.status}">${job.status.charAt(0).toUpperCase() + job.status.slice(1)}</span>
     </div>
+    <div class="detail-item">
+      <label>Client:</label>
+      <div class="client-info">
+        <span>${job.client}</span>
+        <a href="message.html?client=${encodeURIComponent(job.client)}" class="message-btn" title="Send Message">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+    <div class="detail-item">
+      <label>Date Posted:</label>
+      <span>${new Date(job.date).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })}</span>
+    </div>
   </div>
   `
+  popup.style.display = "flex"
+  document.body.style.overflow = "hidden"
 }
 function toggleBioEdit() {
   const bioText = document.getElementById("bioText")
