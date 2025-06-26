@@ -76,8 +76,38 @@ function showJobDetails(jobId) {
         <label>Duration:</label>
         <span>${job.duration || "Not specified"}</span>
     </div>
+    <div class="detail-item">
+        <label>Budget:</label>
+        <span>${job.budget}</span>
+    </div>
+    <div class="detail-item">
+        <label>Scheduled Date:</label>
+        <span>${scheduledDate}</span>
+    </div>
+    <div class="detail-item">
+        <label>Scheduled Time:</label>
+        <span>${scheduledTime}</span>
+    </div>
+    <div class="detail-item">
+        <label>Status:</label>
+        <span class="status-badge status-${job.status}">${job.status.charAt(0).toUpperCase() + job.status.slice(1)}</span>
+        </div>
+        <div class="detail-item">
+            <label>Assigned Worker:</label>
+            <span>${job.assignedWorker || "Not assigned yet"}</span>
+        </div>
+        <div class="detail-item">
+            <label>Date Posted:</label>
+            <span>${new Date(job.datePosted).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+            })}</span>
+        </div>
   </div>
   `
+  popup.style.display = "flex"
+  document.body.style.overflow = "hidden"
 }
 
 function displayJobs(jobs = []) {
