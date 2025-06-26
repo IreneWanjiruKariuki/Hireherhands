@@ -75,3 +75,13 @@ p:last-of-type {
     transition: all 0.3s ease;
     border: 2px solid transparent;
 }
+.btn:hover {
+    background: #2563eb;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+}
+.btn:focus {
+    outline: none;
+    border-color: #def2c970;
+    box-shadow: 0 0 0 3px rgba(222, 242, 201, 0.3);
+}
