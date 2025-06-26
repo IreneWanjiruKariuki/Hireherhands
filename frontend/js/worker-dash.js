@@ -233,3 +233,11 @@ function declineJob(jobId) {
     }
   }
 }
+function completeJob(jobId) {
+  const job = jobsData.find((j) => j.id === jobId)
+  if (job) {
+    job.status = "completed"
+    loadJobs()
+    console.log("Job completed:", jobId)
+  }
+}
