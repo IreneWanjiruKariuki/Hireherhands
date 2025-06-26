@@ -33,10 +33,27 @@ function createJobCard(job) {
             <div class="job-description">${job.description}</div>
             <div class="job-meta">
                 <div class="job-budget">Budget: ${job.budget}</div>
-                <a href="viewDetails.html?id=${job.id}" class="view-details-btn">View Details</a>
+                <button class="view-details-btn" onclick="showJobDetails('${job.id}')">View Details</button>
             </div>
         </div>
     `;
+}
+function showJobDetails(jobId) {
+    const job = window.allJobs.find((j) => j.id == jobId)
+  if (!job) return
+
+  const popup = document.getElementById("jobDetailsPopup")
+  const content = document.getElementById("jobDetailsContent")
+
+  const scheduledDate = job.scheduledDate
+    ? new Date(job.scheduledDate).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : "Not scheduled"
+
+  const scheduledTime = job.scheduledTime || "Not specified"
 }
 
 function displayJobs(jobs = []) {
