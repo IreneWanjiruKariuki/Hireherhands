@@ -55,6 +55,23 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeRate()
 })
 
+function showJobDetails(jobId) {
+  const job = jobsData.find((j) => j.id === jobId)
+  if (!job) return
+
+  const popup = document.getElementById("jobDetailsPopup")
+  const content = document.getElementById("jobDetailsContent")
+
+  const scheduledDate = job.scheduledDate
+    ? new Date(job.scheduledDate).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : "Not scheduled"
+
+  const scheduledTime = job.scheduledTime || "Not specified"
+}
 function toggleBioEdit() {
   const bioText = document.getElementById("bioText")
   const bioEditor = document.getElementById("bioEditor")
