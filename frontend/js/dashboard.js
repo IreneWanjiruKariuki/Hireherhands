@@ -121,6 +121,12 @@ document.addEventListener("click", (event) => {
     closeJobDetails()
   }
 })
+// Close popup with esc key
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeJobDetails()
+  }
+})
 
 function displayJobs(jobs = []) {
     const jobsContainer = document.getElementById('jobsContainer');
