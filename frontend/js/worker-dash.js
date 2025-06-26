@@ -86,3 +86,14 @@ function saveBio() {
   // Here you would typically save to a backend
   console.log("Bio saved:", bioEditor.value)
 }
+function cancelBioEdit() {
+  const bioText = document.getElementById("bioText")
+  const bioEditor = document.getElementById("bioEditor")
+  const bioActions = document.querySelector(".bio-actions")
+  const editBtn = document.querySelector(".bio-card .edit-btn")
+
+  bioText.style.display = "block"
+  bioEditor.style.display = "none"
+  bioActions.style.display = "none"
+  editBtn.style.display = "flex"
+}
