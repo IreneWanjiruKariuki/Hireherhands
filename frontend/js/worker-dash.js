@@ -160,7 +160,19 @@ function filterJobs(status, event) {
     })
     event.target.classList.add("active")
   }
-
   currentFilter = status
   loadJobs()
+}
+function loadJobs() {
+  const container = document.getElementById("jobsContainer")
+
+  container.innerHTML = '<div class="loading">Loading jobs...</div>'
+  setTimeout(() => {
+    const filteredJobs = currentFilter === "all" ? jobsData : jobsData.filter((job) => job.status === currentFilter)
+    if (filteredJobs.length === 0) {
+      container.innerHTML = '<div class="no-jobs">No jobs found for this filter.</div>'
+      return
+    }
+    container.innerHTML = filteredJobs.map((job) => createJobCard(job)).join("")
+  }, 500)
 }
