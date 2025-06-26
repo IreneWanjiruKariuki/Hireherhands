@@ -241,3 +241,11 @@ function completeJob(jobId) {
     console.log("Job completed:", jobId)
   }
 }
+function viewJobDetails(jobId) {
+  const job = jobsData.find((j) => j.id === jobId)
+  if (job) {
+    alert(
+      `Job Details:\n\nTitle: ${job.title}\nClient: ${job.client}\nDescription: ${job.description}\nPayment: ${job.payment}\nDate: ${job.date}`,
+    )
+  }
+}
