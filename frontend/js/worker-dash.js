@@ -102,3 +102,18 @@ function initializeBio() {
   const bioText = document.getElementById("bioText")
   bioEditor.value = bioText.textContent
 }
+function toggleRateEdit() {
+  const rateDisplay = document.querySelector(".rate-display")
+  const rateEditor = document.querySelector(".rate-editor")
+  const editBtn = document.querySelector(".rate-card .edit-btn")
+  const rateInput = document.getElementById("rateInput")
+  const currentRate = document.getElementById("hourlyRate")
+
+  originalRate = currentRate.textContent
+  rateInput.value = originalRate
+
+  rateDisplay.style.display = "none"
+  rateEditor.style.display = "block"
+  editBtn.style.display = "none"
+  rateInput.focus()
+}
