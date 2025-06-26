@@ -147,6 +147,13 @@ document.addEventListener("click", (event) => {
     closeJobDetails()
   }
 })
+
+// Close popup with esc key
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeJobDetails()
+  }
+})
 function toggleBioEdit() {
   const bioText = document.getElementById("bioText")
   const bioEditor = document.getElementById("bioEditor")
