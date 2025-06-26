@@ -135,3 +135,12 @@ function saveRate() {
     alert("Please enter a valid hourly rate")
   }
 }
+function cancelRateEdit() {
+  const rateDisplay = document.querySelector(".rate-display")
+  const rateEditor = document.querySelector(".rate-editor")
+  const editBtn = document.querySelector(".rate-card .edit-btn")
+
+  rateDisplay.style.display = "flex"
+  rateEditor.style.display = "none"
+  editBtn.style.display = "flex"
+}
