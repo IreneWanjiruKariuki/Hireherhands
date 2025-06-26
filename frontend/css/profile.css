@@ -58,3 +58,6 @@ body {
     opacity: 0.9;
     font-weight: 300;
 }
+.content {
+    padding: 2.5rem 2rem;
+}
