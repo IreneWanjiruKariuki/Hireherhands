@@ -144,3 +144,8 @@ function cancelRateEdit() {
   rateEditor.style.display = "none"
   editBtn.style.display = "flex"
 }
+function initializeRate() {
+  const rateInput = document.getElementById("rateInput")
+  const currentRate = document.getElementById("hourlyRate")
+  rateInput.value = currentRate.textContent
+}
