@@ -242,3 +242,10 @@ body {
         transform: translateY(0);
     }
 }
+.btn:focus-visible {
+    box-shadow: 0 0 0 3px #def2c970;
+}
+.form-group input:focus-visible {
+    border-color: #def2c970;
+    box-shadow: 0 0 0 3px rgba(222, 242, 201, 0.3);
+}
