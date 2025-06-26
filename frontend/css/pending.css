@@ -96,3 +96,19 @@ p:last-of-type {
     border-radius: 50%;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
+@media (max-width: 480px) {
+    .container {
+        padding: 2rem 1.5rem;
+        margin: 10px;
+    }
+    h1 {
+        font-size: 1.75rem;
+    }
+    p {
+        font-size: 1rem;
+    }
+    .btn {
+        padding: 10px 24px;
+        font-size: 0.95rem;
+    }
+}
