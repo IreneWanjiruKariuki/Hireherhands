@@ -18,6 +18,7 @@ class SignupResource(Resource):
         except ValidationError as err:
             print("Validation errors:", err.messages) 
             return {'errors': err.messages}, 400
+        return AuthenticationService.register(data)
 
 class LoginResource(Resource):
     def post(self):
@@ -25,7 +26,6 @@ class LoginResource(Resource):
             data = login_schema.load(request.get_json())
         except ValidationError as err:
             return {'errors': err.messages}, 400
-            return AuthenticationService.login(data)
         return AuthenticationService.login(data)
 
 

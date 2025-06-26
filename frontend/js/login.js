@@ -185,9 +185,9 @@ const BASE_URL = 'http://127.0.0.1:5000';
                 setTimeout(() => {
                     const role = data.role;
                     if (role === 'admin') {
-                        window.location.href = 'admin-dashboard.html';
+                        window.location.href = 'admin_dash.html';
                     } else if (role === 'worker') {
-                        window.location.href = 'worker-dash.html';
+                        window.location.href = 'worker_dash.html';
                     } else {
                         window.location.href = 'dashboard.html';
                     }

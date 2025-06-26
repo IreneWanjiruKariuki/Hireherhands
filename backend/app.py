@@ -23,7 +23,9 @@ from resources.Job import (
     WorkerMarkDoneResource,
     ClientConfirmCompletionResource,
     ClientJobHistoryResource,
-    WorkerJobHistoryResource
+    WorkerJobHistoryResource,
+    WorkerRequestedJobsResource,
+    JobDetailResource
 )
 from resources.Message import MessageListResource, JobMessagesResource
 from resources.Rating import JobRatingResource
@@ -81,6 +83,9 @@ def create_app():
     api.add_resource(ClientConfirmCompletionResource, '/jobs/<int:job_id>/client-complete')
     api.add_resource(ClientJobHistoryResource, '/client/jobs')
     api.add_resource(WorkerJobHistoryResource, '/worker/jobs')
+    api.add_resource(WorkerRequestedJobsResource, '/jobs/worker-requests')
+    api.add_resource(JobDetailResource, '/jobs/<int:job_id>')
+
     
     #Messages
     api.add_resource(MessageListResource, '/messages')

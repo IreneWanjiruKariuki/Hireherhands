@@ -160,3 +160,12 @@ class JobService:
             'message': f'{len(jobs)} jobs found for worker',
             'jobs': job_output_many.dump(jobs)
         }, 200
+
+    @staticmethod
+    def get_worker_requested_jobs(worker_id):
+        jobs = Job.query.filter_by(worker_id=worker_id, status=JobStatus.REQUESTED).order_by(Job.created_at.desc()).all()
+        return {
+            'message': f'{len(jobs)} requested jobs found for worker',
+            'jobs': job_output_many.dump(jobs)
+        }, 200
+

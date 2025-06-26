@@ -10,7 +10,6 @@ function isTokenExpired(token) {
     }
 }
 
-
 // Load job skills into dropdown
 async function loadSkillsToDropdown(dropdownId) {
     const token = localStorage.getItem('access_token');
@@ -82,7 +81,7 @@ document.getElementById('jobPostingForm').addEventListener('submit', async funct
     const token = localStorage.getItem('access_token');
     if (isTokenExpired(token)) {
         alert('Session expired. Please log in again.');
-        window.location.href = 'login.html';  // or whatever your login page is
+        window.location.href = 'login.html';  
     return;
 }
     submitBtn.disabled = true;
@@ -108,8 +107,8 @@ document.getElementById('jobPostingForm').addEventListener('submit', async funct
 
         console.log("Job posted successfully:", data);
         console.log("Redirecting to viewWorkers.html...");
-
         localStorage.setItem('currentJobPosting', JSON.stringify(jobData));
+        localStorage.setItem('lastPostedJobId', data.job_id);
         successMessage.style.display = 'block';
 
         setTimeout(() => {
