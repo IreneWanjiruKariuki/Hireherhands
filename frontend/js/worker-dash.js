@@ -93,6 +93,22 @@ function showJobDetails(jobId) {
       <label>Duration:</label>
       <span>${job.duration}</span>
     </div>
+    <div class="detail-item">
+      <label>Payment:</label>
+      <span>${job.payment}</span>
+    </div>
+    <div class="detail-item">
+      <label>Scheduled Date:</label>
+      <span>${scheduledDate}</span>
+    </div>
+    <div class="detail-item">
+      <label>Scheduled Time:</label>
+      <span>${scheduledTime}</span>
+    </div>
+    <div class="detail-item">
+      <label>Status:</label>
+      <span class="status-badge status-${job.status}">${job.status.charAt(0).toUpperCase() + job.status.slice(1)}</span>
+    </div>
   </div>
   `
 }
