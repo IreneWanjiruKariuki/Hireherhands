@@ -321,6 +321,46 @@
   overflow-y: auto;
   animation: popupSlideIn 0.3s ease-out;
 }
+@keyframes popupSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #e5e7eb;
+  background: linear-gradient(135deg, rgba(222, 242, 201, 0.1) 0%, rgba(222, 242, 201, 0.05) 100%);
+  border-radius: 1rem 1rem 0 0;
+}
+.popup-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+.close-popup {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  transition: all 0.15s ease-in-out;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 @media (max-width: 768px) {
     .dashboard-container {
         padding: 1rem;
@@ -343,5 +383,22 @@
     .job-meta {
         flex-direction: column;
         align-items: flex-start;
+    }
+    .popup-content {
+        width: 95%;
+        margin: 1rem;
+    }
+    .popup-header {
+        padding: 1rem 1.5rem;
+    }
+    .popup-body {
+        padding: 1.5rem;
+    }
+    .detail-item {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    .detail-item label {
+        font-weight: 700;
     }
 }
