@@ -223,3 +223,13 @@ function acceptJob(jobId) {
     console.log("Job accepted:", jobId)
   }
 }
+function declineJob(jobId) {
+  if (confirm("Are you sure you want to decline this job?")) {
+    const jobIndex = jobsData.findIndex((j) => j.id === jobId)
+    if (jobIndex > -1) {
+      jobsData.splice(jobIndex, 1)
+      loadJobs()
+      console.log("Job declined:", jobId)
+    }
+  }
+}
