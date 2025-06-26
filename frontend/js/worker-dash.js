@@ -71,6 +71,30 @@ function showJobDetails(jobId) {
     : "Not scheduled"
 
   const scheduledTime = job.scheduledTime || "Not specified"
+  content.innerHTML = `
+  <div class="job-detail-grid">
+    <div class="detail-item">
+      <label>Job Title:</label>
+      <span>${job.title}</span>
+    </div>
+    <div class="detail-item">
+      <label>Category:</label>
+      <span>${job.category}</span>
+    </div>
+    <div class="detail-item">
+      <label>Description:</label>
+      <span>${job.description}</span>
+    </div>
+    <div class="detail-item">
+      <label>Location:</label>
+      <span>${job.location}</span>
+    </div>
+    <div class="detail-item">
+      <label>Duration:</label>
+      <span>${job.duration}</span>
+    </div>
+  </div>
+  `
 }
 function toggleBioEdit() {
   const bioText = document.getElementById("bioText")
