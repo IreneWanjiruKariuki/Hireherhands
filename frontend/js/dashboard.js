@@ -1,3 +1,5 @@
+const BASE_URL = 'http://localhost:5000';
+
 function getCurrentUser() {
     const userData = localStorage.getItem('currentUser');
     return userData ? JSON.parse(userData) : null;
@@ -21,6 +23,7 @@ function createJobCard(job) {
         month: 'long',
         day: 'numeric'
     });
+
     return `
         <div class="job-card" data-status="${job.status}" data-id="${job.id}">
             <div class="job-header">
@@ -28,12 +31,13 @@ function createJobCard(job) {
                     <div class="job-title">${job.title}</div>
                     <div class="job-date">Posted on ${formattedDate}</div>
                 </div>
-                <span class="job-status ${statusClass}">${job.status.charAt(0).toUpperCase() + job.status.slice(1)}</span>
+                <span class="job-status ${statusClass}">${formatStatus(job.status)}</span>
             </div>
             <div class="job-description">${job.description}</div>
             <div class="job-meta">
                 <div class="job-budget">Budget: ${job.budget}</div>
                 <button class="view-details-btn" onclick="showJobDetails('${job.id}')">View Details</button>
+                <a href="#" class="view-details-btn" onclick="openDetailsModal(${job.id})">View Details</a>
             </div>
         </div>
     `;
@@ -147,13 +151,16 @@ function displayJobs(jobs = []) {
 
 async function fetchClientJobs() {
     const user = getCurrentUser();
+    //console.log("RAW response data:", data);
+    //console.log("Parsed jobs array:", jobs);
+
     if (!user || !user.token) {
         console.error("User not logged in or token missing.");
         return displayJobs([]);
     }
 
     try {
-        const response = await fetch("http://localhost:5000/jobs/client-history", {
+        const response = await fetch(`${BASE_URL}/client/jobs`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -161,16 +168,14 @@ async function fetchClientJobs() {
             }
         });
 
-        if (!response.ok) {
-            throw new Error("Failed to fetch jobs.");
-        }
-
+        if (!response.ok) throw new Error("Failed to fetch jobs.");
+        
         const data = await response.json();
-        const jobs = data.jobs.map(job => ({
+        let jobs =  data.jobs.map(job => ({
             id: job.job_id,
             title: job.skill?.name || "Untitled Job",
             description: job.description,
-            budget: `ksh ${job.budget}`,
+            budget: `KSh ${job.budget}`,
             status: job.status.toLowerCase(),
             datePosted: job.created_at,
             location: job.location,
@@ -181,20 +186,23 @@ async function fetchClientJobs() {
             assignedWorker: job.assigned_worker_name,
         }));
 
+        // Inject newly posted job manually if it exists
+        const injectedJob = localStorage.getItem('lastPostedJobData');
+        if (injectedJob) {
+            const job = JSON.parse(injectedJob);
+            const exists = jobs.find(j => j.id === job.id);
+            if (!exists) {
+                jobs.unshift({
+                    ...job,
+                    status: 'open',
+                    budget: `KSh ${parseInt(job.budget)}`, // clean KSh format
+                    datePosted: job.datePosted || new Date().toISOString()
+                });
+            }
+            localStorage.removeItem('lastPostedJobData');
+        }
         window.allJobs = jobs;
         displayJobs(jobs);
-
-        // Scroll to last posted job if exists
-        const lastPostedId = localStorage.getItem('lastPostedJobId');
-        if (lastPostedId) {
-            const el = document.querySelector(`.job-card[data-id="${lastPostedId}"]`);
-            if (el) {
-                el.scrollIntoView({ behavior: 'smooth' });
-                el.style.outline = '2px solid #10b981'; // highlight
-                setTimeout(() => el.style.outline = '', 3000);
-            }
-            localStorage.removeItem('lastPostedJobId'); // clean up
-        }
 
     } catch (err) {
         console.error("Error fetching jobs:", err);
@@ -215,6 +223,35 @@ function filterJobs(status, event) {
     } else {
         displayJobs(allJobs.filter(job => job.status === status));
     }
+}
+
+async function openDetailsModal(jobId) {
+    const token = localStorage.getItem('access_token');
+
+    try {
+        const res = await fetch(`${BASE_URL}/jobs/${jobId}`, {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+
+        if (!res.ok) throw new Error("Failed to fetch job details.");
+
+        const job = await res.json();
+
+        document.getElementById('modalTitle').textContent = job.skill?.name || "Untitled Job";
+        document.getElementById('modalDescription').textContent = job.description || "No description available.";
+        document.getElementById('modalBudget').textContent = `Budget: KSh ${job.budget || 0}`;
+        document.getElementById('modalStatus').textContent = `Status: ${formatStatus(job.status)}`;
+
+        document.getElementById('jobDetailsModal').style.display = 'block';
+
+    } catch (err) {
+        console.error("Error loading job details:", err);
+        alert("Could not load job details.");
+    }
+}
+
+function formatStatus(status) {
+    return status.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 }
 
 document.addEventListener('DOMContentLoaded', () => {
