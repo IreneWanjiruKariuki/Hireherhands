@@ -84,10 +84,8 @@ class ClientConfirmCompletionResource(Resource):
 class ClientJobHistoryResource(Resource):
     @jwt_required()
     def get(self):
-        claims = get_jwt()
-        client_id = claims.get("client_id")
+        claims = get_jwt_identity()
         return JobService.get_client_job_history(client_id)
-
 
 class WorkerJobHistoryResource(Resource):
     @jwt_required()

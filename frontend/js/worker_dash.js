@@ -1,3 +1,47 @@
+const BASE_URL = "http://localhost:5000";
+document.addEventListener("DOMContentLoaded", () => {
+  loadWorkerProfile();  // load name, email, phone, etc.
+  loadJobs();           // your existing job loader
+  initializeBio();
+  initializeRate();
+});
+
+async function loadWorkerProfile() {
+  const token = localStorage.getItem("access_token");
+  if (!token) {
+    alert("Please login.");
+    window.location.href = "login.html";
+    return;
+  }
+
+  try {
+    const res = await fetch(`${BASE_URL}/worker/profile`, {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    });
+
+    if (!res.ok) throw new Error("Failed to load worker profile");
+
+    const data = await res.json();
+
+    // Set values dynamically
+    document.getElementById("workerName").textContent = data.fullname;
+    document.getElementById("workerPhone").textContent = data.phone;
+    document.getElementById("workerEmail").textContent = data.email;
+    document.getElementById("bioText").textContent = data.bio || "No bio set yet.";
+    document.getElementById("hourlyRate").textContent = data.hourly_rate || "0";
+
+    // Sync editors
+    document.getElementById("bioEditor").value = data.bio || "";
+    document.getElementById("rateInput").value = data.hourly_rate || "";
+
+  } catch (err) {
+    console.error(err);
+    alert("Could not load profile.");
+  }
+}
+
 const jobsData = [
   {
     id: 1,
@@ -348,3 +392,148 @@ function viewJobDetails(jobId) {
     )
   }
 }
+/*const BASE_URL = 'http://127.0.0.1:5000'; // or your deployed API
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadWorkerProfile();
+  loadWorkerJobs();
+});
+
+// --- Load Worker Info ---
+async function loadWorkerProfile() {
+  const token = localStorage.getItem("access_token");
+  if (!token) return alert("Please login");
+
+  try {
+    const res = await fetch(`${BASE_URL}/worker/profile`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    if (!res.ok) throw new Error("Failed to load worker profile");
+
+    const data = await res.json();
+    document.getElementById("workerName").textContent = data.fullname;
+    document.getElementById("workerEmail").textContent = data.email;
+    document.getElementById("workerPhone").textContent = data.phone;
+    document.getElementById("bioText").textContent = data.bio || "No bio provided yet.";
+    document.getElementById("hourlyRate").textContent = data.hourly_rate || "0";
+
+    document.getElementById("bioEditor").value = data.bio || "";
+    document.getElementById("rateInput").value = data.hourly_rate || "";
+
+  } catch (err) {
+    console.error(err);
+    alert("Error loading profile");
+  }
+}
+
+// --- Save Bio ---
+async function saveBio() {
+  const newBio = document.getElementById("bioEditor").value.trim();
+  const token = localStorage.getItem("access_token");
+
+  try {
+    const res = await fetch(`${BASE_URL}/worker/profile`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ bio: newBio })
+    });
+
+    if (!res.ok) throw new Error("Failed to save bio");
+
+    document.getElementById("bioText").textContent = newBio;
+    cancelBioEdit();
+
+  } catch (err) {
+    alert("Failed to update bio");
+    console.error(err);
+  }
+}
+
+// --- Save Hourly Rate ---
+async function saveRate() {
+  const newRate = parseFloat(document.getElementById("rateInput").value.trim());
+  const token = localStorage.getItem("access_token");
+
+  if (isNaN(newRate) || newRate < 0) return alert("Invalid rate");
+
+  try {
+    const res = await fetch(`${BASE_URL}/worker/profile`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ hourly_rate: newRate })
+    });
+
+    if (!res.ok) throw new Error("Failed to save rate");
+
+    document.getElementById("hourlyRate").textContent = newRate;
+    cancelRateEdit();
+
+  } catch (err) {
+    alert("Failed to update rate");
+    console.error(err);
+  }
+}
+
+// --- Load Jobs ---
+async function loadWorkerJobs() {
+  const token = localStorage.getItem("access_token");
+  const container = document.getElementById("jobsContainer");
+
+  container.innerHTML = '<div class="loading">Loading jobs...</div>';
+
+  try {
+    const res = await fetch(`${BASE_URL}/worker/jobs`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch jobs");
+
+    const data = await res.json();
+    const jobs = data.jobs || [];
+
+    if (jobs.length === 0) {
+      container.innerHTML = '<div class="no-jobs">No jobs found for this worker.</div>';
+      return;
+    }
+
+    container.innerHTML = jobs.map(createJobCard).join("");
+
+  } catch (err) {
+    console.error(err);
+    container.innerHTML = '<div class="error">Failed to load jobs</div>';
+  }
+}
+
+function createJobCard(job) {
+  const status = job.status.toLowerCase();
+  const statusClass = `status-${status}`;
+  const statusText = status.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+
+  return `
+    <div class="job-card" data-status="${status}">
+      <div class="job-header">
+        <div class="job-info">
+          <h3 class="job-title">${job.skill?.skill_name || "Unknown"}</h3>
+          <p class="job-client">Location: ${job.location}</p>
+        </div>
+        <span class="job-status ${statusClass}">${statusText}</span>
+      </div>
+      <p class="job-description">${job.description}</p>
+      <div class="job-meta">
+        <span class="job-payment">KSh ${job.budget}</span>
+        <div class="job-actions">
+          <button class="action-btn" onclick="viewJobDetails(${job.job_id})">View Details</button>
+        </div>
+      </div>
+    </div>
+  `;
+}*/

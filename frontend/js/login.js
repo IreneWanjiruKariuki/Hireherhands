@@ -199,6 +199,10 @@ const BASE_URL = 'http://127.0.0.1:5000';
                 submitBtn.disabled = false;
                 submitText.textContent = 'Sign in';
             }
+            const user = getCurrentUser(); 
+            console.log("Logged in user:", user);
+
+        
         });
 
 

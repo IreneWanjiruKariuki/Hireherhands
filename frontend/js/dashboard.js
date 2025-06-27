@@ -150,9 +150,7 @@ function displayJobs(jobs = []) {
 }
 
 async function fetchClientJobs() {
-    const user = getCurrentUser();
-    //console.log("RAW response data:", data);
-    //console.log("Parsed jobs array:", jobs);
+    const token = localStorage.getItem('access_token');
 
     if (!user || !user.token) {
         console.error("User not logged in or token missing.");
@@ -164,7 +162,7 @@ async function fetchClientJobs() {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${user.token}`
+                "Authorization": `Bearer ${token}`
             }
         });
 
