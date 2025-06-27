@@ -1,4 +1,5 @@
 from marshmallow import Schema, fields, validate
+from models.schemas.Skill import SkillOutputSchema
 from datetime import date, time
 
 class JobCreateSchema(Schema):
@@ -17,6 +18,7 @@ class JobOutputSchema(Schema):
     client_id = fields.Int()
     worker_id = fields.Int(allow_none=True)
     skill_id = fields.Int()
+    skill = fields.Nested(SkillOutputSchema)
     description = fields.Str()
     budget = fields.Float()
     location = fields.Str()

@@ -4,6 +4,7 @@ from models.Worker import Worker
 from models.WorkerSkills import WorkerSkill
 from models.Skill import Skill
 from models.schemas.Job import JobCreateSchema, JobOutputSchema
+from sqlalchemy.orm import joinedload
 from extensions import db
 
 job_input_schema = JobCreateSchema()
@@ -146,7 +147,13 @@ class JobService:
 
     @staticmethod
     def get_client_job_history(client_id):
-        jobs = Job.query.filter_by(client_id=client_id).order_by(Job.created_at.desc()).all()
+        jobs = (
+            Job.query
+            .options(joinedload(Job.skill))  
+            .filter_by(client_id=client_id)
+            .order_by(Job.created_at.desc())
+            .all()
+        )
         return {
             'message': f'{len(jobs)} jobs found for client',
             'jobs': job_output_many.dump(jobs)
@@ -155,7 +162,13 @@ class JobService:
 
     @staticmethod
     def get_worker_job_history(worker_id):
-        jobs = Job.query.filter_by(worker_id=worker_id).order_by(Job.created_at.desc()).all()
+        jobs = (
+            Job.query
+            .options(joinedload(Job.skill))
+            .filter_by(worker_id=worker_id)
+            .order_by(Job.created_at.desc())
+            .all()
+        )
         return {
             'message': f'{len(jobs)} jobs found for worker',
             'jobs': job_output_many.dump(jobs)
@@ -163,7 +176,13 @@ class JobService:
 
     @staticmethod
     def get_worker_requested_jobs(worker_id):
-        jobs = Job.query.filter_by(worker_id=worker_id, status=JobStatus.REQUESTED).order_by(Job.created_at.desc()).all()
+        jobs = (
+            Job.query
+            .options(joinedload(Job.skill))
+            .filter_by(worker_id=worker_id, status=JobStatus.REQUESTED)
+            .order_by(Job.created_at.desc())
+            .all()
+        )
         return {
             'message': f'{len(jobs)} requested jobs found for worker',
             'jobs': job_output_many.dump(jobs)
