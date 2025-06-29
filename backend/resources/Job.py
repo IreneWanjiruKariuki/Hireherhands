@@ -13,7 +13,7 @@ class CreateJobResource(Resource):
             return {"error": "Only clients can create jobs"}, 403
         client_id = claims.get("client_id")
         return JobService.create_job(data, client_id)
-        return {'message': 'Job created successfully', 'job_id': job.job_id}, 201
+        return JobService.create_job(data, client_id)
 
 # GET /jobs/<job_id>/workers - get matching workers
 class MatchingWorkersResource(Resource):
@@ -84,10 +84,8 @@ class ClientConfirmCompletionResource(Resource):
 class ClientJobHistoryResource(Resource):
     @jwt_required()
     def get(self):
-        claims = get_jwt()
-        client_id = claims.get("client_id")
+        claims = get_jwt_identity()
         return JobService.get_client_job_history(client_id)
-
 
 class WorkerJobHistoryResource(Resource):
     @jwt_required()

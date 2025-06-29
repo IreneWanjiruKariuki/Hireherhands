@@ -1,4 +1,5 @@
 from models.Worker import Worker
+from models.Client import Client
 from models.WorkerSkills import WorkerSkill
 from models.Skill import Skill
 
@@ -33,13 +34,21 @@ class WorkerService:
         worker = Worker.query.filter_by(worker_id=worker_id, is_deleted=False).first()
         if not worker:
             return {"error": "Worker not found"}, 404
+        client = Client.query.get(worker.client_id)
+        if not client:
+            return {"error": "Client linked to worker not found"}, 404
+
         return {
             "worker_id": worker.worker_id,
+            "fullname": client.fullname,
+            "email": client.email,
+            "phone": client.phone,
             "bio": worker.bio,
             "location": worker.location,
             "hourly_rate": worker.hourly_rate,
             "is_approved": worker.is_approved
         }, 200
+
 
     @staticmethod
     def update_profile(worker_id, data):

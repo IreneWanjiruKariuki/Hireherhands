@@ -66,8 +66,9 @@
                 <div class="filter-tabs">
                     <a href="#" class="filter-tab active" onclick="filterJobs('all', event)">All</a>
                     <a href="#" class="filter-tab" onclick="filterJobs('open', event)">Open</a>
-                    <a href="#" class="filter-tab" onclick="filterJobs('assigned', event)">Assigned</a>
-                    <a href="#" class="filter-tab" onclick="filterJobs('complete', event)">Complete</a>
+                    <a href="#" class="filter-tab" onclick="filterJobs('requested', event)">Requested</a>
+                    <a href="#" class="filter-tab" onclick="filterJobs('in_progress', event)">In Progress</a>
+                    <a href="#" class="filter-tab" onclick="filterJobs('completed', event)">Completed</a>
                 </div>
             </div>
             <div class="jobs-grid" id="jobsContainer">
@@ -75,6 +76,15 @@
                    Loading jobs...
                 </div>
             </div>
+            <div id="jobDetailsModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="document.getElementById('jobDetailsModal').style.display='none'">&times;</span>
+                <h2 id="modalTitle"></h2>
+                <p id="modalDescription"></p>
+                <p id="modalBudget"></p>
+                <p id="modalStatus"></p>
+            </div>
+        </div>
         </div>
     </div>
     <div id="jobDetailsPopup" class="popup-overlay">

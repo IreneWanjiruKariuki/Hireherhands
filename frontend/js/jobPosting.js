@@ -10,7 +10,6 @@ function isTokenExpired(token) {
     }
 }
 
-// Load job skills into dropdown
 async function loadSkillsToDropdown(dropdownId) {
     const token = localStorage.getItem('access_token');
     try {
@@ -55,10 +54,11 @@ document.getElementById('jobPostingForm').addEventListener('submit', async funct
 
     const rawBudget = formData.get('budget').replace(/,/g, '');
     const parsedBudget = parseInt(rawBudget, 10);
-    if (Number.isNaN(parsedBudget) || parsedBudget < 100) {
-        alert('Please enter a valid budget (min 100).');
+    if (Number.isNaN(parsedBudget) || parsedBudget <= 0) {
+        alert('Please enter a valid budget.');
         return;
     }
+
 
     const jobData = {
         skill_id: skillId,
@@ -71,7 +71,6 @@ document.getElementById('jobPostingForm').addEventListener('submit', async funct
         scheduled_time: formData.get('scheduled_time')
     };
 
-    // Ensure all fields are filled
     const allFieldsFilled = Object.values(jobData).every(val => val && val.toString().trim() !== '');
     if (!allFieldsFilled) {
         alert('Please fill in all required fields');
@@ -82,8 +81,9 @@ document.getElementById('jobPostingForm').addEventListener('submit', async funct
     if (isTokenExpired(token)) {
         alert('Session expired. Please log in again.');
         window.location.href = 'login.html';  
-    return;
-}
+        return;
+    }
+
     submitBtn.disabled = true;
     loadingSpinner.style.display = 'inline-block';
     btnText.textContent = 'Processing...';
@@ -100,17 +100,27 @@ document.getElementById('jobPostingForm').addEventListener('submit', async funct
 
         const data = await response.json();
         if (!response.ok) {
-            console.error('Job post failed response:', data); // ← debug
+            console.error('Job post failed response:', data);
             throw new Error(data.message || JSON.stringify(data) || 'Job post failed');
         }
 
-
         console.log("Job posted successfully:", data);
-        console.log("Redirecting to viewWorkers.html...");
+
+        // Save for dashboard injection
+        const postedJob = {
+            id: data.job_id,
+            title: selectedOption.textContent,
+            description: jobData.description,
+            budget: `KSh ${jobData.budget}`,
+            status: 'open',
+            datePosted: new Date().toISOString(),
+            location: jobData.location,
+        };
         localStorage.setItem('currentJobPosting', JSON.stringify(jobData));
         localStorage.setItem('lastPostedJobId', data.job_id);
-        successMessage.style.display = 'block';
+        localStorage.setItem('lastPostedJobData', JSON.stringify(postedJob));
 
+        successMessage.style.display = 'block';
         setTimeout(() => {
             window.location.href = 'viewWorkers.html';
         }, 2000);
@@ -125,7 +135,7 @@ document.getElementById('jobPostingForm').addEventListener('submit', async funct
     }
 });
 
-// Budget input formatting (e.g. 1,000 instead of 1000)
+// Budget input formatting
 document.getElementById('budget').addEventListener('input', function (e) {
     let value = e.target.value.replace(/,/g, '');
     if (value) {
@@ -136,7 +146,7 @@ document.getElementById('budget').addEventListener('input', function (e) {
     }
 });
 
-// Character counter for job description
+// Character counter for description
 const descriptionField = document.getElementById('jobDescription');
 const maxLength = 500;
 
