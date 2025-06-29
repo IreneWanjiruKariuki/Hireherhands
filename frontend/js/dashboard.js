@@ -76,6 +76,31 @@ function showJobDetails(jobId) {
     assignedWorkerSection = `<span>${job.assignedWorker || "Not assigned yet"}</span>`
   }
 
+  //rating section for completed jobs
+  let ratingSection = ""
+  if (job.status === "complete") {
+    const currentRating = job.workerRating || 0
+    ratingSection = `
+          <div class="detail-item">
+              <label>Rate Worker:</label>
+              <div class="rating-section">
+                  <div class="star-rating" data-job-id="${job.id}">
+                      ${[1, 2, 3, 4, 5]
+                        .map(
+                          (star) => `
+                          <span class="star ${star <= currentRating ? "filled" : ""}" 
+                                data-rating="${star}" 
+                                onclick="setRating(${job.id}, ${star})">★</span>
+                      `,
+                        )
+                        .join("")}
+                  </div>
+                  <span class="rating-text">${currentRating > 0 ? `${currentRating}/5 stars` : "Click to rate"}</span>
+              </div>
+          </div>
+      `
+  }
+
   content.innerHTML = `
   <div class="job-detail-grid">
     <div class="detail-item">
