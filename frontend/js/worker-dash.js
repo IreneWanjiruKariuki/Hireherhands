@@ -154,6 +154,7 @@ document.addEventListener("keydown", (event) => {
     closeJobDetails()
   }
 })
+
 function toggleBioEdit() {
   const bioText = document.getElementById("bioText")
   const bioEditor = document.getElementById("bioEditor")
@@ -184,6 +185,7 @@ function saveBio() {
 
   console.log("Bio saved:", bioEditor.value)
 }
+
 function cancelBioEdit() {
   const bioText = document.getElementById("bioText")
   const bioEditor = document.getElementById("bioEditor")
@@ -234,6 +236,7 @@ function saveRate() {
     alert("Please enter a valid hourly rate")
   }
 }
+
 function cancelRateEdit() {
   const rateDisplay = document.querySelector(".rate-display")
   const rateEditor = document.querySelector(".rate-editor")
@@ -262,6 +265,7 @@ function filterJobs(status, event) {
   currentFilter = status
   loadJobs()
 }
+
 function loadJobs() {
   const container = document.getElementById("jobsContainer")
 
@@ -284,15 +288,16 @@ function createJobCard(job) {
     actionButtons = `
     <button class="action-btn primary" onclick="acceptJob(${job.id})">Accept</button>
     <button class="action-btn" onclick="declineJob(${job.id})">Decline</button>
+    <button class="action-btn" onclick="showJobDetails(${job.id})">View Details</button>
     `
   } else if (job.status === "ongoing") {
     actionButtons = `
     <button class="action-btn primary" onclick="completeJob(${job.id})">Mark Complete</button>
-    <button class="action-btn" onclick="viewJobDetails(${job.id})">View Details</button>
+    <button class="action-btn" onclick="showJobDetails(${job.id})">View Details</button>
     `
   } else {
     actionButtons = `
-    <button class="action-btn" onclick="viewJobDetails(${job.id})">View Details</button>
+    <button class="action-btn" onclick="showJobDetails(${job.id})">View Details</button>
     `
   }
   return `
@@ -300,7 +305,14 @@ function createJobCard(job) {
     <div class="job-header">
       <div class="job-info">
         <h3 class="job-title">${job.title}</h3>
-        <p class="job-client">Client: ${job.client}</p>
+        <div class="client-section">
+          <p class="job-client">Client: ${job.client}</p>
+          <a href="message.html?client=${encodeURIComponent(job.client)}" class="message-icon" title="Send Message">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+          </a>
+        </div>
       </div>
       <span class="job-status ${statusClass}">${statusText}</span>
     </div>
@@ -338,13 +350,5 @@ function completeJob(jobId) {
     job.status = "completed"
     loadJobs()
     console.log("Job completed:", jobId)
-  }
-}
-function viewJobDetails(jobId) {
-  const job = jobsData.find((j) => j.id === jobId)
-  if (job) {
-    alert(
-      `Job Details:\n\nTitle: ${job.title}\nClient: ${job.client}\nDescription: ${job.description}\nPayment: ${job.payment}\nDate: ${job.date}`,
-    )
   }
 }

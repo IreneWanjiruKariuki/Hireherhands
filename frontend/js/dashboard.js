@@ -54,6 +54,24 @@ function showJobDetails(jobId) {
     : "Not scheduled"
 
   const scheduledTime = job.scheduledTime || "Not specified"
+
+  //message icon
+  let assignedWorkerSection = ""
+  if (job.assignedWorker && job.assignedWorker !== "Not assigned yet") {
+    assignedWorkerSection = `
+          <div class="worker-info">
+              <span>${job.assignedWorker}</span>
+              <a href="message.html?worker=${encodeURIComponent(job.assignedWorker)}" class="message-btn" title="Send Message to Worker">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                  </svg>
+              </a>
+          </div>
+      `
+  } else {
+    assignedWorkerSection = `<span>${job.assignedWorker || "Not assigned yet"}</span>`
+  }
+
   content.innerHTML = `
   <div class="job-detail-grid">
     <div class="detail-item">
