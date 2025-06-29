@@ -418,6 +418,34 @@
   background: rgba(222, 242, 201, 0.4);
   transform: scale(1.1);
 }
+.rating-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.star-rating {
+  display: flex;
+  gap: 0.25rem;
+}
+.star {
+  font-size: 1.5rem;
+  color: #d1d5db;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  user-select: none;
+}
+.star:hover {
+  color: #fbbf24;
+  transform: scale(1.1);
+}
+.star.filled {
+  color: #fbbf24;
+}
+.rating-text {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-style: italic;
+}
 @media (max-width: 768px) {
     .dashboard-container {
         padding: 1rem;
