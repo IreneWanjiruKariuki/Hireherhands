@@ -268,3 +268,7 @@ function clearSearch() {
     document.getElementById('clientDetails').innerHTML = '<div class="no-selection">Select a client to view details and job history</div>';
     displayClients();
 }
+function updateClientCount() {
+    const clientCount = document.getElementById('clientCount');
+    clientCount.textContent = `Showing ${filteredClients.length} client${filteredClients.length !== 1 ? 's' : ''}`;
+}
