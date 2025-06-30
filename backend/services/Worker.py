@@ -1,6 +1,5 @@
 from models.Worker import Worker
 from models.Client import Client
-from models.WorkerSkills import WorkerSkill
 from models.Skill import Skill
 
 from extensions import db

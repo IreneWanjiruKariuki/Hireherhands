@@ -78,12 +78,22 @@ class AuthenticationService:
                 if worker:
                     worker_data = worker.to_dict(only=("worker_id", "bio", "hourly_rate", "location", "status", "is_verified", "is_approved"))
                     client_data["worker"] = worker_data
-                return {
+                user = {
+                    "client_id": client.client_id,
+                    "fullname": client.fullname,
+                    "email": client.email,
+                    "phone": client.phone
+                }
+                if worker:
+                    user["worker_id"] = worker.worker_id
+                response_data = {
                     "message": "Client login successful!",
                     "access_token": token,
                     "role": claims["role"],  # "client" or "worker"
-                     "user": client_data
-                }, 200
+                    "user": user
+                }
+
+                return response_data, 200
 
             return {"error": "Invalid credentials"}, 401
 

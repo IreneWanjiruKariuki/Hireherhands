@@ -93,22 +93,26 @@ function showJobDetails(jobId) {
     let ratingSection = "";
     if (job.status === "complete") {
         const currentRating = job.workerRating || 0;
+        const currentFeedback = job.workerFeedback || "";
         ratingSection = `
-            <div class="detail-item">
-                <label>Rate Worker:</label>
-                <div class="rating-section">
-                    <div class="star-rating" data-job-id="${job.id}">
-                        ${[1, 2, 3, 4, 5].map(star => `
-                            <span class="star ${star <= currentRating ? "filled" : ""}" 
-                                data-rating="${star}" 
-                                onclick="setRating(${job.id}, ${star})">★</span>
-                        `).join("")}
-                    </div>
-                    <span class="rating-text">${currentRating > 0 ? `${currentRating}/5 stars` : "Click to rate"}</span>
+        <div class="detail-item">
+            <label>Rate Worker:</label>
+            <div class="rating-section">
+                <div class="star-rating" data-job-id="${job.id}">
+                    ${[1, 2, 3, 4, 5].map(star => `
+                        <span class="star ${star <= currentRating ? "filled" : ""}" 
+                              data-rating="${star}" 
+                              onclick="setRating(${job.id}, ${star})">★</span>
+                    `).join("")}
                 </div>
+                <textarea id="ratingFeedback-${job.id}" placeholder="Leave feedback (optional)">${currentFeedback}</textarea>
+                <button onclick="submitRating(${job.id})" class="submit-rating-btn">Submit</button>
+                <span class="rating-text">${currentRating > 0 ? `${currentRating}/5 stars` : "Click to rate"}</span>
             </div>
-        `;
-    }
+        </div>
+    `;
+}
+
 
     content.innerHTML = `
     <div class="job-detail-grid">
@@ -225,6 +229,8 @@ async function fetchClientJobs() {
                 scheduledDate: job.scheduled_date,
                 scheduledTime: job.scheduled_time,
                 assignedWorker: job.worker_id ? "Worker Assigned" : "Not assigned yet",
+                assignedWorkerId: job.worker_id || null
+
             }));
 
             if (injectedJob) {
@@ -296,4 +302,56 @@ document.addEventListener('DOMContentLoaded', () => {
     updateWelcomeMessage();
     fetchClientJobs();
 });
+function setRating(jobId, stars) {
+    const ratingContainer = document.querySelector(`.star-rating[data-job-id="${jobId}"]`);
+    if (!ratingContainer) return;
+    ratingContainer.setAttribute("data-selected", stars);
+    [...ratingContainer.querySelectorAll('.star')].forEach((el, i) => {
+        el.classList.toggle("filled", i < stars);
+    });
+}
 
+async function submitRating(jobId) {
+    const token = localStorage.getItem('access_token');
+    const job = window.allJobs.find(j => j.id === jobId);
+    if (!job || !job.assignedWorkerId) return alert("Invalid job or no worker assigned.");
+
+    const ratingContainer = document.querySelector(`.star-rating[data-job-id="${jobId}"]`);
+    const selectedStars = parseInt(ratingContainer?.getAttribute("data-selected")) || 0;
+    const feedback = document.getElementById(`ratingFeedback-${jobId}`).value.trim();
+
+    if (selectedStars < 1 || selectedStars > 5) {
+        return alert("Please select a valid rating.");
+    }
+
+    const payload = {
+        receiver_id: job.assignedWorkerId,
+        receiver_type: "worker",
+        stars: selectedStars,
+        feedback: feedback
+    };
+
+    try {
+        const res = await fetch(`${BASE_URL}/jobs/${jobId}/rate`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.error || "Failed to submit rating");
+        }
+
+        alert("Thank you for your rating!");
+        job.workerRating = selectedStars;
+        job.workerFeedback = feedback;
+        showJobDetails(jobId);
+    } catch (err) {
+        console.error(err);
+        alert("Could not submit rating.");
+    }
+}

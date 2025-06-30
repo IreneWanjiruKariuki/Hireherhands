@@ -5,21 +5,29 @@ class SkillService:
     @staticmethod
     def get_all_skills():
         skills = Skill.query.all()
-        return {"skills": [skill.to_dict() for skill in skills]}, 200
+        return {
+            "skills": [
+                {
+                    "skill_id": skill.skill_id,
+                    "skill_name": skill.skill_name,
+                    "category": skill.category
+                } for skill in skills
+                ]
+            }, 200
 
     @staticmethod
     def get_skill_by_id(skill_id):
         skill = Skill.query.get(skill_id)
         if not skill:
             return {"error": "Skill not found"}, 404
-        return {"skill": skill.to_dict()}, 200
+        return {"skill": skill.serialize()}, 200
 
     @staticmethod
     def get_skill_by_name(name):
         skill = Skill.query.filter_by(skill_name=name).first()
         if not skill:
             return {"error": "Skill not found"}, 404
-        return {"skill": skill.to_dict()}, 200
+        return {"skill": skill.serialize()}, 200
 
     @staticmethod
     def create_skill(name):
