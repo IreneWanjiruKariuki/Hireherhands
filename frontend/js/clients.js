@@ -272,3 +272,13 @@ function updateClientCount() {
     const clientCount = document.getElementById('clientCount');
     clientCount.textContent = `Showing ${filteredClients.length} client${filteredClients.length !== 1 ? 's' : ''}`;
 }
+function updatePagination() {
+    const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
+    const pageInfo = document.getElementById('pageInfo');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    
+    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+    prevBtn.disabled = currentPage === 1;
+    nextBtn.disabled = currentPage === totalPages || totalPages === 0;
+}
