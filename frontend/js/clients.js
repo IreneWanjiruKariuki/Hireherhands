@@ -12,7 +12,7 @@ const clientsData = [
         jobHistory: [
             {
                 id: 101,
-                title: "Painting",
+                category: "Painting",
                 description: "Full wall painting for office renovation",
                 startDate: "2024-01-15",
                 endDate: "2024-02-28",
@@ -21,7 +21,7 @@ const clientsData = [
             },
             {
                 id: 102,
-                title: "plumbing",
+                category: "plumbing",
                 description: "Installation of new plumbing system in office",
                 startDate: "2024-03-01",
                 endDate: "2024-05-15",
@@ -42,7 +42,7 @@ const clientsData = [
         jobHistory: [
             {
                 id: 201,
-                title: "Painting",
+                category: "Painting",
                 description: "Full wall painting for office renovation",
                 startDate: "2023-11-01",
                 endDate: "2023-12-15",
@@ -51,7 +51,7 @@ const clientsData = [
             },
             {
                 id: 202,
-                title: "plumbing",
+                category: "plumbing",
                 description: "Installation of new plumbing system in office",
                 startDate: "2024-01-10",
                 endDate: "2024-01-25",
@@ -72,7 +72,7 @@ const clientsData = [
         jobHistory: [
             {
                 id: 301,
-                title: "plumbing",
+                category: "plumbing",
                 description: "Installation of new plumbing system in office",
                 startDate: "2023-08-01",
                 endDate: "2023-10-30",
@@ -93,7 +93,7 @@ const clientsData = [
         jobHistory: [
             {
                 id: 401,
-                title: "Painting",
+                category: "Painting",
                 description: "Full wall painting for office renovation",
                 startDate: "2023-09-15",
                 endDate: "2023-11-30",
@@ -102,7 +102,7 @@ const clientsData = [
             },
             {
                 id: 402,
-                title: "plumbing",
+                category: "plumbing",
                 description: "Installation of new plumbing system in office",
                 startDate: "2024-02-01",
                 endDate: "2024-04-15",
@@ -123,7 +123,7 @@ const clientsData = [
         jobHistory: [
             {
                 id: 501,
-                title: "Painting",
+                category: "Painting",
                 description: "Full wall painting for office renovation",
                 startDate: "2023-10-01",
                 endDate: "2023-12-20",
@@ -144,7 +144,7 @@ const clientsData = [
         jobHistory: [
             {
                 id: 601,
-                title: "plumbing",
+                category: "plumbing",
                 description: "Installation of new plumbing system in office",
                 startDate: "2024-01-05",
                 endDate: "2024-03-20",
@@ -209,10 +209,6 @@ function selectClient(clientId) {
                 <div class="detail-value">${client.phone}</div>
             </div>
             <div class="detail-item">
-                <div class="detail-label">Company</div>
-                <div class="detail-value">${client.company}</div>
-            </div>
-            <div class="detail-item">
                 <div class="detail-label">Registration Date</div>
                 <div class="detail-value">${new Date(client.registrationDate).toLocaleDateString()}</div>
             </div>
@@ -225,8 +221,25 @@ function selectClient(clientId) {
         </div>
         <div class="detail-item">
             <div class="detail-label">Address</div>
-            <div class="detail-value">${client.address}</div>
+            <div class="detail-value">${client.locatio}</div>
         </div>
     </div>
-    `
+    <div class="detail-section job-history">
+        <h3>Job History (${client.jobHistory.length} jobs)</h3>
+        ${client.jobHistory.map(job => `
+            <div class="job-item">
+                <div class="job-header">
+                    <div class="job-title">${job.category}</div>
+                    <div class="job-date">${new Date(job.startDate).toLocaleDateString()} - ${job.endDate ? new Date(job.endDate).toLocaleDateString() : 'Ongoing'}</div>
+                </div>
+                <div class="job-description">${job.description}</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+                    <span class="job-status job-${job.status}">${job.status}</span>
+                    <strong>${job.value}</strong>
+                </div>
+            </div>
+        `).join('')}
+    </div>
+    `;
+    displayClients();
 }
