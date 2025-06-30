@@ -12,21 +12,30 @@
             <h1>Client Management</h1>
             <a href="admin_dash.html" class="back-btn">← Back to Dashboard</a>
         </div>
-        <div class="container">
-            <div class="search-section">
+    </header>
+    <div class="container">
+        <div class="search-section">
             <div class="search-box">
                 <input type="text" id="searchInput" class="search-input" placeholder="Search clients by name, email, or company...">
                 <button onclick="searchClients()" class="search-btn">Search</button>
                 <button onclick="clearSearch()" class="clear-btn">Clear</button>
             </div>
-            <div class="clients-section">
-                <div class="section-header">
+        </div>
+        <div class="clients-section">
+            <div class="section-header">
                 <h2>Client Directory</h2>
                 <div class="client-count" id="clientCount">Loading clients...</div>
             </div>
+                
+            <div class="clients-grid">
+                <div class="clients-list" id="clientsList"></div>
+                <div class="client-details" id="clientDetails">
+                    <div class="no-selection">
+                        Select a client to view details and job history
+                    </div>
+                </div>
             </div>
         </div>
-        </div>
-    </header>
+    </div> 
 </body>
 </html>

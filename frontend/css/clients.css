@@ -115,3 +115,25 @@ body {
     color: #6c757d;
     font-size: 0.9rem;
 }
+.clients-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    min-height: 600px;
+}
+.clients-list {
+    border-right: 1px solid #e9ecef;
+    max-height: 600px;
+    overflow-y: auto;
+}
+.client-details {
+    padding: 2rem;
+    overflow-y: auto;
+}
+.no-selection {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #6c757d;
+    font-style: italic;
+}
