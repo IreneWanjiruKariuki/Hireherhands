@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from flask import request
-from flask_jwt_extended import jwt_required, get_jwt
+from flask_jwt_extended import jwt_required, get_jwt, get_jwt_identity
 from services.Job import JobService
 
 # POST /jobs - create job (client only)
@@ -84,7 +84,8 @@ class ClientConfirmCompletionResource(Resource):
 class ClientJobHistoryResource(Resource):
     @jwt_required()
     def get(self):
-        claims = get_jwt_identity()
+        claims = get_jwt()
+        client_id = claims.get("client_id")
         return JobService.get_client_job_history(client_id)
 
 class WorkerJobHistoryResource(Resource):

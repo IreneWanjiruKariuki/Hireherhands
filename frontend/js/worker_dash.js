@@ -396,8 +396,7 @@ function completeJob(jobId) {
     console.log("Job completed:", jobId)
   }
 }
-<<<<<<< HEAD:frontend/js/worker-dash.js
-=======
+
 function viewJobDetails(jobId) {
   const job = jobsData.find((j) => j.id === jobId)
   if (job) {
@@ -551,4 +550,4 @@ function createJobCard(job) {
     </div>
   `;
 }*/
->>>>>>> 5356c7a91561c924e0b39cf8821ba8ac3f04762b:frontend/js/worker_dash.js
+

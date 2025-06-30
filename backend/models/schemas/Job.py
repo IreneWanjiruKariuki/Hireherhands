@@ -1,4 +1,5 @@
 from marshmallow import Schema, fields, validate
+from models.Job import JobStatus
 from models.schemas.Skill import SkillOutputSchema
 from datetime import date, time
 
@@ -24,5 +25,9 @@ class JobOutputSchema(Schema):
     location = fields.Str()
     scheduled_date = fields.Date()
     scheduled_time = fields.Time()
-    status = fields.Str()
+    status = fields.Method("get_status")
     created_at = fields.DateTime()
+
+    def get_status(self, obj):
+        # Ensures frontend gets a plain string like "open"
+        return obj.status.value if isinstance(obj.status, JobStatus) else str(obj.status)

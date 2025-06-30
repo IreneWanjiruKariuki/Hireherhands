@@ -32,7 +32,12 @@ class JobService:
         )
         db.session.add(job)
         db.session.commit()
-        return {'message': 'Job created successfully', 'job_id': job.job_id}, 201
+        #return {'message': 'Job created successfully', 'job_id': job.job_id}, 201
+        return {
+            'message': 'Job created successfully',
+            'job': job_output_schema.dump(job)
+            }, 201
+
 
     @staticmethod
     def matching_workers(job_id):

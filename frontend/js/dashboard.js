@@ -1,4 +1,18 @@
-const BASE_URL = 'http://localhost:5000';
+const BASE_URL = 'http://127.0.0.1:5000';
+
+// Error display helper
+function showError(message) {
+    const errorBox = document.getElementById('errorMessage');
+    if (errorBox) {
+        errorBox.textContent = message;
+        errorBox.style.display = 'block';
+
+        setTimeout(() => {
+            errorBox.style.display = 'none';
+        }, 10000);
+    }
+    console.error(message);
+}
 
 function getCurrentUser() {
     const userData = localStorage.getItem('currentUser');
@@ -42,138 +56,99 @@ function createJobCard(job) {
         </div>
     `;
 }
+
 function showJobDetails(jobId) {
-    const job = window.allJobs.find((j) => j.id == jobId)
-  if (!job) return
+    const job = window.allJobs.find((j) => j.id == jobId);
+    if (!job) return;
 
-  const popup = document.getElementById("jobDetailsPopup")
-  const content = document.getElementById("jobDetailsContent")
+    const popup = document.getElementById("jobDetailsPopup");
+    const content = document.getElementById("jobDetailsContent");
 
-  const scheduledDate = job.scheduledDate
-    ? new Date(job.scheduledDate).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
-    : "Not scheduled"
+    const scheduledDate = job.scheduledDate
+        ? new Date(job.scheduledDate).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+        })
+        : "Not scheduled";
 
-  const scheduledTime = job.scheduledTime || "Not specified"
+    const scheduledTime = job.scheduledTime || "Not specified";
 
-  //message icon
-  let assignedWorkerSection = ""
-  if (job.assignedWorker && job.assignedWorker !== "Not assigned yet") {
-    assignedWorkerSection = `
-          <div class="worker-info">
-              <span>${job.assignedWorker}</span>
-              <a href="message.html?worker=${encodeURIComponent(job.assignedWorker)}" class="message-btn" title="Send Message to Worker">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                  </svg>
-              </a>
-          </div>
-      `
-  } else {
-    assignedWorkerSection = `<span>${job.assignedWorker || "Not assigned yet"}</span>`
-  }
+    let assignedWorkerSection = "";
+    if (job.assignedWorker && job.assignedWorker !== "Not assigned yet") {
+        assignedWorkerSection = `
+            <div class="worker-info">
+                <span>${job.assignedWorker}</span>
+                <a href="message.html?worker=${encodeURIComponent(job.assignedWorker)}" class="message-btn" title="Send Message to Worker">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                </a>
+            </div>
+        `;
+    } else {
+        assignedWorkerSection = `<span>${job.assignedWorker || "Not assigned yet"}</span>`;
+    }
 
-  //rating section for completed jobs
-  let ratingSection = ""
-  if (job.status === "complete") {
-    const currentRating = job.workerRating || 0
-    ratingSection = `
-          <div class="detail-item">
-              <label>Rate Worker:</label>
-              <div class="rating-section">
-                  <div class="star-rating" data-job-id="${job.id}">
-                      ${[1, 2, 3, 4, 5]
-                        .map(
-                          (star) => `
-                          <span class="star ${star <= currentRating ? "filled" : ""}" 
+    let ratingSection = "";
+    if (job.status === "complete") {
+        const currentRating = job.workerRating || 0;
+        ratingSection = `
+            <div class="detail-item">
+                <label>Rate Worker:</label>
+                <div class="rating-section">
+                    <div class="star-rating" data-job-id="${job.id}">
+                        ${[1, 2, 3, 4, 5].map(star => `
+                            <span class="star ${star <= currentRating ? "filled" : ""}" 
                                 data-rating="${star}" 
                                 onclick="setRating(${job.id}, ${star})">★</span>
-                      `,
-                        )
-                        .join("")}
-                  </div>
-                  <span class="rating-text">${currentRating > 0 ? `${currentRating}/5 stars` : "Click to rate"}</span>
-              </div>
-          </div>
-      `
-  }
+                        `).join("")}
+                    </div>
+                    <span class="rating-text">${currentRating > 0 ? `${currentRating}/5 stars` : "Click to rate"}</span>
+                </div>
+            </div>
+        `;
+    }
 
-  content.innerHTML = `
-  <div class="job-detail-grid">
-    <div class="detail-item">
-        <label>Job Title:</label>
-        <span>${job.title}</span>
+    content.innerHTML = `
+    <div class="job-detail-grid">
+        <div class="detail-item"><label>Job Title:</label><span>${job.title}</span></div>
+        <div class="detail-item"><label>Category:</label><span>${job.category || "General"}</span></div>
+        <div class="detail-item"><label>Description:</label><span>${job.description}</span></div>
+        <div class="detail-item"><label>Location:</label><span>${job.location || "Not specified"}</span></div>
+        <div class="detail-item"><label>Duration:</label><span>${job.duration || "Not specified"}</span></div>
+        <div class="detail-item"><label>Budget:</label><span>${job.budget}</span></div>
+        <div class="detail-item"><label>Scheduled Date:</label><span>${scheduledDate}</span></div>
+        <div class="detail-item"><label>Scheduled Time:</label><span>${scheduledTime}</span></div>
+        <div class="detail-item"><label>Status:</label><span class="status-badge status-${job.status}">${formatStatus(job.status)}</span></div>
+        <div class="detail-item"><label>Assigned Worker:</label>${assignedWorkerSection}</div>
+        <div class="detail-item"><label>Date Posted:</label><span>${new Date(job.datePosted).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span></div>
+        ${ratingSection}
     </div>
-    <div class="detail-item">
-        <label>Category:</label>
-        <span>${job.category || "General"}</span>
-    </div>
-    <div class="detail-item">
-        <label>Description:</label>
-        <span>${job.description}</span>
-    </div>
-    <div class="detail-item">
-        <label>Location:</label>
-        <span>${job.location || "Not specified"}</span>
-    </div>
-    <div class="detail-item">
-        <label>Duration:</label>
-        <span>${job.duration || "Not specified"}</span>
-    </div>
-    <div class="detail-item">
-        <label>Budget:</label>
-        <span>${job.budget}</span>
-    </div>
-    <div class="detail-item">
-        <label>Scheduled Date:</label>
-        <span>${scheduledDate}</span>
-    </div>
-    <div class="detail-item">
-        <label>Scheduled Time:</label>
-        <span>${scheduledTime}</span>
-    </div>
-    <div class="detail-item">
-        <label>Status:</label>
-        <span class="status-badge status-${job.status}">${job.status.charAt(0).toUpperCase() + job.status.slice(1)}</span>
-        </div>
-        <div class="detail-item">
-            <label>Assigned Worker:</label>
-            <span>${job.assignedWorker || "Not assigned yet"}</span>
-        </div>
-        <div class="detail-item">
-            <label>Date Posted:</label>
-            <span>${new Date(job.datePosted).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-            })}</span>
-        </div>
-  </div>
-  `
-  popup.style.display = "flex"
-  document.body.style.overflow = "hidden"
+    `;
+
+    popup.style.display = "flex";
+    document.body.style.overflow = "hidden";
 }
+
 function closeJobDetails() {
-  const popup = document.getElementById("jobDetailsPopup")
-  popup.style.display = "none"
-  document.body.style.overflow = "auto"
+    const popup = document.getElementById("jobDetailsPopup");
+    popup.style.display = "none";
+    document.body.style.overflow = "auto";
 }
-// Close popup when clicking outside
+
 document.addEventListener("click", (event) => {
-  const popup = document.getElementById("jobDetailsPopup")
-  if (event.target === popup) {
-    closeJobDetails()
-  }
-})
-// Close popup with esc key
+    const popup = document.getElementById("jobDetailsPopup");
+    if (event.target === popup) {
+        closeJobDetails();
+    }
+});
+
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") {
-    closeJobDetails()
-  }
-})
+    if (event.key === "Escape") {
+        closeJobDetails();
+    }
+});
 
 function displayJobs(jobs = []) {
     const jobsContainer = document.getElementById('jobsContainer');
@@ -188,19 +163,43 @@ function displayJobs(jobs = []) {
         return;
     }
 
-    const jobsHTML = jobs.map(job => createJobCard(job)).join('');
+    let jobsHTML = '';
+    for (const job of jobs) {
+        try {
+            if (!job.title) throw new Error(`Missing job title for job ID: ${job.id}`);
+            jobsHTML += createJobCard(job);
+        } catch (err) {
+            showError(`Error displaying job: ${err.message}`);
+        }
+    }
+
     jobsContainer.innerHTML = jobsHTML;
 }
 
 async function fetchClientJobs() {
     const token = localStorage.getItem('access_token');
+    const user = getCurrentUser();
 
-    if (!user || !user.token) {
-        console.error("User not logged in or token missing.");
+    if (!user || !token) {
+        showError("User not logged in or token missing.");
         return displayJobs([]);
     }
 
     try {
+        const injectedJob = localStorage.getItem('lastPostedJobData');
+        let jobs = [];
+
+        if (injectedJob) {
+            const newJob = JSON.parse(injectedJob);
+            jobs = [{
+                ...newJob,
+                status: 'open',
+                budget: `KSh ${parseInt(newJob.budget)}`,
+                datePosted: newJob.datePosted || new Date().toISOString()
+            }];
+            localStorage.removeItem('lastPostedJobData');
+        }
+
         const response = await fetch(`${BASE_URL}/client/jobs`, {
             method: "GET",
             headers: {
@@ -209,45 +208,43 @@ async function fetchClientJobs() {
             }
         });
 
-        if (!response.ok) throw new Error("Failed to fetch jobs.");
-        
-        const data = await response.json();
-        let jobs =  data.jobs.map(job => ({
-            id: job.job_id,
-            title: job.skill?.name || "Untitled Job",
-            description: job.description,
-            budget: `KSh ${job.budget}`,
-            status: job.status.toLowerCase(),
-            datePosted: job.created_at,
-            location: job.location,
-            category: job.category || job.skill?.category,
-            duration: job.duration,
-            scheduledDate: job.scheduled_date,
-            scheduledTime: job.scheduled_time,
-            assignedWorker: job.assigned_worker_name,
-        }));
+        if (response.ok) {
+            const data = await response.json();
+            const apiJobs = data.jobs.map(job => ({
+                id: job.job_id,
+                title: job.skill?.skill_name || "Untitled Job",
+                description: job.description,
+                budget: `KSh ${job.budget}`,
+                status: typeof job.status === 'object' && job.status !== null
+                ? job.status.value.toLowerCase()
+                : (job.status || 'unknown').toLowerCase(),
+                datePosted: job.created_at,
+                location: job.location,
+                category: job.skill?.category,
+                duration: job.duration,
+                scheduledDate: job.scheduled_date,
+                scheduledTime: job.scheduled_time,
+                assignedWorker: job.worker_id ? "Worker Assigned" : "Not assigned yet",
+            }));
 
-        // Inject newly posted job manually if it exists
-        const injectedJob = localStorage.getItem('lastPostedJobData');
-        if (injectedJob) {
-            const job = JSON.parse(injectedJob);
-            const exists = jobs.find(j => j.id === job.id);
-            if (!exists) {
-                jobs.unshift({
-                    ...job,
-                    status: 'open',
-                    budget: `KSh ${parseInt(job.budget)}`, // clean KSh format
-                    datePosted: job.datePosted || new Date().toISOString()
-                });
+            if (injectedJob) {
+                const newJobId = JSON.parse(injectedJob).id;
+                if (!apiJobs.some(j => j.id === newJobId)) {
+                    jobs = [...jobs, ...apiJobs];
+                } else {
+                    jobs = apiJobs;
+                }
+            } else {
+                jobs = apiJobs;
             }
-            localStorage.removeItem('lastPostedJobData');
         }
+
         window.allJobs = jobs;
         displayJobs(jobs);
 
     } catch (err) {
-        console.error("Error fetching jobs:", err);
-        displayJobs([]);
+        showError(`Failed to fetch jobs: ${err.message}`);
+        displayJobs(window.allJobs || []);
     }
 }
 
@@ -286,8 +283,7 @@ async function openDetailsModal(jobId) {
         document.getElementById('jobDetailsModal').style.display = 'block';
 
     } catch (err) {
-        console.error("Error loading job details:", err);
-        alert("Could not load job details.");
+        showError(`Error loading job details: ${err.message}`);
     }
 }
 
@@ -300,3 +296,4 @@ document.addEventListener('DOMContentLoaded', () => {
     updateWelcomeMessage();
     fetchClientJobs();
 });
+

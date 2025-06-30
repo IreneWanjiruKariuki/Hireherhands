@@ -105,19 +105,22 @@ document.getElementById('jobPostingForm').addEventListener('submit', async funct
         }
 
         console.log("Job posted successfully:", data);
+        console.log("POST success", response);
 
         // Save for dashboard injection
         const postedJob = {
-            id: data.job_id,
+            id: data.job.job_id,
             title: selectedOption.textContent,
             description: jobData.description,
-            budget: `KSh ${jobData.budget}`,
-            status: 'open',
+            category: selectedOption.textContent.toLowerCase(),
+            budget: jobData.budget, 
+            status: (data.job.status || 'unknown').toLowerCase(),
             datePosted: new Date().toISOString(),
             location: jobData.location,
+            duration: jobData.duration,
+            scheduled_date: jobData.scheduled_date,
+            scheduled_time: jobData.scheduled_time
         };
-        localStorage.setItem('currentJobPosting', JSON.stringify(jobData));
-        localStorage.setItem('lastPostedJobId', data.job_id);
         localStorage.setItem('lastPostedJobData', JSON.stringify(postedJob));
 
         successMessage.style.display = 'block';
