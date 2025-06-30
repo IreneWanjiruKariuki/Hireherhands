@@ -154,3 +154,7 @@ const clientsData = [
         ]
     }
 ];
+let currentPage = 1;
+const itemsPerPage = 4;
+let filteredClients = [...clientsData];
+let selectedClientId = null;
