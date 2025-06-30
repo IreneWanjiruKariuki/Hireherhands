@@ -260,3 +260,11 @@ function searchClients() {
     document.getElementById('clientDetails').innerHTML = '<div class="no-selection">Select a client to view details and job history</div>';
     displayClients();
 }
+function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    filteredClients = [...clientsData];
+    currentPage = 1;
+    selectedClientId = null;
+    document.getElementById('clientDetails').innerHTML = '<div class="no-selection">Select a client to view details and job history</div>';
+    displayClients();
+}
