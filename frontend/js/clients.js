@@ -158,3 +158,30 @@ let currentPage = 1;
 const itemsPerPage = 4;
 let filteredClients = [...clientsData];
 let selectedClientId = null;
+
+function displayClients() {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const clientsToShow = filteredClients.slice(startIndex, endIndex);
+    
+    const clientsList = document.getElementById('clientsList');
+    
+    if (clientsToShow.length === 0) {
+        clientsList.innerHTML = '<div class="no-results">No clients found matching your search criteria.</div>';
+        updatePagination();
+        return;
+    }
+    
+    clientsList.innerHTML = clientsToShow.map(client => `
+        <div class="client-item ${selectedClientId === client.id ? 'active' : ''}" onclick="selectClient(${client.id})">
+            <div class="client-info">
+                <h4>${client.name}</h4>
+                <div class="client-meta">${client.company} • ${client.totalJobs} jobs</div>
+            </div>
+            <div class="client-status status-${client.status}">${client.status}</div>
+        </div>
+    `).join('');
+    
+    updateClientCount();
+    updatePagination();
+}

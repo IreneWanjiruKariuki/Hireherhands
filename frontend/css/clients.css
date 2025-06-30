@@ -168,3 +168,8 @@ body {
     color: #6c757d;
     font-size: 0.9rem;
 }
+.no-results {
+    text-align: center;
+    padding: 3rem;
+    color: #6c757d;
+}
