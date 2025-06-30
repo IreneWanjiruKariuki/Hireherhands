@@ -73,3 +73,34 @@ body {
     font-size: 0.95rem;
     line-height: 1.5;
 }
+.management-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    text-decoration: none;
+    color: #333;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+.management-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: rgba(222, 242, 201, 0.3);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+.management-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    border-color: rgba(222, 242, 201, 0.3);
+}
+.management-card:hover::before {
+    transform: scaleX(1);
+}
