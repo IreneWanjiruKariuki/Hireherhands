@@ -9,7 +9,7 @@ body {
     line-height: 1.6;
 }
 .header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #667eea 0%, #b0f3a5 100%);
     color: white;
     padding: 1.5rem 0;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
