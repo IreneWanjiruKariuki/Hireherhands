@@ -1,10 +1,13 @@
 from marshmallow import ValidationError
 from models.Job import Job, JobStatus
-from models.Worker import Worker
-from models.WorkerSkills import WorkerSkill
+from models.Worker import Worker, WorkerStatus
 from models.Skill import Skill
+from models.Rating import Rating
 from models.schemas.Job import JobCreateSchema, JobOutputSchema
+from models.association import worker_skills
+
 from sqlalchemy.orm import joinedload
+from sqlalchemy import func
 from extensions import db
 
 job_input_schema = JobCreateSchema()
@@ -44,24 +47,42 @@ class JobService:
         job = Job.query.get(job_id)
         if not job:
             return {'error': 'Job not found'}, 404
-        
-        #finding the workers with the skill
-        workers = Worker.query.join(WorkerSkill).filter(
-            WorkerSkill.skill_id == job.skill_id,
-            Worker.status == 'available',
-            Worker.is_approved == True 
-        ).all()
+        workers = (
+            Worker.query
+            .options(joinedload(Worker.skills))
+            .filter(
+                Worker.skills.any(Skill.skill_id == job.skill_id),
+                Worker.status == WorkerStatus.AVAILABLE,
+                Worker.is_approved == True
+            )
+            .all()
+        )
 
-        worker_list= [
-            {
+
+        worker_list = []
+        for worker in workers:
+            skills = [s.skill_name for s in worker.skills]
+            categories = [s.category for s in worker.skills if s.category]
+            avg_rating = db.session.query(func.avg(Rating.stars))\
+                .filter_by(receiver_id=worker.worker_id, receiver_type="worker")\
+                .scalar() or 0
+            review_count = db.session.query(func.count(Rating.rating_id))\
+                .filter_by(receiver_id=worker.worker_id, receiver_type="worker")\
+                .scalar()
+
+            worker_list.append({
                 'worker_id': worker.worker_id,
+                'name': worker.client.fullname,
                 'bio': worker.bio,
                 'location': worker.location,
                 'hourly_rate': worker.hourly_rate,
-                'rating': worker.rating
-            } for worker in workers
-        ]
-        return {'job_id': job.job_id, 'matched_workers': worker_list}, 200
+                'rating': round(avg_rating, 1),
+                'reviews': review_count,
+                'skills': skills,
+                'category': categories[0].lower() if categories else 'general'
+            })
+        return {'matched_workers': worker_list}, 200
+
 
     @staticmethod
     def request_worker(job_id, worker_id):
