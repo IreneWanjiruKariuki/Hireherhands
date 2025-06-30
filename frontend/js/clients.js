@@ -295,3 +295,8 @@ function nextPage() {
         displayClients();
     }
 }
+document.getElementById('searchInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        searchClients();
+    }
+});
