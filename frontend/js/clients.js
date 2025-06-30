@@ -243,3 +243,20 @@ function selectClient(clientId) {
     `;
     displayClients();
 }
+function searchClients() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+    
+    if (searchTerm === '') {
+        filteredClients = [...clientsData];
+    } else {
+        filteredClients = clientsData.filter(client => 
+            client.name.toLowerCase().includes(searchTerm) ||
+            client.email.toLowerCase().includes(searchTerm) 
+        );
+    }
+    
+    currentPage = 1;
+    selectedClientId = null;
+    document.getElementById('clientDetails').innerHTML = '<div class="no-selection">Select a client to view details and job history</div>';
+    displayClients();
+}
