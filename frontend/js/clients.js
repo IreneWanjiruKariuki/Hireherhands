@@ -282,3 +282,16 @@ function updatePagination() {
     prevBtn.disabled = currentPage === 1;
     nextBtn.disabled = currentPage === totalPages || totalPages === 0;
 }
+function previousPage() {
+    if (currentPage > 1) {
+        currentPage--;
+        displayClients();
+    }
+}
+function nextPage() {
+    const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
+    if (currentPage < totalPages) {
+        currentPage++;
+        displayClients();
+    }
+}
