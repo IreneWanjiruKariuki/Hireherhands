@@ -192,4 +192,41 @@ function selectClient(clientId) {
     if (!client) return;
     
     const clientDetails = document.getElementById('clientDetails');
+    clientDetails.innerHTML = `
+    <div class="detail-section">
+        <h3>Client Information</h3>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <div class="detail-label">Full Name</div>
+                <div class="detail-value">${client.name}</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Email</div>
+                <div class="detail-value">${client.email}</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Phone</div>
+                <div class="detail-value">${client.phone}</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Company</div>
+                <div class="detail-value">${client.company}</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Registration Date</div>
+                <div class="detail-value">${new Date(client.registrationDate).toLocaleDateString()}</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Status</div>
+                <div class="detail-value">
+                    <span class="client-status status-${client.status}">${client.status}</span>
+                </div>
+            </div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Address</div>
+            <div class="detail-value">${client.address}</div>
+        </div>
+    </div>
+    `
 }
