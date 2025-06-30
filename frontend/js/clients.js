@@ -185,3 +185,11 @@ function displayClients() {
     updateClientCount();
     updatePagination();
 }
+function selectClient(clientId) {
+    selectedClientId = clientId;
+    const client = clientsData.find(c => c.id === clientId);
+    
+    if (!client) return;
+    
+    const clientDetails = document.getElementById('clientDetails');
+}
