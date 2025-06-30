@@ -273,3 +273,15 @@ body {
     font-weight: 600;
     text-transform: uppercase;
 }
+.job-completed {
+    background: #d4edda;
+    color: #155724;
+}
+.job-ongoing {
+    background: #fff3cd;
+    color: #856404;
+}
+.job-cancelled {
+    background: #f8d7da;
+    color: #721c24;
+}
