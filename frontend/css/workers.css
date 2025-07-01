@@ -136,3 +136,29 @@ body {
     color: #2c3e50;
     margin-bottom: 0.5rem;
 }
+.worker-count {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+.workers-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    min-height: 600px;
+}
+.workers-list {
+    border-right: 1px solid #e9ecef;
+    max-height: 600px;
+    overflow-y: auto;
+}
+.worker-details {
+    padding: 2rem;
+    overflow-y: auto;
+}
+.no-selection {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #6c757d;
+    font-style: italic;
+}
