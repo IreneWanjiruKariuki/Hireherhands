@@ -121,3 +121,18 @@ body {
     border-color: #667eea;
     color: #667eea;
 }
+.workers-section {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+.section-header {
+    background: rgba(222, 242, 201, 0.3);
+    padding: 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+}
+.section-header h2 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
