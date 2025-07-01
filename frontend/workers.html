@@ -20,6 +20,11 @@
                 <button onclick="searchWorkers()" class="search-btn">Search</button>
                 <button onclick="clearSearch()" class="clear-btn">Clear</button>
             </div>
+            <div class="filter-tabs">
+                <div class="filter-tab active" onclick="setFilter('requests')">Requests</div>
+                <div class="filter-tab" onclick="setFilter('approved')">Approved</div>
+                <div class="filter-tab" onclick="setFilter('rejected')">Rejected</div>
+            </div>
         </div>
     </div>
 </body>
