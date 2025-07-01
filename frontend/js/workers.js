@@ -155,3 +155,8 @@ const workersData = [
         ]
     }
 ];
+let currentFilter = 'requests';
+let currentPage = 1;
+const itemsPerPage = 4;
+let filteredWorkers = [];
+let selectedWorkerId = null;
