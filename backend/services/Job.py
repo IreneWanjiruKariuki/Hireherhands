@@ -143,14 +143,15 @@ class JobService:
             return {'error': 'Job not found'}, 404
         if job.worker_id != worker_id:
             return {'error': 'Unauthorized worker'}, 403
-
-        job.worker_completion_confirmed = True
+        
+        job.status = JobStatus.WORKER_COMPLETED
+        job.worker_completion_confirmed = True  
         db.session.commit()
-
         return {
             'message': 'Worker has marked job as complete, waiting for client confirmation',
             'job': job_output_schema.dump(job)
         }, 200
+
 
     @staticmethod
     def client_confirm_completion(job_id, client_id):
@@ -162,8 +163,8 @@ class JobService:
        if not job.worker_completion_confirmed:
         return {'error': 'Worker has not marked job complete yet'}, 400
 
-       job.client_completion_confirmed = True
        job.status = JobStatus.COMPLETED
+       job.client_completion_confirmed = True
        db.session.commit()
 
        return {
@@ -185,7 +186,6 @@ class JobService:
             'jobs': job_output_many.dump(jobs)
         }, 200
 
-
     @staticmethod
     def get_worker_job_history(worker_id):
         jobs = (
@@ -195,10 +195,38 @@ class JobService:
             .order_by(Job.created_at.desc())
             .all()
         )
+        transformed = []
+        for job in jobs:
+            avg_rating = db.session.query(func.avg(Rating.stars))\
+                .filter_by(receiver_id=job.client_id, receiver_type="client")\
+                .scalar() or 0
+                
+            feedbacks = db.session.query(func.count(Rating.rating_id))\
+                .filter_by(receiver_id=job.client_id, receiver_type="client")\
+                .scalar()
+            transformed.append({
+                "id": job.job_id,
+                "job_id": job.job_id,
+                "title": job.skill.skill_name if job.skill else "Untitled Job",
+                "description": job.description,
+                "budget": f"KSh {int(job.budget)}",
+                "status": job.status.value.lower(),
+                "datePosted": job.created_at.isoformat(),
+                "location": job.location,
+                "category": job.skill.category if job.skill else None,
+                "duration": job.duration,
+                "scheduledDate": job.scheduled_date.isoformat() if job.scheduled_date else None,
+                "scheduledTime": str(job.scheduled_time) if job.scheduled_time else None,
+                "assignedClient": f"Client ID: {job.client_id}",
+                "assignedClientId": job.client_id,
+                "clientRating": round(avg_rating, 1),
+                "clientFeedbacks": feedbacks,
+            })
         return {
-            'message': f'{len(jobs)} jobs found for worker',
-            'jobs': job_output_many.dump(jobs)
+            "message": f"{len(transformed)} jobs found for worker",
+            "jobs": transformed
         }, 200
+
 
     @staticmethod
     def get_worker_requested_jobs(worker_id):
