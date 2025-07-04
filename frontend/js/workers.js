@@ -160,3 +160,27 @@ let currentPage = 1;
 const itemsPerPage = 4;
 let filteredWorkers = [];
 let selectedWorkerId = null;
+
+function setFilter(status) {
+    currentFilter = status;
+    currentPage = 1;
+    
+    // Update active tab
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    // Update section title
+    const titles ={
+        'requests': 'Worker Requests',
+        'approved': 'Approved Workers',
+        'rejected': 'Rejected Workers'
+    };
+    document.getElementById('sectionTitle').textContent = titles[status];
+    
+    selectedWorkerId = null;
+    document.getElementById('workerDetails').innerHTML = '<div class="no-selection">Select a worker to view details</div>';
+    
+    filterAndDisplayWorkers();
+}
