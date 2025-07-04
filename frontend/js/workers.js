@@ -184,3 +184,18 @@ function setFilter(status) {
     
     filterAndDisplayWorkers();
 }
+function filterAndDisplayWorkers() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+    let workers = workersData.filter(worker => worker.status === currentFilter);
+
+    if (searchTerm !== '') {
+        workers = workers.filter(worker => 
+            worker.name.toLowerCase().includes(searchTerm) ||
+            worker.email.toLowerCase().includes(searchTerm) ||
+            worker.skills.some(skill => skill.toLowerCase().includes(searchTerm))
+        );
+    }
+    
+    filteredWorkers = workers;
+    displayWorkers();
+}
