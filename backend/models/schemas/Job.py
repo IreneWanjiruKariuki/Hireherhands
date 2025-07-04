@@ -22,12 +22,22 @@ class JobOutputSchema(Schema):
     skill = fields.Nested(SkillOutputSchema)
     description = fields.Str()
     budget = fields.Float()
+    duration = fields.Str()
     location = fields.Str()
     scheduled_date = fields.Date()
     scheduled_time = fields.Time()
-    status = fields.Method("get_status")
+    status = fields.Method("get_status", deserialize="load_status")
     created_at = fields.DateTime()
+    worker_completion_confirmed = fields.Boolean()
+    client_completion_confirmed = fields.Boolean()
+
 
     def get_status(self, obj):
         # Ensures frontend gets a plain string like "open"
         return obj.status.value if isinstance(obj.status, JobStatus) else str(obj.status)
+    def load_status(self, value):
+        try:
+            return JobStatus(value.lower())
+        except ValueError:
+            raise ValidationError(f"Invalid status: {value}")
+

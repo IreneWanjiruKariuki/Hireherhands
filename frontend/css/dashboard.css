@@ -487,3 +487,62 @@
         font-weight: 700;
     }
 }
+.action-btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    margin-right: 8px;
+}
+
+.action-btn.primary {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.action-btn.primary:hover {
+    background-color: #3e8e41;
+}
+
+.job-actions {
+    display: flex;
+    margin-top: 12px;
+}
+.job-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.action-btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+.action-btn.primary {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.action-btn.primary:hover {
+    background-color: #3e8e41;
+}
+
+.view-details-btn {
+    background: none;
+    border: 1px solid #d1d5db;
+    color: #374151;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.view-details-btn:hover {
+    background: #f3f4f6;
+}

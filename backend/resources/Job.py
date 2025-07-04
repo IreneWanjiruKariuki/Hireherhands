@@ -13,7 +13,6 @@ class CreateJobResource(Resource):
             return {"error": "Only clients can create jobs"}, 403
         client_id = claims.get("client_id")
         return JobService.create_job(data, client_id)
-        return JobService.create_job(data, client_id)
 
 # GET /jobs/<job_id>/workers - get matching workers
 class MatchingWorkersResource(Resource):

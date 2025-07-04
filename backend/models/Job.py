@@ -8,6 +8,7 @@ class JobStatus(enum.Enum):
     OPEN = 'open'
     REQUESTED = 'requested'
     IN_PROGRESS = 'in_progress'
+    WORKER_COMPLETED = 'worker_completed'
     COMPLETED = 'completed'
 
 class Job(db.Model, SerializerMixin):
@@ -24,6 +25,7 @@ class Job(db.Model, SerializerMixin):
     scheduled_date = db.Column(db.Date, nullable=True)  # Date when the job is scheduled to start
     scheduled_time = db.Column(db.Time, nullable=True)  # Time when the job is scheduled to start
     status = db.Column(db.Enum(JobStatus), nullable=False, default=JobStatus.OPEN)
+    duration = db.Column(db.String(100), nullable=True)
     worker_completion_confirmed = db.Column(db.Boolean, default=False)
     client_completion_confirmed = db.Column(db.Boolean, default=False)
 
