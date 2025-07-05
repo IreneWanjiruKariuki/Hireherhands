@@ -383,3 +383,26 @@ body {
     color: #6c757d;
     font-size: 0.9rem;
 }
+@media (max-width: 768px) {
+    .workers-grid {
+        grid-template-columns: 1fr;
+    }
+    .workers-list {
+        border-right: none;
+        border-bottom: 1px solid #e9ecef;
+        max-height: 400px;
+    }
+    .search-box {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .search-input {
+        min-width: auto;
+    }
+    .filter-tabs {
+        justify-content: center;
+    }
+    .action-buttons {
+        flex-direction: column;
+    }
+}
