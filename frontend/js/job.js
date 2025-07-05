@@ -179,3 +179,12 @@ function clearSearch() {
     renderJobs();
     searchInput.focus();
 }
+function setupSearchInput() {
+    const searchInput = document.getElementById('searchInput');
+    
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            searchJob();
+        }
+    });
+}
