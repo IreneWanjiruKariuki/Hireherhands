@@ -413,7 +413,7 @@ function rejectWorker(workerId) {
     }
 }
 function viewCertification(filename) {
-    alert(`Opening certification file: ${filename}\n\nIn a real application, this would download or display the certification file.`);
+    alert(`Opening certification file: ${filename}\n\nIn this part you will allow the admin to download the file`);
 }
 function searchWorkers() {
     currentPage = 1;
