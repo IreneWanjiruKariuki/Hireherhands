@@ -313,4 +313,32 @@ function selectWorker(workerId) {
             </div>
         `;
     }
+    if (worker.status === 'requests' && worker.certifications) {
+        detailsHTML += `
+            <div class="detail-section">
+                <h3>Certifications</h3>
+                <div class="certifications-list">
+                    ${worker.certifications.map(cert => `
+                        <div class="certification-item">
+                            <div class="cert-info">
+                                <div class="cert-name">${cert.name}</div>
+                                <div class="cert-issuer">${cert.issuer} • ${new Date(cert.date).toLocaleDateString()}</div>
+                            </div>
+                            <button class="view-cert-btn" onclick="viewCertification('${cert.file}')">View</button>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+        detailsHTML += `
+            <div class="action-buttons">
+                <button class="approve-btn" onclick="approveWorker(${worker.id})">
+                    ✓ Approve Worker
+                </button>
+                <button class="reject-btn" onclick="rejectWorker(${worker.id})">
+                    ✗ Reject Worker
+                </button>
+            </div>
+        `;
+    }
 }
