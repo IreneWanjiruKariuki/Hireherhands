@@ -199,3 +199,42 @@ function filterAndDisplayWorkers() {
     filteredWorkers = workers;
     displayWorkers();
 }
+function displayWorkers() {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const workersToShow = filteredWorkers.slice(startIndex, endIndex);
+    
+    const workersList = document.getElementById('workersList');
+    
+    if (workersToShow.length === 0) {
+        if (currentFilter === 'requests' && filteredWorkers.length === 0) {
+            workersList.innerHTML = `
+                <div class="no-workers">
+                    <h3>No Requests</h3>
+                    <p>There are currently no worker requests to review.</p>
+                </div>
+            `;
+        } else {
+            workersList.innerHTML = `
+                <div class="no-workers">
+                    <h3>No Workers Found</h3>
+                    <p>No workers found matching your search criteria.</p>
+                </div>
+            `;
+        }
+        updateWorkerCount();
+        updatePagination();
+        return;
+    }
+    workersList.innerHTML = workersToShow.map(worker => `
+        <div class="worker-item ${selectedWorkerId === worker.id ? 'active' : ''}" onclick="selectWorker(${worker.id})">
+            <div class="worker-info">
+                <h4>${worker.name}</h4>
+                <div class="worker-meta">${worker.experience} experience • ${worker.skills.slice(0, 2).join(', ')}</div>
+                <div class="worker-status status-${worker.status}">${worker.status}</div>
+            </div>
+        </div>
+    `).join('');
+    updateWorkerCount();
+    updatePagination();
+}
