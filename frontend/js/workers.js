@@ -380,3 +380,18 @@ function generateStarRating(rating) {
     }
     return starsHTML;
 }
+function approveWorker(workerId) {
+    const worker = workersData.find(w => w.id === workerId);
+    if (worker) {
+        worker.status = 'approved';
+        worker.approvalDate = new Date().toISOString().split('T')[0];
+        worker.rating = 0;
+        worker.completedJobs = 0;
+        
+        alert(`${worker.name} has been approved!`);
+        
+        selectedWorkerId = null;
+        document.getElementById('workerDetails').innerHTML = '<div class="no-selection">Select a worker to view details</div>';
+        filterAndDisplayWorkers();
+    }
+}
