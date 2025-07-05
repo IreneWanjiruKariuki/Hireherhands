@@ -439,3 +439,20 @@ function updatePagination() {
     prevBtn.disabled = currentPage === 1;
     nextBtn.disabled = currentPage === totalPages || totalPages === 0;
 }
+function previousPage() {
+    if (currentPage > 1) {
+        currentPage--;
+        selectedWorkerId = null;
+        document.getElementById('workerDetails').innerHTML = '<div class="no-selection">Select a worker to view details</div>';
+        displayWorkers();
+    }
+}
+function nextPage() {
+    const totalPages = Math.ceil(filteredWorkers.length / itemsPerPage);
+    if (currentPage < totalPages) {
+        currentPage++;
+        selectedWorkerId = null;
+        document.getElementById('workerDetails').innerHTML = '<div class="no-selection">Select a worker to view details</div>';
+        displayWorkers();
+    }
+}
