@@ -80,3 +80,11 @@ const jobsData = [
         budget: "KSh 180,000"
     }
 ];
+let currentFilter = 'all';
+let currentSearchTerm = '';
+
+function highlightSearchTerm(text, searchTerm) {
+    if (!searchTerm) return text;
+    const regex = new RegExp(`(${searchTerm})`, 'gi');
+    return text.replace(regex, '<span class="highlight">$1</span>');
+}
