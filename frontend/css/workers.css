@@ -366,3 +366,20 @@ body {
 .reject-btn:hover {
     background: #c82333;
 }
+.star-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+.star {
+    color: #ffc107;
+    font-size: 1.2rem;
+}
+.star.empty {
+    color: #e9ecef;
+}
+.rating-text {
+    margin-left: 0.5rem;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
