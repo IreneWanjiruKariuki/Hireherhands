@@ -167,3 +167,15 @@ function renderJobs() {
 
     jobsGrid.innerHTML = filteredJobs.map(job => createJobCard(job, currentSearchTerm)).join('');
 }
+function searchJob() {
+    const searchInput = document.getElementById('searchInput');
+    currentSearchTerm = searchInput.value.trim();
+    renderJobs();
+}
+function clearSearch() {
+    const searchInput = document.getElementById('searchInput');
+    searchInput.value = '';
+    currentSearchTerm = '';
+    renderJobs();
+    searchInput.focus();
+}
