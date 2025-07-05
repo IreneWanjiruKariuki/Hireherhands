@@ -21,17 +21,23 @@ class JobService:
             validated_data = job_input_schema.load(data)
         except ValidationError as err:
             return {'errors': err.messages}, 400
+            
+        skill = Skill.query.get(validated_data['skill_id'])
+        if not skill:
+            return {'error': 'Invalid skill_id'}, 400
 
         job = Job(
             worker_id=None,  # Initially, no worker is assigned
             client_id=client_id,
             skill_id=validated_data.get('skill_id'),
+            skill_name=skill.skill_name,
             description=validated_data.get('description'),
             budget=validated_data.get('budget'),
             location=validated_data.get('location'),
             scheduled_date=validated_data.get('scheduled_date'),
             scheduled_time=validated_data.get('scheduled_time'),
-            status= JobStatus.OPEN  # Set initial status to 'open'
+            status= JobStatus.OPEN,  # Set initial status to 'open'
+            duration=validated_data.get("duration")
         )
         db.session.add(job)
         db.session.commit()
@@ -62,7 +68,6 @@ class JobService:
         worker_list = []
         for worker in workers:
             skills = [s.skill_name for s in worker.skills]
-            categories = [s.category for s in worker.skills if s.category]
             avg_rating = db.session.query(func.avg(Rating.stars))\
                 .filter_by(receiver_id=worker.worker_id, receiver_type="worker")\
                 .scalar() or 0
@@ -78,8 +83,7 @@ class JobService:
                 'hourly_rate': worker.hourly_rate,
                 'rating': round(avg_rating, 1),
                 'reviews': review_count,
-                'skills': skills,
-                'category': categories[0].lower() if categories else 'general'
+                'skills': skills
             })
         return {'matched_workers': worker_list}, 200
 
@@ -181,9 +185,41 @@ class JobService:
             .order_by(Job.created_at.desc())
             .all()
         )
+        transformed = []
+        for job in jobs:
+            rating = Rating.query.filter_by(
+                job_id=job.job_id,
+                rater_id=client_id,
+                receiver_id=job.worker_id,
+                receiver_type='worker'
+            ).first()
+            avg_rating = round(rating.stars, 1) if rating else 0
+            feedbacks = rating.feedback if rating and rating.feedback else ""
+            transformed.append({
+                "id": job.job_id,
+                "job_id": job.job_id,
+                "title": job.skill.skill_name if job.skill else "Untitled Job",
+                "description": job.description,
+                "budget": job.budget,
+                "status": job.status.value.lower(),
+                "datePosted": job.created_at.isoformat(),
+                "location": job.location,
+                "duration": job.duration,
+                "scheduledDate": job.scheduled_date.isoformat() if job.scheduled_date else None,
+                "scheduledTime": str(job.scheduled_time) if job.scheduled_time else None,
+                "assignedClient": f"Client ID: {job.client_id}",
+                "assignedClientId": job.client_id,
+                "clientRating": round(avg_rating, 1),
+                "clientFeedbacks": feedbacks,
+                "skill": {
+                    "skill_name": job.skill.skill_name if job.skill else None
+                },
+                "created_at": job.created_at.isoformat() if job.created_at else None,
+            })
+
         return {
-            'message': f'{len(jobs)} jobs found for client',
-            'jobs': job_output_many.dump(jobs)
+            "message": f"{len(transformed)} jobs found for client",
+            "jobs": transformed
         }, 200
 
     @staticmethod
@@ -207,13 +243,14 @@ class JobService:
             transformed.append({
                 "id": job.job_id,
                 "job_id": job.job_id,
-                "title": job.skill.skill_name if job.skill else "Untitled Job",
+                "skill": {
+                    "skill_name": job.skill.skill_name if job.skill else None
+                },
                 "description": job.description,
-                "budget": f"KSh {int(job.budget)}",
+                "budget": job.budget,
                 "status": job.status.value.lower(),
                 "datePosted": job.created_at.isoformat(),
                 "location": job.location,
-                "category": job.skill.category if job.skill else None,
                 "duration": job.duration,
                 "scheduledDate": job.scheduled_date.isoformat() if job.scheduled_date else None,
                 "scheduledTime": str(job.scheduled_time) if job.scheduled_time else None,
@@ -221,6 +258,7 @@ class JobService:
                 "assignedClientId": job.client_id,
                 "clientRating": round(avg_rating, 1),
                 "clientFeedbacks": feedbacks,
+                "created_at": job.created_at.isoformat() if job.created_at else None,
             })
         return {
             "message": f"{len(transformed)} jobs found for worker",

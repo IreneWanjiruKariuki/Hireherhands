@@ -1,4 +1,3 @@
-
 from extensions import db
 from enum import Enum
 from datetime import datetime
@@ -21,6 +20,7 @@ class Worker(db.Model, SerializerMixin):
     client_id: Mapped[int] = mapped_column(db.ForeignKey('clients.client_id'), nullable=False)
 
     bio: Mapped[str] = mapped_column(db.Text, nullable=True)
+    id_number = db.Column(db.String(50), nullable=False)
     hourly_rate: Mapped[float] = mapped_column(db.Float, nullable=False, default=0.0)
     location: Mapped[str] = mapped_column(db.String(120), nullable=False)
     status: Mapped[WorkerStatus] = mapped_column(db.Enum(WorkerStatus), nullable=False, default=WorkerStatus.AVAILABLE)

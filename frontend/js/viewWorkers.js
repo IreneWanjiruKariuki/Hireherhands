@@ -70,9 +70,6 @@ async function fetchWorkersByJob(job) {
             rate: worker.hourly_rate || 0,
             rating: worker.rating || 0,
             reviews: worker.reviews || 0,
-            category: worker.category || "general",
-            availability: "Available",
-            experience: worker.experience_level || "unknown",
             skills: worker.skills || []
         }));
 
@@ -111,7 +108,6 @@ function createWorkerCard(worker) {
                 <div class="worker-avatar">${initials}</div>
                 <div class="worker-info">
                     <h4>${worker.name}</h4>
-                    <div class="worker-category">${worker.category ? worker.category.charAt(0).toUpperCase() + worker.category.slice(1) : "General"} Specialist</div>
                 </div>
             </div>
             <div class="worker-rating">
@@ -119,10 +115,8 @@ function createWorkerCard(worker) {
                 <span class="rating-text">${worker.rating} (${worker.reviews} reviews)</span>
             </div>
             <div class="worker-details">
-                <div class="detail-row"><span class="detail-label">Experience:</span><span class="detail-value">${worker.experience}</span></div>
                 <div class="detail-row"><span class="detail-label">Location:</span><span class="detail-value">${worker.location}</span></div>
                 <div class="detail-row"><span class="detail-label">Rate:</span><span class="detail-value">KSh ${worker.rate.toLocaleString()}/day</span></div>
-                <div class="detail-row"><span class="detail-label">Availability:</span><span class="detail-value">${worker.availability}</span></div>
             </div>
             <div class="worker-skills">
                 <div class="detail-label">Skills:</div>
@@ -136,11 +130,10 @@ function createWorkerCard(worker) {
 }
 
 function setupFilters() {
-    const experienceFilter = document.getElementById('experienceFilter');
     const ratingFilter = document.getElementById('ratingFilter');
     const budgetFilter = document.getElementById('budgetFilter');
 
-    [experienceFilter, ratingFilter, budgetFilter].forEach(filter => {
+    [ratingFilter, budgetFilter].forEach(filter => {
         filter.addEventListener('change', applyFilters);
     });
 }
@@ -151,10 +144,6 @@ function applyFilters() {
     const budgetFilter = parseInt(document.getElementById('budgetFilter').value) || Infinity;
 
     let filtered = [...filteredWorkers];
-
-    /*if (experienceFilter) {
-        filtered = filtered.filter(worker => worker.experience === experienceFilter);
-    }*/
     if (ratingFilter > 0) {
         filtered = filtered.filter(worker => worker.rating >= ratingFilter);
     }

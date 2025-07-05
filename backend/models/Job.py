@@ -25,12 +25,11 @@ class Job(db.Model, SerializerMixin):
     scheduled_date = db.Column(db.Date, nullable=True)  # Date when the job is scheduled to start
     scheduled_time = db.Column(db.Time, nullable=True)  # Time when the job is scheduled to start
     status = db.Column(db.Enum(JobStatus), nullable=False, default=JobStatus.OPEN)
+    skill_name = db.Column(db.String(100), nullable=False)  # Optional field to store skill name
     duration = db.Column(db.String(100), nullable=True)
     worker_completion_confirmed = db.Column(db.Boolean, default=False)
     client_completion_confirmed = db.Column(db.Boolean, default=False)
-
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
 
     #relationships
     worker = db.relationship('Worker', back_populates='jobs')
@@ -38,6 +37,8 @@ class Job(db.Model, SerializerMixin):
     skill = db.relationship('Skill', back_populates='jobs')
     messages = db.relationship('Message', back_populates='job', cascade='all, delete-orphan')
     ratings = db.relationship('Rating', back_populates='job', cascade='all, delete-orphan')
+    ratings = db.relationship('Rating', back_populates='job', cascade="all, delete-orphan")
+    
 
     def __repr__(self):
         return f'<Job {self.skill_id} by Client {self.client_id}>'

@@ -2,6 +2,7 @@ from marshmallow import Schema, fields, validate
 
 class WorkerRegisterSchema(Schema):
     bio = fields.Str(required=True, validate=validate.Length(min=10))
+    id_number = fields.Str(required=True, validate=validate.Length(min=5))
     location = fields.Str(required=True)
     hourly_rate = fields.Float(required=True)
     #skills = fields.List(fields.Int(strict=True), required=True)

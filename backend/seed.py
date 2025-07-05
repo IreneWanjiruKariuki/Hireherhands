@@ -9,7 +9,9 @@ from sqlalchemy import text
 app = create_app()
 
 with app.app_context():
-    # 🔥 Clear everything in proper order
+    #  Clear everything in proper order
+    db.session.execute(text('DELETE FROM ratings'))
+    db.session.execute(text('DELETE FROM messages'))
     db.session.execute(text('DELETE FROM worker_skills'))
     db.session.execute(text('DELETE FROM jobs'))
     db.session.execute(text('DELETE FROM workers'))
@@ -17,10 +19,10 @@ with app.app_context():
     db.session.execute(text('DELETE FROM skill'))
     db.session.commit()
 
-    # ✅ Shared password
+    # Shared password
     password = bcrypt.generate_password_hash("123456").decode("utf-8")
 
-    # ✅ Skills
+    # Skills
     skills = [
         Skill(skill_name="Plumbing"),
         Skill(skill_name="Electrical"),
@@ -90,7 +92,9 @@ with app.app_context():
         location="Westlands",
         scheduled_date=datetime.today().date() + timedelta(days=2),
         scheduled_time=datetime.strptime("10:00", "%H:%M").time(),
-        status=JobStatus.OPEN
+        status=JobStatus.OPEN,
+        skill_name=skills[0].skill_name,
+        duration="2 hours"
     )
 
     job2 = Job(
@@ -101,7 +105,9 @@ with app.app_context():
         location="Kiambu",
         scheduled_date=datetime.today().date() + timedelta(days=3),
         scheduled_time=datetime.strptime("13:00", "%H:%M").time(),
-        status=JobStatus.OPEN
+        status=JobStatus.OPEN,
+        skill_name=skills[1].skill_name,
+        duration="3 hours"
     )
 
     job3 = Job(
@@ -112,11 +118,18 @@ with app.app_context():
         location="Nairobi CBD",
         scheduled_date=datetime.today().date() + timedelta(days=5),
         scheduled_time=datetime.strptime("11:30", "%H:%M").time(),
-        status=JobStatus.OPEN
+        status=JobStatus.OPEN,
+        skill_name=skills[2].skill_name,
+        duration="4 hours"
     )
 
     db.session.add_all([job1, job2, job3])
     db.session.commit()
 
-    print("✅ Seed data loaded: 5 clients, 3 workers, 3 jobs, 5 skills")
+    for worker in Worker.query.all():
+        if not worker.id_number:
+            worker.id_number = f"ID-{worker.worker_id or worker.client_id or 'X'}"
+            db.session.commit()
+
+    print("Seed data loaded: 5 clients, 3 workers, 3 jobs, 5 skills")
 

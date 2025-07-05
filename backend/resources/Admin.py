@@ -8,7 +8,6 @@ from services.AdminJobService import AdminJobService
 from services.AdminMessageService import AdminMessageService
 from services.AdminRatingService import AdminRatingService
 from models.Message import Message  
-
 from marshmallow import ValidationError
 from models.schemas.Auth import SignupSchema, LoginSchema
 

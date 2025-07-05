@@ -9,13 +9,14 @@ class Rating(db.Model, SerializerMixin):
     __tablename__ = 'ratings'
     
     rating_id = db.Column(db.Integer, primary_key=True)
-    job_id = db.Column(db.Integer, db.ForeignKey('jobs.job_id'), nullable=False)
+    job_id = db.Column(db.Integer, db.ForeignKey('jobs.job_id', ondelete="CASCADE"), nullable=False)
 
     rater_id = db.Column(db.Integer, nullable=False)      # the person giving the rating
     rater_type = db.Column(db.String(50), nullable=False) # 'client' or 'worker'
 
     receiver_id = db.Column(db.Integer, nullable=False)      # the person receiving the rating
     receiver_type = db.Column(db.String(50), nullable=False) # 'client' or 'worker'
+    
 
     #optional fields
     stars = db.Column(db.Integer, nullable=True)  # from 0 to 5

@@ -153,6 +153,16 @@
 .action-card.primary .action-btn:hover {
     background: linear-gradient(135deg, #047857 0%, #065f46 100%);
 }
+.pending-confirmation-tag {
+    background: rgba(255, 193, 7, 0.1);
+    color: #b45309;
+    padding: 2px 6px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    margin-left: 0.5rem;
+}
+
 .jobs-section {
     background: white;
     padding: 2rem;
@@ -545,4 +555,34 @@
 
 .view-details-btn:hover {
     background: #f3f4f6;
+}
+/* Status styling for job cards and popup badges */
+.status-open {
+    background: rgba(34, 197, 94, 0.1);
+    color: #059669;
+}
+
+.status-requested {
+    background: rgba(253, 186, 116, 0.1);
+    color: #ea580c;
+}
+
+.status-in_progress {
+    background: rgba(96, 165, 250, 0.1);
+    color: #2563eb;
+}
+
+.status-worker_completed {
+    background: rgba(234, 179, 8, 0.1);
+    color: #ca8a04;
+}
+
+.status-completed {
+    background: rgba(163, 230, 53, 0.15);
+    color: #15803d;
+}
+
+.status-unknown {
+    background: rgba(156, 163, 175, 0.1);
+    color: #6b7280;
 }

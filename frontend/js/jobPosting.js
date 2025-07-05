@@ -9,6 +9,18 @@ function isTokenExpired(token) {
         return true;
     }
 }
+async function loadSkills() {
+    const res = await fetch('http://127.0.0.1:5000/skills');
+    const data = await res.json();
+
+    const skillSelect = document.getElementById('skillSelect');
+    data.skills.forEach(skill => {
+        const option = document.createElement('option');
+        option.value = skill.skill_id;
+        option.textContent = `${skill.name} (${skill.category})`;
+        skillSelect.appendChild(option);
+    });
+}
 
 async function loadSkillsToDropdown(dropdownId) {
     const token = localStorage.getItem('access_token');
@@ -29,58 +41,58 @@ async function loadSkillsToDropdown(dropdownId) {
     } catch (err) {
         console.error('Failed to load skills:', err);
     }
-}
+};
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadSkillsToDropdown('jobCategory');
+    loadSkillsToDropdown('skillSelect');
 });
 
 document.getElementById('jobPostingForm').addEventListener('submit', async function (e) {
-    e.preventDefault();
+    const form = document.getElementById('jobPostingForm');
+    
+    if (!form.checkValidity()) {
+        form.reportValidity();  
+        return;  
+    }
+
+    e.preventDefault();  // Now we manually handle submission only if form is valid
+
+
+    const token = localStorage.getItem('access_token');
+    if (isTokenExpired(token)) {
+        alert('Session expired. Please log in again.');
+        window.location.href = 'login.html';
+        return;
+    }
 
     const submitBtn = document.getElementById('submitBtn');
     const loadingSpinner = document.getElementById('loadingSpinner');
     const btnText = document.getElementById('btnText');
     const successMessage = document.getElementById('successMessage');
 
-    const formData = new FormData(this);
-    const skillId = parseInt(formData.get('jobCategory'));
-    const selectedOption = document.querySelector(`#jobCategory option[value="${skillId}"]`);
-
-    if (!selectedOption) {
-        alert('Invalid job category selected.');
-        return;
-    }
-
-    const rawBudget = formData.get('budget').replace(/,/g, '');
-    const parsedBudget = parseInt(rawBudget, 10);
-    if (Number.isNaN(parsedBudget) || parsedBudget <= 0) {
-        alert('Please enter a valid budget.');
-        return;
-    }
-
+    const skillSelect = document.getElementById('skillSelect');
+    const selectedOption = skillSelect.options[skillSelect.selectedIndex];
+    const skill_id = parseInt(skillSelect.value);
 
     const jobData = {
-        skill_id: skillId,
-        category: selectedOption.textContent.toLowerCase(),
-        description: formData.get('jobDescription'),
-        location: formData.get('location'),
-        duration: formData.get('duration'),
-        budget: parsedBudget,
-        scheduled_date: formData.get('scheduled_date'),
-        scheduled_time: formData.get('scheduled_time')
+        skill_id: skill_id,
+        description: document.getElementById('jobDescription').value,
+        budget: parseFloat(document.getElementById('budget').value.replace(/,/g, '')),
+        location: document.getElementById('location').value,
+        duration: document.getElementById('duration').value,
+        scheduled_date: document.getElementById('scheduled_date').value || null,
+        scheduled_time: document.getElementById('scheduled_time').value || null
+
     };
+    
+    if (!jobData.scheduled_date || !jobData.scheduled_time) {
+        alert("Please select a scheduled date and time");
+        return;
+    }
 
     const allFieldsFilled = Object.values(jobData).every(val => val && val.toString().trim() !== '');
     if (!allFieldsFilled) {
         alert('Please fill in all required fields');
-        return;
-    }
-
-    const token = localStorage.getItem('access_token');
-    if (isTokenExpired(token)) {
-        alert('Session expired. Please log in again.');
-        window.location.href = 'login.html';  
         return;
     }
 
@@ -100,26 +112,20 @@ document.getElementById('jobPostingForm').addEventListener('submit', async funct
 
         const data = await response.json();
         if (!response.ok) {
-            console.error('Job post failed response:', data);
-            throw new Error(data.message || JSON.stringify(data) || 'Job post failed');
+            throw new Error(data.message || 'Job post failed');
         }
 
-        console.log("Job posted successfully:", data);
-        console.log("POST success", response);
-
-        // Save for dashboard injection
         const postedJob = {
             id: data.job.job_id,
             title: selectedOption.textContent,
             description: jobData.description,
-            category: selectedOption.textContent.toLowerCase(),
-            budget: jobData.budget, 
+            budget: jobData.budget,
             status: (data.job.status || 'unknown').toLowerCase(),
             datePosted: new Date().toISOString(),
             location: jobData.location,
             duration: jobData.duration,
-            scheduled_date: jobData.scheduled_date,
-            scheduled_time: jobData.scheduled_time
+            scheduledDate: new Date(jobData.scheduled_date).toISOString(), 
+            scheduledTime: jobData.scheduled_time + ":00"
         };
         localStorage.setItem('lastPostedJobData', JSON.stringify(postedJob));
 

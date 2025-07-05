@@ -19,10 +19,11 @@
             </div>
             <form id="jobPostingForm">
                 <div class="form-group">
-                    <label for="jobCategory">Job Category *</label>
-                   <select id="jobCategory" name="jobCategory" required>
-                    <option value="">Select a category</option>
-                </select>
+                <label for="skillSelect">Select Skill*:</label>
+                <select id="skillSelect" name="skill_id" required>
+                    <option value="">-- Choose a skill --</option>
+                    <!-- Options populated by JS -->
+                    </select
                 </div>
                 <div class="form-group">
                     <label for="jobDescription">Job Description *</label>
@@ -33,20 +34,16 @@
                     <div class="form-group">
                         <label for="location">Location *</label>
                         <input type="text" id="location" name="location" required 
-                               placeholder="e.g., Nairobi, Kenya">
+                               placeholder="e.g., Kasarani, Nairobi">
                     </div>
 
                     <div class="form-group">
                         <label for="duration">Duration *</label>
                         <select id="duration" name="duration" required>
                             <option value="">Select duration</option>
-                            <option value="1-3 days">1-3 days</option>
-                            <option value="1 week">1 week</option>
-                            <option value="2 weeks">2 weeks</option>
-                            <option value="1 month">1 month</option>
-                            <option value="2-3 months">2-3 months</option>
-                            <option value="3-6 months">3-6 months</option>
-                            <option value="6+ months">6+ months</option>
+                            <option value="1-3 hours">1-3 hours</option>
+                            <option value="3-4 hours">3-4 hours</option>
+                            <option value="1-2 days">1-2 days</option>
                         </select>
                     </div>
                 </div>

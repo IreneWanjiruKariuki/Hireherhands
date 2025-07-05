@@ -10,7 +10,6 @@ class SkillService:
                 {
                     "skill_id": skill.skill_id,
                     "skill_name": skill.skill_name,
-                    "category": skill.category
                 } for skill in skills
                 ]
             }, 200
