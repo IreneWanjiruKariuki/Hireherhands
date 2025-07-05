@@ -123,3 +123,25 @@ function createJobCard(job, searchTerm = '') {
         </div>
     `;
 }
+function filterJobs() {
+    let filteredJobs = jobsData;
+
+    if (currentSearchTerm) {
+        filteredJobs = filteredJobs.filter(job => {
+            const searchFields = [
+                job.title,
+                job.description,
+                job.client,
+                job.assignedWorker || ''
+            ].join(' ').toLowerCase();
+            
+            return searchFields.includes(currentSearchTerm.toLowerCase());
+        });
+    }
+
+    if (currentFilter !== 'all') {
+        filteredJobs = filteredJobs.filter(job => job.status === currentFilter);
+    }
+
+    return filteredJobs;
+}
