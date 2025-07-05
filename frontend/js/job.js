@@ -148,8 +148,6 @@ function renderJobs() {
     const jobsGrid = document.getElementById('jobsGrid');
     const filteredJobs = filterJobs();
 
-    updateStats(filteredJobs);
-
     if (filteredJobs.length === 0) {
         const noResultsMessage = currentSearchTerm 
             ? `No jobs found matching "${currentSearchTerm}"` 
@@ -203,7 +201,6 @@ function setupFilters() {
     });
 }
 document.addEventListener('DOMContentLoaded', () => {
-    updateStats();
     renderJobs();
     setupFilters();
     setupSearchInput();

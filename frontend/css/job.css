@@ -222,3 +222,44 @@ body {
     line-height: 1.5;
     margin-bottom: 1rem;
 }
+.no-worker {
+    color: #dc3545;
+    font-style: italic;
+}
+.highlight {
+    background-color: #fff3cd;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+}
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 2rem;
+    }
+    .back-btn {
+        position: static;
+        transform: none;
+        margin: 1rem auto 0;
+        display: flex;
+        width: fit-content;
+    }
+    .container {
+        padding: 2rem 1rem;
+    }
+    .jobs-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    .filter-section {
+        justify-content: center;
+    }
+    .search-container {
+        flex-direction: column;
+        max-width: 100%;
+    }
+    .search-input {
+        width: 100%;
+    }
+    .search-btn, .clear-btn {
+        width: 100%;
+    }
+}
