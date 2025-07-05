@@ -341,4 +341,23 @@ function selectWorker(workerId) {
             </div>
         `;
     }
+    if (worker.status === 'rejected') {
+        detailsHTML += `
+            <div class="detail-section">
+                <h3>Rejection Details</h3>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">Rejection Date</div>
+                        <div class="detail-value">${new Date(worker.rejectionDate).toLocaleDateString()}</div>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Reason</div>
+                    <div class="detail-value">${worker.rejectionReason}</div>
+                </div>
+            </div>
+        `;
+    }
+    workerDetails.innerHTML = detailsHTML;
+    displayWorkers();
 }
