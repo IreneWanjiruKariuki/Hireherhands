@@ -202,3 +202,9 @@ function setupFilters() {
         });
     });
 }
+document.addEventListener('DOMContentLoaded', () => {
+    updateStats();
+    renderJobs();
+    setupFilters();
+    setupSearchInput();
+});
