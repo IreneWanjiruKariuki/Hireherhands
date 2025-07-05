@@ -361,3 +361,22 @@ function selectWorker(workerId) {
     workerDetails.innerHTML = detailsHTML;
     displayWorkers();
 }
+function generateStarRating(rating) {
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+    const emptyStars = 5 - Math.ceil(rating);
+    
+    let starsHTML = '';
+    
+    
+    for (let i = 0; i < fullStars; i++) {
+        starsHTML += '<span class="star">★</span>';
+    }
+    if (hasHalfStar) {
+        starsHTML += '<span class="star">★</span>';
+    }
+    for (let i = 0; i < emptyStars; i++) {
+        starsHTML += '<span class="star empty">★</span>';
+    }
+    return starsHTML;
+}
