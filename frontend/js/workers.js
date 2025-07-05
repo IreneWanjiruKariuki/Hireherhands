@@ -395,3 +395,20 @@ function approveWorker(workerId) {
         filterAndDisplayWorkers();
     }
 }
+function rejectWorker(workerId) {
+    const reason = prompt('Please provide a reason for rejection:');
+    if (reason) {
+        const worker = workersData.find(w => w.id === workerId);
+        if (worker) {
+            worker.status = 'rejected';
+            worker.rejectionDate = new Date().toISOString().split('T')[0];
+            worker.rejectionReason = reason;
+            
+            alert(`${worker.name} has been rejected.`);
+            
+            selectedWorkerId = null;
+            document.getElementById('workerDetails').innerHTML = '<div class="no-selection">Select a worker to view details</div>';
+            filterAndDisplayWorkers();
+        }
+    }
+}
