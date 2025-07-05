@@ -188,3 +188,17 @@ function setupSearchInput() {
         }
     });
 }
+function setupFilters() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            const status = button.getAttribute('data-status');
+            currentFilter = status;
+            renderJobs();
+        });
+    });
+}
