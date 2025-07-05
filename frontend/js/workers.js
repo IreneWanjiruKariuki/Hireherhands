@@ -412,3 +412,30 @@ function rejectWorker(workerId) {
         }
     }
 }
+function viewCertification(filename) {
+    alert(`Opening certification file: ${filename}\n\nIn a real application, this would download or display the certification file.`);
+}
+function searchWorkers() {
+    currentPage = 1;
+    filterAndDisplayWorkers();
+}
+function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    currentPage = 1;
+    filterAndDisplayWorkers();
+}
+function updateWorkerCount() {
+    const workerCount = document.getElementById('workerCount');
+    const statusText = currentFilter === 'requests' ? 'request' : currentFilter;
+    workerCount.textContent = `Showing ${filteredWorkers.length} ${statusText}${filteredWorkers.length !== 1 ? 's' : ''}`;
+}
+function updatePagination() {
+    const totalPages = Math.ceil(filteredWorkers.length / itemsPerPage);
+    const pageInfo = document.getElementById('pageInfo');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    
+    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+    prevBtn.disabled = currentPage === 1;
+    nextBtn.disabled = currentPage === totalPages || totalPages === 0;
+}
