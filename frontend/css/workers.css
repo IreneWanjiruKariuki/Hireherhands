@@ -329,3 +329,40 @@ body {
 .view-cert-btn:hover {
     background: #218838;
 }
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e9ecef;
+}
+.approve-btn {
+    background: #28a745;
+    color: white;
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background 0.3s ease;
+    flex: 1;
+}
+.approve-btn:hover {
+    background: #218838;
+}
+.reject-btn {
+    background: #dc3545;
+    color: white;
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background 0.3s ease;
+    flex: 1;
+}
+.reject-btn:hover {
+    background: #c82333;
+}
