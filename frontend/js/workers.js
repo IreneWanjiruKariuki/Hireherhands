@@ -456,3 +456,9 @@ function nextPage() {
         displayWorkers();
     }
 }
+document.getElementById('searchInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        searchWorkers();
+    }
+});
+filterAndDisplayWorkers();
