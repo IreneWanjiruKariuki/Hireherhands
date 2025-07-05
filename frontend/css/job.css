@@ -128,3 +128,13 @@ body {
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: 2rem;
 }
+.no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    color: #6c757d;
+}
+.no-results h3 {
+    margin-bottom: 1rem;
+    color: #2c3e50;
+}

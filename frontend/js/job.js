@@ -88,6 +88,7 @@ function highlightSearchTerm(text, searchTerm) {
     const regex = new RegExp(`(${searchTerm})`, 'gi');
     return text.replace(regex, '<span class="highlight">$1</span>');
 }
+
 function createJobCard(job, searchTerm = '') {
     return `
         <div class="job-card" data-status="${job.status}">
@@ -138,10 +139,31 @@ function filterJobs() {
             return searchFields.includes(currentSearchTerm.toLowerCase());
         });
     }
-
     if (currentFilter !== 'all') {
         filteredJobs = filteredJobs.filter(job => job.status === currentFilter);
     }
-
     return filteredJobs;
+}
+function renderJobs() {
+    const jobsGrid = document.getElementById('jobsGrid');
+    const filteredJobs = filterJobs();
+
+    updateStats(filteredJobs);
+
+    if (filteredJobs.length === 0) {
+        const noResultsMessage = currentSearchTerm 
+            ? `No jobs found matching "${currentSearchTerm}"` 
+            : 'No jobs match the selected filter criteria.';
+        
+        jobsGrid.innerHTML = `
+            <div class="no-results">
+                <h3>No jobs found</h3>
+                <p>${noResultsMessage}</p>
+                ${currentSearchTerm ? '<p>Try adjusting your search terms or clearing the search.</p>' : ''}
+            </div>
+        `;
+        return;
+    }
+
+    jobsGrid.innerHTML = filteredJobs.map(job => createJobCard(job, currentSearchTerm)).join('');
 }
