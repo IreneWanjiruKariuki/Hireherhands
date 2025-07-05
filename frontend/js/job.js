@@ -88,3 +88,38 @@ function highlightSearchTerm(text, searchTerm) {
     const regex = new RegExp(`(${searchTerm})`, 'gi');
     return text.replace(regex, '<span class="highlight">$1</span>');
 }
+function createJobCard(job, searchTerm = '') {
+    return `
+        <div class="job-card" data-status="${job.status}">
+            <div class="job-header">
+                <div>
+                    <h3 class="job-title">${highlightSearchTerm(job.title, searchTerm)}</h3>
+                </div>
+                <span class="job-status status-${job.status}">${job.status}</span>
+            </div>
+            
+            <div class="job-info">
+                <div class="job-info-item">
+                    <span class="job-info-label">Client:</span>
+                    <span class="job-info-value">${highlightSearchTerm(job.client, searchTerm)}</span>
+                </div>
+                <div class="job-info-item">
+                    <span class="job-info-label">Assigned Worker:</span>
+                    <span class="job-info-value ${!job.assignedWorker ? 'no-worker' : ''}">
+                        ${job.assignedWorker ? highlightSearchTerm(job.assignedWorker, searchTerm) : 'No assigned worker'}
+                    </span>
+                </div>
+                <div class="job-info-item">
+                    <span class="job-info-label">Deadline:</span>
+                    <span class="job-info-value">${job.deadline}</span>
+                </div>
+                <div class="job-info-item">
+                    <span class="job-info-label">Budget:</span>
+                    <span class="job-info-value">${job.budget}</span>
+                </div>
+            </div>
+            
+            <p class="job-description">${highlightSearchTerm(job.description, searchTerm)}</p>
+        </div>
+    `;
+}
