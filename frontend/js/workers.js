@@ -287,4 +287,30 @@ function selectWorker(workerId) {
             </div>
         </div>
     `;
+    if (worker.status === 'approved') {
+        detailsHTML += `
+            <div class="detail-section">
+                <h3>Performance</h3>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">Rating</div>
+                        <div class="detail-value">
+                            <div class="star-rating">
+                                ${generateStarRating(worker.rating)}
+                                <span class="rating-text">${worker.rating}/5.0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Completed Jobs</div>
+                        <div class="detail-value">${worker.completedJobs}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Approval Date</div>
+                        <div class="detail-value">${new Date(worker.approvalDate).toLocaleDateString()}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
 }
