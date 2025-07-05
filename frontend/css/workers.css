@@ -193,3 +193,45 @@ body {
     color: #6c757d;
     font-size: 0.9rem;
 }
+.worker-item {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #f8f9fa;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+.worker-item:hover {
+    background: #f8f9fa;
+}
+.worker-item.active {
+    background: rgba(222, 242, 201, 0.3);
+    border-left: 4px solid #667eea;
+}
+.worker-info h4 {
+    color: #2c3e50;
+    margin-bottom: 0.25rem;
+}
+.worker-meta {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+}
+.worker-status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    display: inline-block;
+}
+.status-requests {
+    background: #fff3cd;
+    color: #856404;
+}
+.status-approved {
+    background: #d4edda;
+    color: #155724;
+}
+.status-rejected {
+    background: #f8d7da;
+    color: #721c24;
+}
