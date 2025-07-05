@@ -238,3 +238,53 @@ function displayWorkers() {
     updateWorkerCount();
     updatePagination();
 }
+function selectWorker(workerId) {
+    selectedWorkerId = workerId;
+    const worker = workersData.find(w => w.id === workerId);
+    
+    if (!worker) return;
+    const workerDetails = document.getElementById('workerDetails');
+    let detailsHTML = `
+        <div class="detail-section">
+            <h3>Worker Information</h3>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <div class="detail-label">Full Name</div>
+                    <div class="detail-value">${worker.name}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Email</div>
+                    <div class="detail-value">${worker.email}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Phone</div>
+                    <div class="detail-value">${worker.phone}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Experience</div>
+                    <div class="detail-value">${worker.experience}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Application Date</div>
+                    <div class="detail-value">${new Date(worker.applicationDate).toLocaleDateString()}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Status</div>
+                    <div class="detail-value">
+                        <span class="worker-status status-${worker.status}">${worker.status}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Location</div>
+                <div class="detail-value">${worker.location}</div>
+            </div>
+        </div>
+        <div class="detail-section">
+            <h3>Skills</h3>
+            <div class="skills-list">
+                ${worker.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+            </div>
+        </div>
+    `;
+}
