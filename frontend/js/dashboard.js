@@ -20,11 +20,6 @@ function checkSession(requiredRole = null) {
             window.location.href = "login.html";
             return;
         }
-
-        if (requiredRole && role !== requiredRole) {
-            alert("Access denied.");
-            window.location.href = "login.html";
-        }
     } catch (err) {
         console.error("Invalid token", err);
         localStorage.clear();

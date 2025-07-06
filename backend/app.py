@@ -8,7 +8,7 @@ from extensions import db, bcrypt, cors, migrate, jwt
 from models import *
 from flask_restful import Api
 # Import all resources
-from resources.Authentication import SignupResource, LoginResource
+from resources.Authentication import SignupResource, LoginResource,CurrentUserResource
 from resources.Client import ClientProfileResource
 from resources.Worker import WorkerRegisterResource, WorkerProfileResource, WorkerSkillsResource
 from resources.WorkerPortfolio import WorkerPortfolioResource
@@ -65,6 +65,7 @@ def create_app():
     #Authenitication
     api.add_resource(SignupResource, '/auth/register')
     api.add_resource(LoginResource, '/auth/login')
+    api.add_resource(CurrentUserResource, '/auth/me')
 
     #Client
     api.add_resource(ClientProfileResource, '/client/profile')

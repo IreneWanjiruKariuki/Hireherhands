@@ -100,3 +100,5 @@ class AuthenticationService:
         except Exception as e:
             print("Login exception:", str(e))
             return {"error": "Internal server error"}, 500
+
+    

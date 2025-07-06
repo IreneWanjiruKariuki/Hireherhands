@@ -50,12 +50,46 @@ function toggleSkill(id) {
     }
 }
 
+async function prefillClientInfo() {
+    const token = localStorage.getItem('access_token');
+    if (!token) return;
+
+    try {
+        const res = await fetch(`${BASE_URL}/client/profile`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed to load client info");
+
+        // Match your HTML field IDs here
+        document.getElementById('fullName').value = data.fullname || '';
+        document.getElementById('email').value = data.email || '';
+        document.getElementById('phone').value = data.phone?.replace(/^\+254/, '') || '';
+
+        document.getElementById('fullName').readOnly = true;
+        document.getElementById('email').readOnly = true;
+        document.getElementById('phone').readOnly = true;
+
+        localStorage.setItem('currentUser', JSON.stringify(data));
+    } catch (err) {
+        console.error("Autofill error:", err);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    prefillClientInfo();
+    loadSkillsAsCheckboxes('skillsContainer', toggleSkill);
+    setupApplicationForm();
+});
+
+
+
 // ========== Form Handling ==========
 function setupApplicationForm() {
     const form = document.getElementById('applicationForm');
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-
+        
         const location = document.getElementById('location').value.trim();
         const idNumber = document.getElementById('id')?.value.trim();
         const rate = parseFloat(document.getElementById('hourlyRate')?.value || 0);
@@ -116,7 +150,6 @@ function setupApplicationForm() {
             alert(err.message);
         } finally {
             showLoading(false);
-            form.reset();
             selectedSkills = [];
             loadSkillsAsCheckboxes('skillsContainer', toggleSkill);
         }
@@ -129,10 +162,5 @@ function showLoading(state) {
     document.getElementById('loading').style.display = state ? 'block' : 'none';
     document.getElementById('submitBtn').disabled = state;
 }
-// ========== Init ==========
-document.addEventListener('DOMContentLoaded', () => {
-    loadSkillsAsCheckboxes('skillsContainer', toggleSkill);
-    setupApplicationForm();
-});
 
 

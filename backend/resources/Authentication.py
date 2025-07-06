@@ -3,7 +3,9 @@ from flask import request
 from marshmallow import ValidationError
 from models.schemas.Auth import SignupSchema, LoginSchema
 from services.Authentication import AuthenticationService
-
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from models.Client import Client
+from extensions import db, bcrypt
 
 # Instantiate schema objects
 signup_schema = SignupSchema()
@@ -27,5 +29,21 @@ class LoginResource(Resource):
         except ValidationError as err:
             return {'errors': err.messages}, 400
         return AuthenticationService.login(data)
+
+class CurrentUserResource(Resource):
+    @jwt_required()
+    def get(self):
+        client_id = get_jwt_identity()
+        client = Client.query.get(client_id)
+
+        if not client:
+            return {"error": "Client not found"}, 404
+
+        return {
+            "client_id": client.client_id,
+            "fullname": client.fullname,
+            "email": client.email,
+            "phone": client.phone
+        }, 200
 
 
