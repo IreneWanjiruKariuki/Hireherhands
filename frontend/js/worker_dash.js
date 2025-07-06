@@ -1,7 +1,28 @@
 const BASE_URL = "http://localhost:5000";
 let currentFilter = "all";
 
+function checkSession() {
+    const token = localStorage.getItem("access_token");
+    const role = localStorage.getItem("role");
+
+    if (!token) {
+        alert("Session expired. Please login again.");
+        window.location.href = "login.html";
+        return;
+    }
+
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const now = Math.floor(Date.now() / 1000);
+
+    if (payload.exp && payload.exp < now) {
+        localStorage.clear();
+        alert("Session expired. Please login again.");
+        window.location.href = "login.html";
+    }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  checkSession();
   loadWorkerProfile();
   initializeBio();
   initializeRate();
@@ -21,7 +42,17 @@ async function loadWorkerProfile() {
       headers: { "Authorization": `Bearer ${token}` }
     });
 
-    if (!res.ok) throw new Error("Failed to load worker profile");
+    if (!res.ok) {
+    const data = await res.json();
+    if (res.status === 403 && data.error?.includes("pending approval")) {
+        localStorage.setItem('worker_application_status', 'pending');
+        alert("Your application is still pending approval.");
+        window.location.href = 'pending.html';
+        return;
+    }
+    throw new Error("Failed to load worker profile");
+}
+
 
     const data = await res.json();
     document.getElementById("workerName").textContent = data.fullname;

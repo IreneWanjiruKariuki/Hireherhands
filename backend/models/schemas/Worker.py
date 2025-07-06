@@ -5,10 +5,8 @@ class WorkerRegisterSchema(Schema):
     id_number = fields.Str(required=True, validate=validate.Length(min=5))
     location = fields.Str(required=True)
     hourly_rate = fields.Float(required=True)
-    #skills = fields.List(fields.Int(strict=True), required=True)
-    skills = fields.List(fields.String())
-
-
+    skills = fields.List(fields.Int(strict=True), required=True)
+    
 class WorkerUpdateSchema(Schema):
     bio = fields.Str()
     location = fields.Str()

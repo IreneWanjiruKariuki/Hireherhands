@@ -26,7 +26,12 @@
                 <h2>Client Directory</h2>
                 <div class="client-count" id="clientCount">Loading clients...</div>
             </div>
-                
+            <div class="filter-tabs">
+                <div class="filter-tab active" onclick="setClientFilter('all', event)">All</div>
+                <div class="filter-tab" onclick="setClientFilter('active', event)">Active</div>
+                <div class="filter-tab" onclick="setClientFilter('deactivated', event)">Deactivated</div>
+            </div>
+
             <div class="clients-grid">
                 <div class="clients-list" id="clientsList"></div>
                 <div class="client-details" id="clientDetails">

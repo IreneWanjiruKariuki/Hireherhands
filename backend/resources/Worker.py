@@ -17,6 +17,7 @@ class WorkerRegisterResource(Resource):
     try:
         data = worker_register_schema.load(request.get_json())
     except ValidationError as err:
+        print("Validation Error:", err.messages)
         return {"errors": err.messages}, 400
     return WorkerService.register_worker(claims.get("client_id"), data)
 

@@ -2,7 +2,41 @@ const BASE_URL = "http://localhost:5000";
 let filteredWorkers = [];
 let currentJob = null;
 
+function checkSession(requiredRole = null) {
+    const token = localStorage.getItem("access_token");
+    const role = localStorage.getItem("role");
+
+    if (!token) {
+        alert("Session expired. Please login again.");
+        localStorage.clear();
+        window.location.href = "login.html";
+        return;
+    }
+
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const now = Math.floor(Date.now() / 1000);
+
+        if (payload.exp && payload.exp < now) {
+            localStorage.clear();
+            alert("Session expired. Please login again.");
+            window.location.href = "login.html";
+            return;
+        }
+
+        if (requiredRole && role !== requiredRole) {
+            alert("Access denied.");
+            window.location.href = "login.html";
+        }
+    } catch (err) {
+        console.error("Invalid token", err);
+        localStorage.clear();
+        window.location.href = "login.html";
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function () {
+    checkSession(); // Ensure user is authenticated
     loadJobData();
     setupFilters();
 });

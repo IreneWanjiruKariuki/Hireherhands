@@ -41,7 +41,10 @@ from resources.Admin import (
     AdminRatingsDeleteResource,
     AdminVerifyWorkerResource,
     AdminDeleteRatingResource,
-    AdminDeleteMessageResource
+    AdminDeleteMessageResource,
+    AdminAnalyticsResource,
+    AdminToggleWorkerStatusResource,
+    AdminToggleClientStatusResource
 )
 
 
@@ -105,7 +108,7 @@ def create_app():
     # Workers
     api.add_resource(AdminWorkersResource, '/admin/workers')
     api.add_resource(AdminWorkerApplicationsResource, '/admin/workers/applications')
-    api.add_resource(AdminApproveRejectWorkerResource, '/admin/workers/<int:worker_id>/<string:action>')  # approve/reject
+    api.add_resource(AdminApproveRejectWorkerResource, '/admin/worker/<int:worker_id>/decision')
     api.add_resource(AdminVerifyWorkerResource, '/admin/workers/<int:worker_id>/verify')
 
     # Jobs
@@ -118,6 +121,14 @@ def create_app():
     # Ratings
     api.add_resource(AdminRatingsResource, '/admin/ratings')
     api.add_resource(AdminRatingsDeleteResource, '/admin/ratings/<int:rating_id>/delete')
+
+    # Admin Analytics
+    api.add_resource(AdminAnalyticsResource, '/admin/analytics')
+
+    #Activate/ Deactivate Worker
+    api.add_resource(AdminToggleWorkerStatusResource, '/admin/worker/<int:worker_id>/toggle-status')
+    api.add_resource(AdminToggleClientStatusResource, '/admin/client/<int:client_id>/toggle-status')
+
 
 
     @app.route('/')

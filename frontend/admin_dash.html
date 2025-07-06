@@ -1,56 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="css/admin_dash.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="css/admin_dash.css" />
 </head>
 <body>
-    <header class="header">
+  <header class="header">
+    <div class="header-content">
+      <div>
         <h1>Admin Dashboard</h1>
         <p>Manage business operations efficiently</p>
-    </header>
-    <div class="container">
-        <div class="welcome-section">
-            <h2>Welcome back, Administrator</h2>
-            <p>Here's an overview of your management tools. Click on any section to get started.</p>
-        </div>
-        <div class="dashboard-grid">
-            <a href="clients.html" class="management-card">
-                <div class="card-icon">👥</div>
-                <h3 class="card-title">Client Management</h3>
-                <p class="card-description">
-                    Manage client profiles, contact information, and project history. 
-                    View client analytics and communication logs.
-                </p>
-            </a>
-            <a href="workers.html" class="management-card">
-                <div class="card-icon">👷</div>
-                <h3 class="card-title">Worker Management</h3>
-                <p class="card-description">
-                    Oversee worker profiles, schedules, and performance metrics. 
-                    Approve applications and track productivity.
-                </p>
-            </a>
-            <a href="job.html" class="management-card">
-                <div class="card-icon">📋</div>
-                <h3 class="card-title">Jobs Management</h3>
-                <p class="card-description">
-                    Monitor job progress. Track deadlines, resources, and project milestones. 
-                    Generate reports and analytics.
-                </p>
-            </a>
-            <a href="message.html" class="management-card">
-                <div class="card-icon">💬</div>
-                <h3 class="card-title">Message Management</h3>
-                <p class="card-description">
-                    Handle internal communications, client messages, and system notifications. 
-                    Manage message threads and response times.
-                </p>
-            </a>
-        </div>
+      </div>
+      <button onclick="signOut()" class="sign-out-btn">Sign Out</button>
     </div>
-    <script src="js/admin_dash.js"></script>
+  </header>
+  <nav class="admin-nav">
+  <ul>
+    <li><a href="clients.html">👥 Clients</a></li>
+    <li><a href="workers.html">👷 Workers</a></li>
+    <li><a href="job.html">📋 Jobs</a></li>
+    <li><a href="message.html">💬 Messages</a></li>
+  </ul>
+</nav>
+
+  <div class="container">
+    <div class="admin-layout">
+      <!-- Main Section -->
+      <main class="admin-main">
+        <div class="welcome-section">
+          <h2>Welcome back, Administrator</h2>
+          <p>Here’s a visual summary of your system performance.</p>
+        </div>
+        <div id="reportSummary" class="report-summary"></div>
+        <!-- 📊 Analytics Charts -->
+        <div class="charts-section">
+          <h2>System Analytics</h2>
+
+          <div class="chart-container">
+            <h3>Client Signups</h3>
+            <p>X: Time Range | Y: Number of Clients</p>
+            <canvas id="clientSignupChart"></canvas>
+          </div>
+
+          <div class="chart-container">
+            <h3>Worker Approval Status</h3>
+            <p>Pie chart showing Approved vs Pending Workers</p>
+            <canvas id="workerStatusChart"></canvas>
+          </div>
+
+          <div class="chart-container">
+            <h3>Job Status Overview</h3>
+            <p>X: Job Status | Y: Number of Jobs</p>
+            <canvas id="jobStatusChart"></canvas>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Load Chart.js first -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Then your dashboard logic -->
+  <script src="js/admin_dash.js"></script>
 </body>
 </html>

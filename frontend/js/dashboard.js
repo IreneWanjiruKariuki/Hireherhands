@@ -1,4 +1,41 @@
 const BASE_URL = 'http://127.0.0.1:5000';
+function checkSession(requiredRole = null) {
+    const token = localStorage.getItem("access_token");
+    const role = localStorage.getItem("role");
+
+    if (!token) {
+        alert("Session expired. Please login again.");
+        localStorage.clear();
+        window.location.href = "login.html";
+        return;
+    }
+
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const now = Math.floor(Date.now() / 1000);
+
+        if (payload.exp && payload.exp < now) {
+            localStorage.clear();
+            alert("Session expired. Please login again.");
+            window.location.href = "login.html";
+            return;
+        }
+
+        if (requiredRole && role !== requiredRole) {
+            alert("Access denied.");
+            window.location.href = "login.html";
+        }
+    } catch (err) {
+        console.error("Invalid token", err);
+        localStorage.clear();
+        window.location.href = "login.html";
+    }
+}
+document.addEventListener("DOMContentLoaded", () => {
+    checkSession("client");
+    fetchClientJobs();
+    updateWelcomeMessage();
+});
 
 function showError(message) {
     const errorBox = document.getElementById('errorMessage');
@@ -305,9 +342,3 @@ async function submitRating(jobId) {
         alert("Could not submit rating.");
     }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-    updateWelcomeMessage();
-    fetchClientJobs();
-});
-

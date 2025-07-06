@@ -7,6 +7,7 @@ from services.AdminWorkerService import AdminWorkerService
 from services.AdminJobService import AdminJobService
 from services.AdminMessageService import AdminMessageService
 from services.AdminRatingService import AdminRatingService
+from services.AdminAnalyticsService import AdminAnalyticsService
 from models.Message import Message  
 from marshmallow import ValidationError
 from models.schemas.Auth import SignupSchema, LoginSchema
@@ -130,3 +131,22 @@ class AdminDeleteRatingResource(Resource):
         check = admin_only()
         if check: return check
         return AdminRatingService.delete_rating(rating_id)
+# ADMIN ANALYTICS
+class AdminAnalyticsResource(Resource):
+    @jwt_required()
+    def get(self):
+        check = admin_only()
+        if check: return check
+        return AdminAnalyticsService.get_system_summary()
+class AdminToggleClientStatusResource(Resource):
+    @jwt_required()
+    def post(self, client_id):
+        check = admin_only()
+        if check: return check
+        return AdminClientService.toggle_client_status(client_id)
+class AdminToggleWorkerStatusResource(Resource):
+    @jwt_required()
+    def post(self, worker_id):
+        check = admin_only()
+        if check: return check
+        return AdminWorkerService.toggle_worker_status(worker_id)

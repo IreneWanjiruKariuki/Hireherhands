@@ -545,3 +545,24 @@ body {
     background: rgba(5, 150, 105, 0.2);
     color: #064e3b;
 }
+.worker-approval-notification {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #34d399;
+  padding: 1rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+.worker-approval-notification button {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: inherit;
+}

@@ -383,6 +383,11 @@ body {
     color: #6c757d;
     font-size: 0.9rem;
 }
+.worker-item.inactive {
+    opacity: 0.5;
+    pointer-events: auto;
+}
+
 @media (max-width: 768px) {
     .workers-grid {
         grid-template-columns: 1fr;

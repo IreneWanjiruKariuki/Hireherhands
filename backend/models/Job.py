@@ -38,7 +38,21 @@ class Job(db.Model, SerializerMixin):
     messages = db.relationship('Message', back_populates='job', cascade='all, delete-orphan')
     ratings = db.relationship('Rating', back_populates='job', cascade='all, delete-orphan')
     ratings = db.relationship('Rating', back_populates='job', cascade="all, delete-orphan")
-    
 
     def __repr__(self):
         return f'<Job {self.skill_id} by Client {self.client_id}>'
+    def to_dict(self):
+        return {
+            "job_id": self.job_id,
+            "title": self.skill_name,
+            "description": self.description,
+            "budget": self.budget,
+            "status": self.status.value,
+            "client_id": self.client_id,
+            "client_name": self.client.fullname if self.client else None,
+            "worker_id": self.worker_id,
+            "scheduled_date": self.scheduled_date.isoformat() if self.scheduled_date else None,
+            "scheduled_time": self.scheduled_time.strftime("%H:%M") if self.scheduled_time else None,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "skill_name": self.skill.skill_name if self.skill else None
+    }

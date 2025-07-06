@@ -21,11 +21,13 @@
                 <button onclick="clearSearch()" class="clear-btn">Clear</button>
             </div>
         </div>
-        <div class="filter-section">
-            <button class="filter-btn active" data-status="all">All Jobs</button>
-            <button class="filter-btn" data-status="pending">Pending</button>
-            <button class="filter-btn" data-status="ongoing">Ongoing</button>
-            <button class="filter-btn" data-status="complete">Complete</button>
+        <div class="filter-tabs">
+            <button class="filter-btn active" data-status="all">All</button>
+            <button class="filter-btn" data-status="open">Open</button>
+            <button class="filter-btn" data-status="requested">Requested</button>
+            <button class="filter-btn" data-status="in_progress">In Progress</button>
+            <button class="filter-btn" data-status="worker_completed">Worker Completed</button>
+            <button class="filter-btn" data-status="completed">Completed</button>
         </div>
         <div class="jobs-grid" id="jobsGrid"></div>
     </div>

@@ -16,10 +16,24 @@ async function loadSkillsAsCheckboxes(containerId, toggleHandler) {
         data.skills.forEach(skill => {
             const label = document.createElement('label');
             label.classList.add('skill-option');
-            label.innerHTML = `
-                <input type="checkbox" value="${skill.skill_id}" onchange="${toggleHandler.name}(${skill.skill_id})">
-                ${skill.skill_name}
-            `;
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = skill.skill_id;
+
+            checkbox.addEventListener('change', function () {
+                const id = parseInt(this.value);
+                if (this.checked) {
+                    if (!selectedSkills.includes(id)) selectedSkills.push(id);
+                } else {
+                    selectedSkills = selectedSkills.filter(s => s !== id);
+                }
+
+                console.log('Selected skills:', selectedSkills); 
+            });
+
+            label.appendChild(checkbox);
+            label.append(` ${skill.skill_name}`);
             container.appendChild(label);
         });
     } catch (error) {
@@ -43,16 +57,24 @@ function setupApplicationForm() {
         e.preventDefault();
 
         const location = document.getElementById('location').value.trim();
+        const idNumber = document.getElementById('id')?.value.trim();
         const rate = parseFloat(document.getElementById('hourlyRate')?.value || 0);
-        const bio = "Submitted via form";
+        const bio = document.getElementById('bio')?.value.trim();
         const token = localStorage.getItem('access_token');
+        console.log("idNumber", idNumber);
+        console.log("location", location);
+        console.log("rate", rate);
+        console.log("bio", bio);
+        console.log("selectedSkills", selectedSkills);
+
+        
 
         if (!token) {
             alert("You must be logged in to apply as a worker.");
             return;
         }
 
-        if (!location || selectedSkills.length === 0) {
+        if (!location || !bio || selectedSkills.length === 0) {
             alert("Please fill all required fields and select at least one skill.");
             return;
         }
@@ -70,14 +92,23 @@ function setupApplicationForm() {
                     bio,
                     location,
                     hourly_rate: rate,
+                    id_number: idNumber,
                     skills: selectedSkills
                 })
             });
 
             const data = await res.json();
-            if (!res.ok) throw new Error(data.error || 'Failed to register as worker');
+            if (!res.ok) {
+                if (data.error === "Worker already registered") {
+                    alert("You have already submitted an application.");
+                    return;
+                }
+                throw new Error(data.error || 'Failed to register as worker');
+            }
 
-            // Redirect to pending approval
+            // Store application status in localStorage
+            localStorage.setItem('worker_application_status', 'pending');
+
             alert('Application submitted. Await admin approval.');
             window.location.href = 'pending.html';
         } catch (err) {
@@ -89,6 +120,7 @@ function setupApplicationForm() {
             selectedSkills = [];
             loadSkillsAsCheckboxes('skillsContainer', toggleSkill);
         }
+
     });
 }
 
@@ -97,9 +129,10 @@ function showLoading(state) {
     document.getElementById('loading').style.display = state ? 'block' : 'none';
     document.getElementById('submitBtn').disabled = state;
 }
-
 // ========== Init ==========
 document.addEventListener('DOMContentLoaded', () => {
     loadSkillsAsCheckboxes('skillsContainer', toggleSkill);
     setupApplicationForm();
 });
+
+

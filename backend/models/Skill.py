@@ -21,7 +21,6 @@ class Skill(db.Model, SerializerMixin):
     jobs = relationship("Job", back_populates="skill", cascade="all, delete-orphan")
     #workers = db.relationship("Worker", secondary=worker_skills, back_populates="skills")
 
-
     def __repr__(self):
         return f'<Skill {self.skill_name}>'
 

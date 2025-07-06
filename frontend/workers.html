@@ -20,11 +20,12 @@
                 <button onclick="searchWorkers()" class="search-btn">Search</button>
                 <button onclick="clearSearch()" class="clear-btn">Clear</button>
             </div>
-            <div class="filter-tabs">
-                <div class="filter-tab active" onclick="setFilter('requests')">Requests</div>
-                <div class="filter-tab" onclick="setFilter('approved')">Approved</div>
-                <div class="filter-tab" onclick="setFilter('rejected')">Rejected</div>
-            </div>
+        <div class="filter-tabs">
+            <div class="filter-tab active" onclick="setFilter('all', event)">All</div>
+            <div class="filter-tab" onclick="setFilter('requests', event)">Requests</div>
+            <div class="filter-tab" onclick="setFilter('approved', event)">Approved</div>
+            <div class="filter-tab" onclick="setFilter('rejected', event)">Rejected</div>
+            <div class="filter-tab" onclick="setFilter('deactivated', event)">Deactivated</div>
         </div>
         <div class="workers-section">
             <div class="section-header">

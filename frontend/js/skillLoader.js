@@ -23,7 +23,7 @@ async function loadSkillsToDropdown(dropdownId) {
     }
 }
 
-async function loadSkillsAsCheckboxes(containerId, toggleHandler) {
+/*async function loadSkillsAsCheckboxes(containerId, toggleHandler) {
     try {
         const response = await fetch(`${BASE_URL}/skills`);
         const data = await response.json();
@@ -43,4 +43,4 @@ async function loadSkillsAsCheckboxes(containerId, toggleHandler) {
     } catch (error) {
         console.error("Failed to load skills as checkboxes:", error);
     }
-}
+}*/

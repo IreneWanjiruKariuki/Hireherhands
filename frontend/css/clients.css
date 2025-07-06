@@ -310,3 +310,49 @@ body {
         min-width: auto;
     }
 }
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.action-buttons button {
+    background-color: #667eea;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.action-buttons button:hover {
+    background-color: #4b5bdc;
+}
+.status-inactive {
+    background-color: #ccc;
+    color: #666;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+.filter-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 0.5rem;
+}
+
+.filter-tab {
+    cursor: pointer;
+    font-weight: bold;
+    color: #555;
+}
+
+.filter-tab.active {
+    color: #333;
+    border-bottom: 3px solid #667eea;
+}
+
