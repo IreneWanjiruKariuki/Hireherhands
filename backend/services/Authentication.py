@@ -47,7 +47,7 @@ class AuthenticationService:
                 }
                 token = create_access_token(identity=identity, additional_claims=claims)
 
-                admin_data = admin.to_dict(only=("admin_id", "email", "created_at"))
+                admin_data = admin.to_dict(only=("admin_id", "email"))
                 return {
                     "message": "Admin login successful!",
                     "access_token": token,
