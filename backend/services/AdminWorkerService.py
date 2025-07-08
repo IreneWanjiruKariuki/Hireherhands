@@ -22,6 +22,10 @@ class AdminWorkerService:
                         "created_at":  w.created_at.isoformat(),
                         "is_approved": w.is_approved,
                         "is_deleted": w.is_deleted,
+                        "certificate_url": w.certificate_url,
+                        "experience_years": w.experience_years,
+                        "status": w.status.value,
+                        "is_verified": w.is_verified,
                         "skills": [s.skill_name for s in w.skills]
                 } for w in workers
             ]
@@ -42,7 +46,12 @@ class AdminWorkerService:
                 "location": w.location,
                 "is_approved": w.is_approved,
                 "created_at": w.created_at.isoformat(),
-                "skills": [s.skill_name for s in w.skills]
+                "skills": [s.skill_name for s in w.skills],
+                "certificate_url": w.certificate_url,
+                "experience_years": w.experience_years,
+                "status": w.status.value,
+                "is_verified": w.is_verified
+
                 } for w in workers
             ]
         }, 200

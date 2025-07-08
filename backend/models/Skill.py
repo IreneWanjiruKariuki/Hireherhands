@@ -11,6 +11,7 @@ class Skill(db.Model, SerializerMixin):
 
     skill_id: Mapped[int] = mapped_column(primary_key=True)
     skill_name: Mapped[str] = mapped_column(nullable=False)
+    is_active: Mapped[bool] = mapped_column(default=True)
 
     workers: Mapped[List["Worker"]] = relationship(
         "Worker",

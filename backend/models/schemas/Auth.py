@@ -4,6 +4,7 @@ class SignupSchema(Schema):
     fullname = fields.Str(required=True, validate=validate.Length(min=3))
     email = fields.Email(required=True)
     phone = fields.Str(required=True, validate=validate.Length(min=10))
+    gender = fields.Str(required=True, validate=validate.OneOf(["female", "male"]))
     password = fields.Str(required=True, validate=validate.Length(min=6))
 
 

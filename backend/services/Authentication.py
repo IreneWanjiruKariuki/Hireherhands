@@ -22,6 +22,7 @@ class AuthenticationService:
                 fullname=data["fullname"],
                 email=data["email"],
                 phone=data["phone"],
+                gender=data["gender"],
                 hashed_password=hashed_password
             )
             db.session.add(client)

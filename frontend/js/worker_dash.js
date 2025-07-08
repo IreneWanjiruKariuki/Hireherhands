@@ -68,10 +68,12 @@ async function loadWorkerProfile() {
     alert("Could not load profile.");
   }
 }
-
 function normalizeStatus(job) {
-  return typeof job.status === 'object' && job.status?.value ? job.status.value : job.status;
+  const status = job?.status;
+  if (typeof status === 'object' && status?.value) return status.value;
+  return typeof status === 'string' ? status : '';
 }
+
 
 function filterJobs(status, event) {
   if (event) {
@@ -100,9 +102,18 @@ async function loadJobs() {
     if (!res.ok) throw new Error("Failed to fetch jobs");
 
     const responseData = await res.json();
-    console.log("Raw API response:", responseData); 
-    
+    console.log("Raw API response:", responseData);
+
     let jobs = responseData.jobs || [];
+    console.log("Jobs returned:", jobs);
+
+    if (currentFilter !== 'all' && currentFilter !== 'requests') {
+      jobs = jobs.filter(job => {
+        const currentStatus = normalizeStatus(job).toLowerCase();
+        const originalStatus = normalizeStatus({ status: job.original_status }).toLowerCase();
+        return currentStatus === currentFilter || originalStatus === currentFilter;
+      });
+    }
 
     container.innerHTML = jobs.length > 0
       ? jobs.map(createJobCard).join("")
@@ -156,7 +167,7 @@ function createJobCard(job) {
       <div class="job-header">
         <div class="job-info">
           <h3 class="job-title">${job.skill?.skill_name || "Untitled Job"}</h3>
-          <p class="job-client">Client ID: ${job.client_id}</p>
+          <p class="job-client">Client: ${job.client_name || `ID ${job.client_id}`}</p>
           ${scheduledInfo}
         </div>
         <span class="job-status ${statusClass}">${statusText}</span>
@@ -172,6 +183,8 @@ function createJobCard(job) {
 
 function showJobDetails(jobJson) {
   const job = JSON.parse(decodeURIComponent(jobJson));
+  console.log("Job details:", job);
+  const jobStatus = normalizeStatus(job).toLowerCase();
   const popup = document.getElementById("jobDetailsPopup");
   const content = document.getElementById("jobDetailsContent");
 
@@ -208,7 +221,12 @@ function showJobDetails(jobJson) {
       </div>
       <div class="detail-item">
         <label>Location:</label>
-        <span>${job.location || "Location not specified"}</span>
+        <span>
+          ${job.location || "Not specified"}
+          ${job.road ? `, ${job.road}` : ""}
+          ${job.building_name ? `, ${job.building_name}` : ""}
+          ${job.house_number ? `, ${job.house_number}` : ""}
+        </span>
       </div>
       <div class="detail-item">
         <label>Budget:</label>
@@ -227,9 +245,16 @@ function showJobDetails(jobJson) {
         <span>${scheduledTime}</span>
       </div>
       <div class="detail-item">
-        <label>Assigned Worker:</label>
-        <span>${assignedWorker}</span>
+        <label>Client:</label>
+        <span>${job.client_name || `Client ID: ${job.client_id}`}</span>
       </div>
+      ${jobStatus !== "completed" && job.client_phone ? `
+      <div class="detail-item">
+        <label>Client Phone:</label>
+        <span>${job.client_phone}</span>
+      </div>
+` : ""}
+
       <div class="detail-item">
         <label>Status:</label>
         <span class="status-badge status-${job.status}">

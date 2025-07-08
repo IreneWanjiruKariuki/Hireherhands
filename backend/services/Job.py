@@ -34,6 +34,9 @@ class JobService:
             description=validated_data.get('description'),
             budget=validated_data.get('budget'),
             location=validated_data.get('location'),
+            road=validated_data.get('road'), 
+            building_name=validated_data.get('building_name'), 
+            house_number=validated_data.get('house_number'),  
             scheduled_date=validated_data.get('scheduled_date'),
             scheduled_time=validated_data.get('scheduled_time'),
             status= JobStatus.OPEN,  # Set initial status to 'open'
@@ -180,91 +183,29 @@ class JobService:
     def get_client_job_history(client_id):
         jobs = (
             Job.query
-            .options(joinedload(Job.skill))  
+            .options(joinedload(Job.skill))
             .filter_by(client_id=client_id)
             .order_by(Job.created_at.desc())
             .all()
         )
-        transformed = []
-        for job in jobs:
-            rating = Rating.query.filter_by(
-                job_id=job.job_id,
-                rater_id=client_id,
-                receiver_id=job.worker_id,
-                receiver_type='worker'
-            ).first()
-            avg_rating = round(rating.stars, 1) if rating else 0
-            feedbacks = rating.feedback if rating and rating.feedback else ""
-            transformed.append({
-                "id": job.job_id,
-                "job_id": job.job_id,
-                "title": job.skill.skill_name if job.skill else "Untitled Job",
-                "description": job.description,
-                "budget": job.budget,
-                "status": job.status.value.lower(),
-                "datePosted": job.created_at.isoformat(),
-                "location": job.location,
-                "duration": job.duration,
-                "scheduledDate": job.scheduled_date.isoformat() if job.scheduled_date else None,
-                "scheduledTime": str(job.scheduled_time) if job.scheduled_time else None,
-                "assignedClient": f"Client ID: {job.client_id}",
-                "assignedClientId": job.client_id,
-                "clientRating": round(avg_rating, 1),
-                "clientFeedbacks": feedbacks,
-                "skill": {
-                    "skill_name": job.skill.skill_name if job.skill else None
-                },
-                "created_at": job.created_at.isoformat() if job.created_at else None,
-            })
-
         return {
-            "message": f"{len(transformed)} jobs found for client",
-            "jobs": transformed
+            "message": f"{len(jobs)} jobs found for client",
+            "jobs": job_output_many.dump(jobs)
         }, 200
 
     @staticmethod
     def get_worker_job_history(worker_id):
         jobs = (
             Job.query
-            .options(joinedload(Job.skill))
+            .options(joinedload(Job.skill), joinedload(Job.client)) 
             .filter_by(worker_id=worker_id)
             .order_by(Job.created_at.desc())
             .all()
         )
-        transformed = []
-        for job in jobs:
-            avg_rating = db.session.query(func.avg(Rating.stars))\
-                .filter_by(receiver_id=job.client_id, receiver_type="client")\
-                .scalar() or 0
-                
-            feedbacks = db.session.query(func.count(Rating.rating_id))\
-                .filter_by(receiver_id=job.client_id, receiver_type="client")\
-                .scalar()
-            transformed.append({
-                "id": job.job_id,
-                "job_id": job.job_id,
-                "skill": {
-                    "skill_name": job.skill.skill_name if job.skill else None
-                },
-                "description": job.description,
-                "budget": job.budget,
-                "status": job.status.value.lower(),
-                "datePosted": job.created_at.isoformat(),
-                "location": job.location,
-                "duration": job.duration,
-                "scheduledDate": job.scheduled_date.isoformat() if job.scheduled_date else None,
-                "scheduledTime": str(job.scheduled_time) if job.scheduled_time else None,
-                "assignedClient": f"Client ID: {job.client_id}",
-                "assignedClientId": job.client_id,
-                "clientRating": round(avg_rating, 1),
-                "clientFeedbacks": feedbacks,
-                "created_at": job.created_at.isoformat() if job.created_at else None,
-            })
         return {
-            "message": f"{len(transformed)} jobs found for worker",
-            "jobs": transformed
+            "message": f"{len(jobs)} jobs found for worker",
+            "jobs": job_output_many.dump(jobs)
         }, 200
-
 
     @staticmethod
     def get_worker_requested_jobs(worker_id):
@@ -277,6 +218,8 @@ class JobService:
         )
         return {
             'message': f'{len(jobs)} requested jobs found for worker',
-            'jobs': job_output_many.dump(jobs)
+            "jobs": job_output_many.dump(jobs)
+            
         }, 200
+
 

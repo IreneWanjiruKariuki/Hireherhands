@@ -11,7 +11,8 @@ class ClientService:
             "client_id": client.client_id,
             "fullname": client.fullname,
             "email": client.email,
-            "phone": client.phone
+            "phone": client.phone,
+            "gender": client.gender
         }, 200
 
     @staticmethod

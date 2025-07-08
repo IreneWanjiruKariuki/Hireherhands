@@ -8,8 +8,9 @@ class Client(db.Model, SerializerMixin):
     client_id = db.Column(db.Integer, primary_key=True)
     fullname = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
+    gender = db.Column(db.String(10), nullable=False)  
     phone = db.Column(db.String(15), nullable=False)
-    hashed_password = db.Column(db.Text, nullable=False)  # No size limit
+    hashed_password = db.Column(db.Text, nullable=False)  
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_deleted = db.Column(db.Boolean, default=False) 
 

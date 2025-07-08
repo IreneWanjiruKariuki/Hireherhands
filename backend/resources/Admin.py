@@ -60,21 +60,6 @@ class AdminVerifyWorkerResource(Resource):
         if check: return check
         return AdminWorkerService.verify_worker(worker_id)
 
-# ADMIN SKILLS
-class AdminSkillsResource(Resource):
-    @jwt_required()
-    def get(self):
-        check = admin_only()
-        if check: return check
-        return SkillService.get_all_skills()
-
-    @jwt_required()
-    def post(self):
-        check = admin_only()
-        if check: return check
-        name = request.get_json().get("name")
-        return SkillService.create_skill(name)
-
 # ADMIN JOBS
 class AdminJobsResource(Resource):
     @jwt_required()
@@ -150,3 +135,33 @@ class AdminToggleWorkerStatusResource(Resource):
         check = admin_only()
         if check: return check
         return AdminWorkerService.toggle_worker_status(worker_id)
+
+# ADMIN SKILLS
+class AdminSkillsListResource(Resource):
+    @jwt_required()
+    def get(self):
+        check = admin_only()
+        if check: return check
+        return SkillService.get_all_skills(include_inactive=True)
+
+class AdminSkillWorkersResource(Resource):
+    @jwt_required()
+    def get(self, skill_id):
+        check = admin_only()
+        if check: return check
+        return SkillService.get_workers_by_skill(skill_id)
+
+class AdminSkillJobsResource(Resource):
+    @jwt_required()
+    def get(self, skill_id):
+        check = admin_only()
+        if check: return check
+        return SkillService.get_jobs_by_skill(skill_id)
+
+class AdminToggleSkillStatusResource(Resource):
+    @jwt_required()
+    def post(self, skill_id):
+        check = admin_only()
+        if check: return check
+        return SkillService.toggle_skill_status(skill_id)
+

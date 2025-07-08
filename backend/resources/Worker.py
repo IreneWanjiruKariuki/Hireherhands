@@ -10,16 +10,30 @@ from services.Worker import WorkerService
 worker_register_schema = WorkerRegisterSchema()
 worker_update_schema = WorkerUpdateSchema()
 worker_skill_schema = WorkerSkillSchema()
+
 class WorkerRegisterResource(Resource):
-   @jwt_required()
-   def post(self):
-    claims = get_jwt()
-    try:
-        data = worker_register_schema.load(request.get_json())
-    except ValidationError as err:
-        print("Validation Error:", err.messages)
-        return {"errors": err.messages}, 400
-    return WorkerService.register_worker(claims.get("client_id"), data)
+    @jwt_required()
+    def post(self):
+        claims = get_jwt()
+        form_data = request.form.to_dict()
+        form_data["skills"] = request.form.getlist("skills")
+        try:
+            form_data["skills"] = [int(s) for s in form_data["skills"]]
+        except ValueError:
+            return {"error": "Invalid skill IDs."}, 400
+
+        if "experience_years" in form_data:
+            try:
+                form_data["experience_years"] = int(form_data["experience_years"])
+            except ValueError:
+                return {"error": "Invalid experience value."}, 400
+
+        try:
+            data = worker_register_schema.load(form_data)
+        except ValidationError as err:
+            print("Validation Error:", err.messages)
+            return {"errors": err.messages}, 400
+        return WorkerService.register_worker(claims.get("client_id"), data, request.files.get("certificate"))
 
 class WorkerProfileResource(Resource):
     @jwt_required()

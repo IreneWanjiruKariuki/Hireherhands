@@ -6,6 +6,7 @@ from config import Config
 config = Config()  # instantiate the class
 from extensions import db, bcrypt, cors, migrate, jwt
 from models import *
+from flask import send_from_directory
 from flask_restful import Api
 # Import all resources
 from resources.Authentication import SignupResource, LoginResource,CurrentUserResource
@@ -34,7 +35,10 @@ from resources.Admin import (
     AdminWorkersResource,
     AdminWorkerApplicationsResource,
     AdminApproveRejectWorkerResource,
-    AdminSkillsResource,
+    AdminSkillsListResource,
+    AdminSkillJobsResource,
+    AdminSkillWorkersResource,
+    AdminToggleSkillStatusResource,
     AdminJobsResource,
     AdminMessageResource,
     AdminRatingsResource,
@@ -98,8 +102,12 @@ def create_app():
     #Ratings
     api.add_resource(JobRatingResource, '/jobs/<int:job_id>/rate')
     #Skills
-    api.add_resource(AdminSkillsResource, "/admin/skills")
     api.add_resource(PublicSkillsResource, '/skills')
+    api.add_resource(AdminSkillsListResource, "/admin/skills")
+    api.add_resource(AdminSkillWorkersResource, "/admin/skills/<int:skill_id>/workers")
+    api.add_resource(AdminSkillJobsResource, "/admin/skills/<int:skill_id>/jobs")
+    api.add_resource(AdminToggleSkillStatusResource, "/admin/skills/<int:skill_id>/toggle-status")
+
 
 
     #ADMIN
@@ -130,7 +138,9 @@ def create_app():
     api.add_resource(AdminToggleWorkerStatusResource, '/admin/worker/<int:worker_id>/toggle-status')
     api.add_resource(AdminToggleClientStatusResource, '/admin/client/<int:client_id>/toggle-status')
 
-
+    @app.route('/uploads/certificates/<filename>')
+    def serve_certificate(filename):
+        return send_from_directory('uploads/certificates', filename)
 
     @app.route('/')
     def hello():

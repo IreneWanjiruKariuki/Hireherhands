@@ -9,9 +9,9 @@ class CreateJobResource(Resource):
     def post(self):
         data = request.get_json()
         claims = get_jwt()
-        if claims.get("role") != "client":
-            return {"error": "Only clients can create jobs"}, 403
         client_id = claims.get("client_id")
+        if not client_id:
+            return {"error": "Client ID missing from token. Job posting not allowed."}, 403
         return JobService.create_job(data, client_id)
 
 # GET /jobs/<job_id>/workers - get matching workers
@@ -25,10 +25,11 @@ class MatchingWorkersResource(Resource):
 class RequestWorkerResource(Resource):
     @jwt_required()
     def post(self, job_id):
-        claims = get_jwt()
-        if claims.get("role") != "client":
-            return {"error": "Only clients can request workers"}, 403
         data = request.get_json()
+        claims = get_jwt()
+        client_id = claims.get("client_id")
+        if not client_id:
+            return {"error": "Client ID missing from token. Job posting not allowed."}, 403
         worker_id = data.get('worker_id')
         return JobService.request_worker(job_id, worker_id)
 
@@ -74,8 +75,9 @@ class ClientConfirmCompletionResource(Resource):
     @jwt_required()
     def post(self, job_id):
         claims = get_jwt()
-        if claims.get("role") != "client":
-            return {"error": "Only clients can confirm job completion"}, 403
+        if not claims.get("client_id"):
+            return {"error": "Client ID missing. Unauthorized."}, 403
+
 
         client_id = claims.get("client_id")
         return JobService.client_confirm_completion(job_id, client_id)

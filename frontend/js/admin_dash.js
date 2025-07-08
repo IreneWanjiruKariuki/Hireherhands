@@ -24,8 +24,12 @@ function checkSession() {
         window.location.href = "login.html";
     }
 }
+function signOut() {
+    localStorage.clear();
+    window.location.href = "login.html";
+}
 
-// 📈 Fetch + render analytics
+/* Fetch + render analytics
 async function fetchAndRenderAnalytics() {
     const token = localStorage.getItem("access_token");
 
@@ -138,4 +142,4 @@ document.addEventListener("DOMContentLoaded", () => {
     checkSession();
     fetchAndRenderAnalytics();
 });
-
+*/

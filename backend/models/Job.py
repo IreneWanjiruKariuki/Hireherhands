@@ -22,6 +22,9 @@ class Job(db.Model, SerializerMixin):
     description = db.Column(db.Text, nullable=False)
     budget = db.Column(db.Float, nullable=False)
     location = db.Column(db.String(255), nullable=True)
+    road = db.Column(db.String(255), nullable=True)
+    building_name = db.Column(db.String(255), nullable=True)
+    house_number = db.Column(db.String(100), nullable=True)
     scheduled_date = db.Column(db.Date, nullable=True)  # Date when the job is scheduled to start
     scheduled_time = db.Column(db.Time, nullable=True)  # Time when the job is scheduled to start
     status = db.Column(db.Enum(JobStatus), nullable=False, default=JobStatus.OPEN)
@@ -30,6 +33,9 @@ class Job(db.Model, SerializerMixin):
     worker_completion_confirmed = db.Column(db.Boolean, default=False)
     client_completion_confirmed = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    assigned_at = db.Column(db.DateTime, nullable=True)
+    completed_at = db.Column(db.DateTime, nullable=True)
+
 
     #relationships
     worker = db.relationship('Worker', back_populates='jobs')
@@ -41,6 +47,7 @@ class Job(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f'<Job {self.skill_id} by Client {self.client_id}>'
+   
     def to_dict(self):
         return {
             "job_id": self.job_id,
@@ -50,9 +57,20 @@ class Job(db.Model, SerializerMixin):
             "status": self.status.value,
             "client_id": self.client_id,
             "client_name": self.client.fullname if self.client else None,
+            "client_phone": self.client.phone if self.client else None,
             "worker_id": self.worker_id,
+            "worker_name": self.worker.client.fullname if self.worker and self.worker.client else None,
+            "worker_phone": self.worker.client.phone if self.worker and self.worker.client else None,
+            "client_email": self.client.email if self.client else None,
+            "worker_email": self.worker.client.email if self.worker and self.worker.client else None,
+            "road": self.road,
+            "building_name": self.building_name,
+            "house_number": self.house_number,
+            "location": self.location,
+            "duration": self.duration,
             "scheduled_date": self.scheduled_date.isoformat() if self.scheduled_date else None,
             "scheduled_time": self.scheduled_time.strftime("%H:%M") if self.scheduled_time else None,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "skill_name": self.skill.skill_name if self.skill else None
-    }
+        }
+

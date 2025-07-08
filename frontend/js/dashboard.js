@@ -118,17 +118,23 @@ function showJobDetails(jobId) {
     }
 
 
-    let assignedWorkerSection = job.assignedWorker && job.assignedWorker !== "Not assigned yet"
-        ? `<div class="worker-info">
-                <span>${job.assignedWorker}</span>
-                <a href="message.html?worker=${encodeURIComponent(job.assignedWorker)}" class="message-btn" title="Send Message to Worker">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                    </svg>
-                </a>
-            </div>`
-        : `<span>${job.assignedWorker || "Not assigned yet"}</span>`;
+    let workerPhoneLine = job.status !== "completed" && job.worker_phone
+    ? `<div class="detail-item"><label>Worker Phone:</label><span>${job.worker_phone}</span></div>`
+    : "";
 
+    let assignedWorkerSection = job.assignedWorker && job.assignedWorker !== "Not assigned yet"
+    ? `<div class="worker-info">
+            <span>${job.assignedWorker}</span>
+            <a href="message.html?worker=${encodeURIComponent(job.assignedWorker)}" class="message-btn" title="Send Message to Worker">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+            </a>
+        </div>
+        ${workerPhoneLine}`
+        
+    : `<span>${job.assignedWorker || "Not assigned yet"}</span>`;
+  
     let completionApprovalSection = normalizeStatus(job.original_status) === "worker_completed" ?
         `<div class="detail-item">
             <button class="approve-completion-btn" onclick="approveJobCompletion(${job.id})">
@@ -160,26 +166,29 @@ function showJobDetails(jobId) {
     }
 
     content.innerHTML = `
-        <div class="job-detail-grid">
-            <div class="detail-item"><label>Skill:</label><span>${job.skill_name}</span></div>
-            <div class="detail-item"><label>Description:</label><span>${job.description}</span></div>
-            <div class="detail-item"><label>Location:</label><span>${job.location || "Not specified"}</span></div>
-            <div class="detail-item"><label>Duration:</label><span>${job.duration || "Not specified"}</span></div>
-            <div class="detail-item"><label>Budget:</label><span>${job.budget}</span></div>
-            <div class="detail-item"><label>Scheduled Date:</label><span>${scheduledDate}</span></div>
-            <div class="detail-item"><label>Scheduled Time:</label><span>${scheduledTime}</span></div>
-            <div class="detail-item">
-                <label>Status:</label>
-                <span class="status-badge status-${job.status}">
-                    ${formatStatus(job.status)}
-                    ${job.original_status === 'worker_completed' ? ' - Pending Client Confirmation' : ''}
-                </span>
-            </div>
-            <div class="detail-item"><label>Assigned Worker:</label>${assignedWorkerSection}</div>
-            <div class="detail-item"><label>Date Posted:</label><span>${new Date(job.datePosted).toLocaleDateString("en-US")}</span></div>
-            ${completionApprovalSection}
-            ${ratingSection}
-        </div>`;
+    <div class="job-detail-grid">
+        <div class="detail-item"><label>Skill:</label><span>${job.skill_name}</span></div>
+        <div class="detail-item"><label>Description:</label><span>${job.description}</span></div>
+        <div class="detail-item"><label>Location:</label><span>${job.location || "Not specified"}</span></div>
+        ${job.road ? `<div class="detail-item"><label>Road:</label><span>${job.road}</span></div>` : ''}
+        ${job.building_name ? `<div class="detail-item"><label>Building Name:</label><span>${job.building_name}</span></div>` : ''}
+        ${job.house_number ? `<div class="detail-item"><label>House Number:</label><span>${job.house_number}</span></div>` : ''}
+        <div class="detail-item"><label>Duration:</label><span>${job.duration || "Not specified"}</span></div>
+        <div class="detail-item"><label>Budget:</label><span>${job.budget}</span></div>
+        <div class="detail-item"><label>Scheduled Date:</label><span>${scheduledDate}</span></div>
+        <div class="detail-item"><label>Scheduled Time:</label><span>${scheduledTime}</span></div>
+        <div class="detail-item">
+            <label>Status:</label>
+            <span class="status-badge status-${job.status}">
+                ${formatStatus(job.status)}
+                ${job.original_status === 'worker_completed' ? ' - Pending Client Confirmation' : ''}
+            </span>
+        </div>
+        <div class="detail-item"><label>Assigned Worker:</label>${assignedWorkerSection}</div>
+        <div class="detail-item"><label>Date Posted:</label><span>${new Date(job.datePosted).toLocaleDateString("en-US")}</span></div>
+        ${completionApprovalSection}
+        ${ratingSection}
+    </div>`;
 
     popup.style.display = "flex";
     document.body.style.overflow = "hidden";
@@ -231,19 +240,20 @@ async function fetchClientJobs() {
 
         const data = await response.json();
         const jobs = data.jobs.map(job => {
-            const rawStatus = normalizeStatus(job.status)?.toLowerCase() || "unknown";
-            const mappedStatus = rawStatus === "worker_completed" ? "completed" : rawStatus;
             return {
                 id: job.job_id,
                 skill_name: job.skill?.skill_name || null,
                 description: job.description,
                 budget: `${job.budget}`,
-                status: mappedStatus,
-                original_status: rawStatus,
+                status: job.status?.toLowerCase?.() || "unknown",
+                original_status: job.original_status?.toLowerCase?.() || job.status?.toLowerCase?.() || "unknown",
                 datePosted: job.created_at ? new Date(job.created_at) : null,
                 location: job.location,
+                road: job.road,
+                building_name: job.building_name,
+                house_number: job.house_number,
                 duration: job.duration,
-                scheduledDate: job.scheduled_date,
+                scheduledDate: job.scheduled_date,  
                 scheduledTime: job.scheduled_time,
                 assignedWorker: job.worker_name || "Not assigned yet",
                 assignedWorkerId: job.worker_id || null,
@@ -252,6 +262,7 @@ async function fetchClientJobs() {
                 workerFeedback: job.workerFeedback || ""
             };
         });
+
 
         window.allJobs = jobs;
         displayJobs(jobs);

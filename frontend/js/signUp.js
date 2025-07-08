@@ -217,6 +217,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 fullname: nameInput.value.trim(),
                 email: emailInput.value.trim(),
                 phone: countryCodeSelect.value + phoneInput.value.trim(),
+                gender: document.getElementById("gender").value,
                 password: passwordInput.value
             };
             const response = await fetch(`${BASE_URL}/auth/register`, {

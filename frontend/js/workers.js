@@ -25,7 +25,10 @@ async function fetchWorkersFromBackend() {
             phone: w.client.phone,
             location: w.location,
             applicationDate: new Date(w.created_at).toISOString(),
-            status: w.is_approved ? 'approved' : 'requests',
+            certificate_url: w.certificate_url,
+            experience_years: w.experience_years,
+            status: w.status || (w.is_approved ? 'approved' : 'requests'),
+            is_verified: w.is_verified || false,
             skills: w.skills,
             rating: w.rating || 0,
             completedJobs: w.completed_jobs || 0,
@@ -121,27 +124,26 @@ function selectWorker(workerId) {
 
     const workerDetails = document.getElementById('workerDetails');
     let detailsHTML = `
-        <div class="detail-section">
-            <h3>Worker Info</h3>
-            <div class="detail-grid">
-                <div class="detail-item"><div class="detail-label">Name</div><div class="detail-value">${worker.name}</div></div>
-                <div class="detail-item"><div class="detail-label">Email</div><div class="detail-value">${worker.email}</div></div>
-                <div class="detail-item"><div class="detail-label">Phone</div><div class="detail-value">${worker.phone}</div></div>
-                <div class="detail-item"><div class="detail-label">Location</div><div class="detail-value">${worker.location}</div></div>
-                <div class="detail-item"><div class="detail-label">Status</div><div class="detail-value">${worker.status}</div></div>
-            </div>
+    <div class="detail-section">
+    <h3>Worker Info</h3>
+        <div class="detail-grid">
+            <div class="detail-item"><div class="detail-label">Name</div><div class="detail-value">${worker.name}</div></div>
+            <div class="detail-item"><div class="detail-label">Email</div><div class="detail-value">${worker.email}</div></div>
+            <div class="detail-item"><div class="detail-label">Phone</div><div class="detail-value">${worker.phone}</div></div>
+            <div class="detail-item"><div class="detail-label">Location</div><div class="detail-value">${worker.location}</div></div>
+            <div class="detail-item"><div class="detail-label">Hourly Rate</div><div class="detail-value">Ksh ${worker.hourly_rate}</div></div>
+            <div class="detail-item"><div class="detail-label">Experience</div><div class="detail-value">${worker.experience_years || 'N/A'} years</div></div>
+            <div class="detail-item"><div class="detail-label">Status</div><div class="detail-value">${worker.status}</div></div>
+            <div class="detail-item"><div class="detail-label">Verified</div><div class="detail-value">${worker.is_verified ? '✅ Yes' : '❌ No'}</div></div>
+            ${worker.certificate_url ? `
+            <div class="detail-item">
+                <div class="detail-label">Certificate</div>
+                <div class="detail-value"><a href="${BASE_URL}${worker.certificate_url}" target="_blank">View Certificate</a></div>
+            </div>` : ''}
         </div>
-        <div class="detail-section">
-        <h3>Skills</h3>
-        <div class="skills-list">
-            ${Array.isArray(worker.skills) && worker.skills.length
-                ? worker.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')
-                : '<span>No skills listed</span>'
-            }
-            </div>
-        </div>
+    </div>
+`;
 
-    `;
 
     if (worker.status === 'requests') {
         detailsHTML += `

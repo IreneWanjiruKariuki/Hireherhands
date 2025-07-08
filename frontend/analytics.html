@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Analytics & Reports</title>
+  <link rel="stylesheet" href="css/analytics.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <h1>Analytics & Reports</h1>
+      <a href="admin_dash.html" class="back-btn">← Back to Dashboard</a>
+    </div>
+  </header>
+
+  <div class="container">
+    <section class="summary-section">
+      <h2> System Summary</h2>
+      <div id="reportSummary">Loading summary...</div>
+    </section>
+
+    <section class="charts-grid">
+      <div class="chart-box">
+        <h3>Client Signups</h3>
+        <canvas id="clientSignupChart"></canvas>
+      </div>
+
+      <div class="chart-box">
+        <h3>Worker Approval Status</h3>
+        <canvas id="workerStatusChart"></canvas>
+      </div>
+
+      <div class="chart-box">
+        <h3>Job Status</h3>
+        <canvas id="jobStatusChart"></canvas>
+      </div>
+
+      <div class="chart-box">
+        <h3>Gender Distribution</h3>
+        <canvas id="genderChart"></canvas>
+      </div>
+
+      <div class="chart-box">
+        <h3>Skill Popularity</h3>
+        <canvas id="skillChart"></canvas>
+      </div>
+
+      <div class="chart-box">
+        <h3>Job Creation Trends</h3>
+        <canvas id="trendChart"></canvas>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="js/analytics.js"></script>
+</body>
+</html>

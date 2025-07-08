@@ -73,12 +73,16 @@ document.getElementById('jobPostingForm').addEventListener('submit', async funct
     const skillSelect = document.getElementById('skillSelect');
     const selectedOption = skillSelect.options[skillSelect.selectedIndex];
     const skill_id = parseInt(skillSelect.value);
+    
 
     const jobData = {
         skill_id: skill_id,
         description: document.getElementById('jobDescription').value,
         budget: parseFloat(document.getElementById('budget').value.replace(/,/g, '')),
         location: document.getElementById('location').value,
+        road: document.getElementById('road').value.trim(),
+        building_name: document.getElementById('building_name').value.trim(),
+        house_number: document.getElementById('house_number').value.trim(),
         duration: document.getElementById('duration').value,
         scheduled_date: document.getElementById('scheduled_date').value || null,
         scheduled_time: document.getElementById('scheduled_time').value || null
@@ -116,17 +120,23 @@ document.getElementById('jobPostingForm').addEventListener('submit', async funct
         }
 
         const postedJob = {
-            id: data.job.job_id,
-            title: selectedOption.textContent,
-            description: jobData.description,
-            budget: jobData.budget,
+            id:data.job.job_id,
+            skill_name: data.job.skill?.skill_name || data.job.skill_name || selectedOption.textContent,
+            description: data.job.description,
+            budget: data.job.budget,
             status: (data.job.status || 'unknown').toLowerCase(),
-            datePosted: new Date().toISOString(),
-            location: jobData.location,
-            duration: jobData.duration,
-            scheduledDate: new Date(jobData.scheduled_date).toISOString(), 
-            scheduledTime: jobData.scheduled_time + ":00"
+            datePosted: data.job.created_at,
+            location: data.job.location,
+            duration: data.job.duration,
+            scheduledDate: data.job.scheduled_date,
+            scheduledTime: data.job.scheduled_time,
+            assignedWorker: data.job.worker_name || "Not assigned yet",
+            assignedWorkerId: data.job.worker_id || null,
+            worker_completion_confirmed: false,
+            workerRating: 0,
+            workerFeedback: ""
         };
+
         localStorage.setItem('lastPostedJobData', JSON.stringify(postedJob));
 
         successMessage.style.display = 'block';

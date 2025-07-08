@@ -64,6 +64,11 @@ async function prefillClientInfo() {
         // Match your HTML field IDs here
         document.getElementById('fullName').value = data.fullname || '';
         document.getElementById('email').value = data.email || '';
+        if (data.gender?.toLowerCase() !== "female") {
+            alert("Only female clients can apply to be workers.");
+            window.location.href = "dashboard.html"; 
+        }
+
         document.getElementById('phone').value = data.phone?.replace(/^\+254/, '') || '';
 
         document.getElementById('fullName').readOnly = true;
@@ -116,20 +121,38 @@ function setupApplicationForm() {
         try {
             showLoading(true);
 
+            const formData = new FormData();
+            formData.append('bio', bio);
+            formData.append('id_number', idNumber);
+            formData.append('location', location);
+            formData.append('hourly_rate', rate);
+            selectedSkills.forEach(skillId => formData.append('skills', skillId));
+
+            const experience = document.getElementById('experience')?.value;
+            if (experience) {
+                formData.append('experience_years', experience);
+            }
+            
+            const fileInput = document.getElementById('certificate');
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            if (fileInput && fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                if (file.size > maxSize) {
+                    alert("Certificate file is too large. Max 5MB.");
+                    showLoading(false);
+                    return;
+                }
+                formData.append('certificate', file);
+            }
+  
             const res = await fetch(`${BASE_URL}/worker/register`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
+                    Authorization: `Bearer ${token}`
                 },
-                body: JSON.stringify({
-                    bio,
-                    location,
-                    hourly_rate: rate,
-                    id_number: idNumber,
-                    skills: selectedSkills
-                })
+                body: formData
             });
+
 
             const data = await res.json();
             if (!res.ok) {

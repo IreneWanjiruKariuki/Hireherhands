@@ -22,47 +22,11 @@
     <li><a href="workers.html">👷 Workers</a></li>
     <li><a href="job.html">📋 Jobs</a></li>
     <li><a href="message.html">💬 Messages</a></li>
+    <li><a href="skills.html">Skills</a></li>
+    <li><a href="analytics.html">Analytics</a></li>
+
   </ul>
 </nav>
-
-  <div class="container">
-    <div class="admin-layout">
-      <!-- Main Section -->
-      <main class="admin-main">
-        <div class="welcome-section">
-          <h2>Welcome back, Administrator</h2>
-          <p>Here’s a visual summary of your system performance.</p>
-        </div>
-        <div id="reportSummary" class="report-summary"></div>
-        <!-- 📊 Analytics Charts -->
-        <div class="charts-section">
-          <h2>System Analytics</h2>
-
-          <div class="chart-container">
-            <h3>Client Signups</h3>
-            <p>X: Time Range | Y: Number of Clients</p>
-            <canvas id="clientSignupChart"></canvas>
-          </div>
-
-          <div class="chart-container">
-            <h3>Worker Approval Status</h3>
-            <p>Pie chart showing Approved vs Pending Workers</p>
-            <canvas id="workerStatusChart"></canvas>
-          </div>
-
-          <div class="chart-container">
-            <h3>Job Status Overview</h3>
-            <p>X: Job Status | Y: Number of Jobs</p>
-            <canvas id="jobStatusChart"></canvas>
-          </div>
-        </div>
-      </main>
-    </div>
-  </div>
-
-  <!-- Load Chart.js first -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Then your dashboard logic -->
   <script src="js/admin_dash.js"></script>
 </body>
 </html>

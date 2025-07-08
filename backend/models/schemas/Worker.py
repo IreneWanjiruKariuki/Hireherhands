@@ -6,6 +6,7 @@ class WorkerRegisterSchema(Schema):
     location = fields.Str(required=True)
     hourly_rate = fields.Float(required=True)
     skills = fields.List(fields.Int(strict=True), required=True)
+    experience_years = fields.Int(required=False, allow_none=True)
     
 class WorkerUpdateSchema(Schema):
     bio = fields.Str()

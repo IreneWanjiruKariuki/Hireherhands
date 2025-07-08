@@ -2,24 +2,40 @@ from models.Skill import Skill
 from extensions import db
 
 class SkillService:
+ 
     @staticmethod
-    def get_all_skills():
-        skills = Skill.query.all()
+    def get_all_skills(include_inactive=False):
+        query = Skill.query
+        if not include_inactive:
+            query = query.filter_by(is_active=True)
+        skills = query.all()
         return {
             "skills": [
-                {
+                 {
                     "skill_id": skill.skill_id,
                     "skill_name": skill.skill_name,
+                    "is_active": skill.is_active
                 } for skill in skills
-                ]
-            }, 200
+            ]
+        }, 200
 
     @staticmethod
-    def get_skill_by_id(skill_id):
+    def get_workers_by_skill(skill_id):
         skill = Skill.query.get(skill_id)
         if not skill:
             return {"error": "Skill not found"}, 404
-        return {"skill": skill.serialize()}, 200
+        workers = skill.workers
+        return {
+            "workers": [{
+                "worker_id": w.worker_id,
+                "fullname": w.client.fullname,
+                "email": w.client.email,
+                "phone": w.client.phone,
+                "location": w.location,
+                "is_approved": w.is_approved,
+            } for w in workers]
+        }, 200
+
 
     @staticmethod
     def get_skill_by_name(name):
@@ -59,3 +75,33 @@ class SkillService:
         db.session.delete(skill)
         db.session.commit()
         return {"message": "Skill deleted"}, 200
+
+    @staticmethod
+    def get_jobs_by_skill(skill_id):
+        skill = Skill.query.get(skill_id)
+        if not skill:
+            return {"error": "Skill not found"}, 404
+        jobs = skill.jobs
+        return {
+            "jobs": [{
+                "job_id": j.job_id,
+                "description": j.description,
+                "status": j.status.value,
+                "budget": j.budget,
+                "client_name": j.client.fullname if j.client else None,
+                "worker_name": j.worker.client.fullname if j.worker and j.worker.client else None,
+                "created_at": j.created_at.isoformat() if j.created_at else None,
+            } for j in jobs]
+        }, 200
+
+    @staticmethod
+    def toggle_skill_status(skill_id):
+        skill = Skill.query.get(skill_id)
+        if not skill:
+            return {"error": "Skill not found"}, 404
+        skill.is_active = not skill.is_active
+        db.session.commit()
+        state = "deactivated" if not skill.is_active else "reactivated"
+        return {"message": f"Skill {state} successfully."}, 200
+
+

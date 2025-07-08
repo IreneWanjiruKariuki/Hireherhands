@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Skill Management</title>
+  <link rel="stylesheet" href="css/skills.css"/> 
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <h1>Skill Management</h1>
+      <a href="admin_dash.html" class="back-btn">&larr; Back to Dashboard</a>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <section class="search-skill">
+      <input type="text" id="searchInput" placeholder="Search skills..." />
+    </section>
+
+    <section class="add-skill">
+      <h2>Add New Skill</h2>
+      <form id="addSkillForm">
+        <input type="text" id="skillName" placeholder="Enter skill name..." />
+        <button type="submit">Add Skill</button>
+      </form>
+    </section>
+
+ 
+    <section class="skills-list-section">
+      <h2>All Skills</h2>
+      <ul id="skillsList" class="skills-list">Loading skills...</ul>
+    </section>
+
+    <section class="skill-details" id="skillDetailsSection">
+      <h2>Skill Details</h2>
+      <div id="skillWorkers"></div>
+      <div id="skillJobs"></div>
+    </section>
+
+  </div>
+
+  <script src="js/skills.js"></script>
+</body>
+</html>

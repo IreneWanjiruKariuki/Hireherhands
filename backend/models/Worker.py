@@ -25,6 +25,8 @@ class Worker(db.Model, SerializerMixin):
     location: Mapped[str] = mapped_column(db.String(120), nullable=False)
     status: Mapped[WorkerStatus] = mapped_column(db.Enum(WorkerStatus), nullable=False, default=WorkerStatus.AVAILABLE)
     is_approved: Mapped[bool] = mapped_column(db.Boolean, default=False)
+    experience_years = db.Column(db.Integer, nullable=True)
+    certificate_url = db.Column(db.String, nullable=True)  # store file URL
     created_at: Mapped[datetime] = mapped_column(db.DateTime, default=datetime.utcnow)
     is_verified: Mapped[bool] = mapped_column(db.Boolean, default=False)
     is_deleted: Mapped[bool] = mapped_column(db.Boolean, default=False)

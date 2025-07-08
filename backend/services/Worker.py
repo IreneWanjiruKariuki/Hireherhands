@@ -1,23 +1,48 @@
+import os
+from flask import request
+from werkzeug.utils import secure_filename
+
 from models.Worker import Worker
 from models.Client import Client
 from models.Skill import Skill
-#from models.association import WorkerSkill
-
 from extensions import db
+
+
+ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg'}
+UPLOAD_FOLDER = "uploads/certificates"
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 class WorkerService:
     @staticmethod
-    def register_worker(client_id, data):
+    def register_worker(client_id, data,certificate_file=None):
         existing = Worker.query.filter_by(client_id=client_id).first()
         if existing:
             return {"error": "Worker already registered"}, 400
+        client = Client.query.get(client_id)
+        if client.gender.lower() != "female":
+            return {"error": "Only women can apply to become workers."}, 403
 
+        certificate_file = request.files.get('certificate')
+        certificate_url = None
+
+        if certificate_file and allowed_file(certificate_file.filename):
+            filename = secure_filename(certificate_file.filename)
+            os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+            file_path = os.path.join(UPLOAD_FOLDER, filename)
+            certificate_file.save(file_path)
+            certificate_url = f"/uploads/certificates/{filename}"
         worker = Worker(
             client_id=client_id,
             bio=data["bio"],
             location=data["location"],
             hourly_rate=data["hourly_rate"],
             id_number=data["id_number"],
+            experience_years=data["experience_years"],
+            certificate_url=certificate_url,
             is_approved=False
         )
 
@@ -50,6 +75,7 @@ class WorkerService:
             "phone": client.phone,
             "bio": worker.bio,
             "location": worker.location,
+            "experience_years": worker.experience_years,
             "hourly_rate": worker.hourly_rate,
             "is_approved": worker.is_approved
         }, 200

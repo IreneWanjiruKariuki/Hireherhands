@@ -101,9 +101,9 @@ async function fetchWorkersByJob(job) {
             name: worker.name || "Unnamed Worker",
             bio: worker.bio || "",
             location: worker.location || "Unknown",
-            rate: worker.hourly_rate || 0,
-            rating: worker.rating || 0,
-            reviews: worker.reviews || 0,
+            //rate: worker.hourly_rate || 0,
+            //rating: worker.rating || 0,
+            //reviews: worker.reviews || 0,
             skills: worker.skills || []
         }));
 
