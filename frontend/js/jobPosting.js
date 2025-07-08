@@ -35,7 +35,7 @@ async function loadSkillsToDropdown(dropdownId) {
         data.skills.forEach(skill => {
             const option = document.createElement('option');
             option.value = skill.skill_id;
-            option.textContent = skill.skill_name;
+            option.textContent = skill.skill_name.toUpperCase();
             dropdown.appendChild(option);
         });
     } catch (err) {

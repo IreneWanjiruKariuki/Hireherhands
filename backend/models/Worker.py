@@ -8,11 +8,11 @@ from models.association import worker_skills
 import models.Skill
 
 class WorkerStatus(Enum):
-    AVAILABLE = 'available'
-    BUSY = 'busy'
-    OFFLINE = 'offline'
+    REQUESTS = 'requests'
+    APPROVED = 'approved'
+    REJECTED = 'rejected'
 
-
+    
 class Worker(db.Model, SerializerMixin):
     __tablename__ = 'workers'
 
@@ -23,13 +23,21 @@ class Worker(db.Model, SerializerMixin):
     id_number = db.Column(db.String(50), nullable=False)
     hourly_rate: Mapped[float] = mapped_column(db.Float, nullable=False, default=0.0)
     location: Mapped[str] = mapped_column(db.String(120), nullable=False)
-    status: Mapped[WorkerStatus] = mapped_column(db.Enum(WorkerStatus), nullable=False, default=WorkerStatus.AVAILABLE)
-    is_approved: Mapped[bool] = mapped_column(db.Boolean, default=False)
+    status: Mapped[WorkerStatus] = mapped_column(
+        db.Enum(
+            WorkerStatus,
+            values_callable=lambda enum_cls: [e.value for e in enum_cls],
+            name="workerstatus"
+        ),
+        nullable=False,
+        default=WorkerStatus.REQUESTS 
+    )
     experience_years = db.Column(db.Integer, nullable=True)
     certificate_url = db.Column(db.String, nullable=True)  # store file URL
     created_at: Mapped[datetime] = mapped_column(db.DateTime, default=datetime.utcnow)
     is_verified: Mapped[bool] = mapped_column(db.Boolean, default=False)
     is_deleted: Mapped[bool] = mapped_column(db.Boolean, default=False)
+    is_approved: Mapped[bool] = mapped_column(default=False)
 
     # Relationships
     client = relationship('Client', back_populates='workers')

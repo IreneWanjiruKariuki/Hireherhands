@@ -1,5 +1,5 @@
 from models.Client import Client
-from models.Worker import Worker
+from models.Worker import Worker, WorkerStatus
 from models.Admin import Admin
 from extensions import db, bcrypt
 from flask_jwt_extended import create_access_token
@@ -73,6 +73,11 @@ class AuthenticationService:
                     claims["role"] = "worker"
                     claims["worker_id"] = worker.worker_id
                     claims["roles"] = ["client", "worker"]
+                if worker:
+                    if worker.status != WorkerStatus.APPROVED:
+                        return {"error": "Your application is not approved yet."}, 403
+                    if worker.is_deleted:
+                        return {"error": "Your account has been deactivated."}, 403
 
                 token = create_access_token(identity=str(client.client_id), additional_claims=claims)
                 client_data = client.to_dict(only=("client_id", "fullname", "email", "phone", "created_at"))

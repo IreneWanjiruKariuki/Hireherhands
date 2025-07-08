@@ -124,6 +124,37 @@ async function loadJobs() {
     container.innerHTML = '<div class="no-jobs">Failed to load jobs.</div>';
   }
 }
+function toggleBioEdit() {
+  document.getElementById("bioText").style.display = "none";
+  document.getElementById("bioEditor").style.display = "block";
+  document.querySelector(".bio-actions").style.display = "flex";
+}
+
+function cancelBioEdit() {
+  document.getElementById("bioEditor").style.display = "none";
+  document.querySelector(".bio-actions").style.display = "none";
+  document.getElementById("bioText").style.display = "block";
+}
+function toggleRateEdit() {
+  document.querySelector(".rate-display").style.display = "none";
+  document.querySelector(".rate-editor").style.display = "flex";
+}
+
+function cancelRateEdit() {
+  document.querySelector(".rate-editor").style.display = "none";
+  document.querySelector(".rate-display").style.display = "flex";
+}
+function saveBio() {
+  const newBio = document.getElementById("bioEditor").value;
+  document.getElementById("bioText").textContent = newBio;
+  cancelBioEdit();
+}
+function saveRate() {
+  const newRate = document.getElementById("rateInput").value;
+  document.getElementById("hourlyRate").textContent = newRate;
+  cancelRateEdit();
+}
+
 
 function createJobCard(job) {
   const statusClass = `status-${job.status}`;
@@ -289,7 +320,8 @@ async function acceptJob(jobId) {
     });
     if (!res.ok) throw new Error();
     alert("Job accepted successfully!");
-    loadJobs();
+    filterJobs("in_progress");
+
   } catch {
     alert("Could not accept job.");
   }
@@ -323,6 +355,34 @@ async function completeJob(jobId) {
     alert("Could not complete job.");
   }
 }
+async function saveProfileChanges() {
+  const token = localStorage.getItem("access_token");
+  const bio = document.getElementById("bioEditor").value;
+  const rate = document.getElementById("rateInput").value;
+
+  try {
+    const res = await fetch(`${BASE_URL}/worker/profile`, {
+      method: "PUT",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ bio: bio, hourly_rate: rate })
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to update profile");
+    }
+
+    alert("Profile updated successfully.");
+    loadWorkerProfile();  // Refresh the data
+
+  } catch (err) {
+    console.error(err);
+    alert("Could not update profile.");
+  }
+}
+
 
 function formatStatus(status) {
   return status.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());

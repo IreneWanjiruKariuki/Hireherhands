@@ -2,7 +2,7 @@ import os
 from flask import request
 from werkzeug.utils import secure_filename
 
-from models.Worker import Worker
+from models.Worker import Worker,WorkerStatus
 from models.Client import Client
 from models.Skill import Skill
 from extensions import db
@@ -43,7 +43,7 @@ class WorkerService:
             id_number=data["id_number"],
             experience_years=data["experience_years"],
             certificate_url=certificate_url,
-            is_approved=False
+            status=WorkerStatus.REQUESTS
         )
 
         db.session.add(worker) 
@@ -63,7 +63,7 @@ class WorkerService:
         worker = Worker.query.filter_by(worker_id=worker_id, is_deleted=False).first()
         if not worker:
             return {"error": "Worker not found"}, 404
-        if not worker.is_approved:
+        if worker.status != WorkerStatus.APPROVED:
             return {"error": "Your application is still pending approval."}, 403
         client = Client.query.get(worker.client_id)
         if not client:
@@ -77,7 +77,8 @@ class WorkerService:
             "location": worker.location,
             "experience_years": worker.experience_years,
             "hourly_rate": worker.hourly_rate,
-            "is_approved": worker.is_approved
+            "status": worker.status.name
+
         }, 200
 
 
@@ -86,9 +87,13 @@ class WorkerService:
         worker = Worker.query.filter_by(worker_id=worker_id, is_deleted=False).first()
         if not worker:
             return {"error": "Worker not found"}, 404
+            
 
         for key, value in data.items():
+            if key == "status" and isinstance(value, str):
+                value = WorkerStatus(value.lower())
             setattr(worker, key, value)
+
         db.session.commit()
         return {"message": "Worker profile updated"}, 200
 

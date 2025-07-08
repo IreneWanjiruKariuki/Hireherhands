@@ -144,6 +144,19 @@ class AdminSkillsListResource(Resource):
         if check: return check
         return SkillService.get_all_skills(include_inactive=True)
 
+    @jwt_required()
+    def post(self):
+        check = admin_only()
+        if check: return check
+
+        data = request.get_json()
+        name = data.get("name")
+
+        if not name:
+            return {"error": "Skill name is required."}, 400
+
+        return SkillService.create_skill(name)
+
 class AdminSkillWorkersResource(Resource):
     @jwt_required()
     def get(self, skill_id):

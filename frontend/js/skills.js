@@ -33,7 +33,7 @@ function renderSkills(skills) {
         const li = document.createElement("li");
         li.className = "skill-item";
         li.innerHTML = `
-            <strong>${skill.skill_name}</strong>
+            <strong>${skill.skill_name.toUpperCase()}</strong>
             <span class="badge ${skill.is_active ? 'active' : 'inactive'}">
                 ${skill.is_active ? 'Active' : 'Inactive'}
             </span>
@@ -47,7 +47,7 @@ function renderSkills(skills) {
 function handleSearchInput() {
     const query = document.getElementById("searchInput").value.toLowerCase();
     const filtered = allSkills.filter(skill =>
-        skill.skill_name.toLowerCase().includes(query)
+        skill.skill_name.toUpperCase().includes(query)
     );
     renderSkills(filtered);
 }

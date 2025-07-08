@@ -33,7 +33,7 @@ async function loadSkillsAsCheckboxes(containerId, toggleHandler) {
             });
 
             label.appendChild(checkbox);
-            label.append(` ${skill.skill_name}`);
+            label.append(` ${skill.skill_name.toUpperCase()}`);
             container.appendChild(label);
         });
     } catch (error) {

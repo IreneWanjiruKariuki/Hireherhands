@@ -1,5 +1,5 @@
 const BASE_URL = 'http://127.0.0.1:5000';
-let currentFilter = 'requests';
+let currentFilter = 'all';
 let currentPage = 1;
 const itemsPerPage = 4;
 let filteredWorkers = [];
@@ -27,7 +27,7 @@ async function fetchWorkersFromBackend() {
             applicationDate: new Date(w.created_at).toISOString(),
             certificate_url: w.certificate_url,
             experience_years: w.experience_years,
-            status: w.status || (w.is_approved ? 'approved' : 'requests'),
+            status: w.status,
             is_verified: w.is_verified || false,
             skills: w.skills,
             rating: w.rating || 0,
@@ -85,7 +85,6 @@ function filterAndDisplayWorkers() {
     displayWorkers();
 }
 
-
 function displayWorkers() {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
@@ -103,15 +102,17 @@ function displayWorkers() {
         updatePagination();
         return;
     }
-    workersList.innerHTML = workersToShow.map(worker => `
-    <div class="worker-item ${selectedWorkerId === worker.id ? 'active' : ''} ${worker.is_deleted ? 'inactive' : ''}" onclick="selectWorker(${worker.id})">
-        <div class="worker-info">
-            <h4>${worker.name}</h4>
-            <div class="worker-meta">${worker.skills.slice(0, 2).join(', ')}</div>
-            <div class="worker-status status-${worker.status}">${worker.is_deleted ? 'inactive' : worker.status}</div>
-        </div>
-    </div>`).join('');
 
+    workersList.innerHTML = workersToShow.map(worker => `
+        <div class="worker-item ${selectedWorkerId === worker.id ? 'active' : ''} ${worker.is_deleted ? 'inactive' : ''}" onclick="selectWorker(${worker.id})">
+            <div class="worker-info">
+                <h4>${worker.name}</h4>
+                <div class="worker-meta">${worker.skills.slice(0, 2).join(', ')}</div>
+                <div class="worker-status status-${worker.status}">
+                    ${worker.is_deleted ? 'deactivated' : worker.status}
+                </div>
+            </div>
+        </div>`).join('');
 
     updateWorkerCount();
     updatePagination();
@@ -124,49 +125,46 @@ function selectWorker(workerId) {
 
     const workerDetails = document.getElementById('workerDetails');
     let detailsHTML = `
-    <div class="detail-section">
-    <h3>Worker Info</h3>
-        <div class="detail-grid">
-            <div class="detail-item"><div class="detail-label">Name</div><div class="detail-value">${worker.name}</div></div>
-            <div class="detail-item"><div class="detail-label">Email</div><div class="detail-value">${worker.email}</div></div>
-            <div class="detail-item"><div class="detail-label">Phone</div><div class="detail-value">${worker.phone}</div></div>
-            <div class="detail-item"><div class="detail-label">Location</div><div class="detail-value">${worker.location}</div></div>
-            <div class="detail-item"><div class="detail-label">Hourly Rate</div><div class="detail-value">Ksh ${worker.hourly_rate}</div></div>
-            <div class="detail-item"><div class="detail-label">Experience</div><div class="detail-value">${worker.experience_years || 'N/A'} years</div></div>
-            <div class="detail-item"><div class="detail-label">Status</div><div class="detail-value">${worker.status}</div></div>
-            <div class="detail-item"><div class="detail-label">Verified</div><div class="detail-value">${worker.is_verified ? '✅ Yes' : '❌ No'}</div></div>
-            ${worker.certificate_url ? `
-            <div class="detail-item">
-                <div class="detail-label">Certificate</div>
-                <div class="detail-value"><a href="${BASE_URL}${worker.certificate_url}" target="_blank">View Certificate</a></div>
-            </div>` : ''}
-        </div>
-    </div>
-`;
-
+        <div class="detail-section">
+        <h3>Worker Info</h3>
+            <div class="detail-grid">
+                <div class="detail-item"><div class="detail-label">Name</div><div class="detail-value">${worker.name}</div></div>
+                <div class="detail-item"><div class="detail-label">Email</div><div class="detail-value">${worker.email}</div></div>
+                <div class="detail-item"><div class="detail-label">Phone</div><div class="detail-value">${worker.phone}</div></div>
+                <div class="detail-item"><div class="detail-label">Location</div><div class="detail-value">${worker.location}</div></div>
+                <div class="detail-item"><div class="detail-label">Hourly Rate</div><div class="detail-value">Ksh ${worker.hourly_rate || 'N/A'}</div></div>
+                <div class="detail-item"><div class="detail-label">Experience</div><div class="detail-value">${worker.experience_years || 'N/A'} years</div></div>
+                <div class="detail-item"><div class="detail-label">Status</div><div class="detail-value">${worker.is_deleted ? 'deactivated' : worker.status}</div></div>
+                <div class="detail-item"><div class="detail-label">Verified</div><div class="detail-value">${worker.is_verified ? '✅ Yes' : '❌ No'}</div></div>
+                ${worker.certificate_url ? `
+                    <div class="detail-item">
+                        <div class="detail-label">Certificate</div>
+                        <div class="detail-value"><a href="${BASE_URL}${worker.certificate_url}" target="_blank">View Certificate</a></div>
+                    </div>` : ''}
+            </div>
+        </div>`;
 
     if (worker.status === 'requests') {
         detailsHTML += `
             <div class="action-buttons">
                 <button onclick="handleApproval(${worker.id}, 'approve')">Approve</button>
                 <button onclick="handleApproval(${worker.id}, 'reject')">Reject</button>
-            </div>
-        `;
+            </div>`;
     }
-    if (worker.status === 'approved') {
-    detailsHTML += `
-        <div class="action-buttons">
-            <button onclick="toggleWorkerStatus(${worker.id})">
-                ${worker.is_deleted ? "Reactivate" : "Deactivate"} Worker
-            </button>
-        </div>
-    `;
-}
 
+    if (worker.status === 'approved') {
+        detailsHTML += `
+            <div class="action-buttons">
+                <button onclick="toggleWorkerStatus(${worker.id})">
+                    ${worker.is_deleted ? "Reactivate" : "Deactivate"} Worker
+                </button>
+            </div>`;
+    }
 
     workerDetails.innerHTML = detailsHTML;
     displayWorkers();
 }
+
 async function toggleWorkerStatus(workerId) {
     const confirmAction = confirm("Are you sure you want to toggle this worker's account status?");
     if (!confirmAction) return;

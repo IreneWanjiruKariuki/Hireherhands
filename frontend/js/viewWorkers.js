@@ -55,7 +55,7 @@ function displayJobSummary(job) {
     jobDetails.innerHTML = `
         <div class="job-detail">
         <span class="job-detail-label">Skill:</span>
-        <span class="job-detail-value">${job.title}</span>
+        <span class="job-detail-value">${job.skill_name}</span>
         </div>
         <div class="job-detail">
             <span class="job-detail-label">Location:</span>
@@ -101,9 +101,9 @@ async function fetchWorkersByJob(job) {
             name: worker.name || "Unnamed Worker",
             bio: worker.bio || "",
             location: worker.location || "Unknown",
-            //rate: worker.hourly_rate || 0,
-            //rating: worker.rating || 0,
-            //reviews: worker.reviews || 0,
+            rate: worker.hourly_rate || 0,
+            rating: worker.rating || 0,
+            reviews: worker.reviews || 0,
             skills: worker.skills || []
         }));
 
@@ -146,11 +146,11 @@ function createWorkerCard(worker) {
             </div>
             <div class="worker-rating">
                 <span class="stars">${stars}</span>
-                <span class="rating-text">${worker.rating} (${worker.reviews} reviews)</span>
+                <span class="rating-text">${worker.rating || 0} (${worker.reviews || 0} reviews)</span>
             </div>
             <div class="worker-details">
                 <div class="detail-row"><span class="detail-label">Location:</span><span class="detail-value">${worker.location}</span></div>
-                <div class="detail-row"><span class="detail-label">Rate:</span><span class="detail-value">KSh ${worker.rate.toLocaleString()}/day</span></div>
+                <div class="detail-row"><span class="detail-label">Rate:</span><span class="detail-value">KSh ${(worker.rate || 0).toLocaleString()}/day</span></div>
             </div>
             <div class="worker-skills">
                 <div class="detail-label">Skills:</div>

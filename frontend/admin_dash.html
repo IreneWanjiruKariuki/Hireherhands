@@ -16,17 +16,56 @@
       <button onclick="signOut()" class="sign-out-btn">Sign Out</button>
     </div>
   </header>
-  <nav class="admin-nav">
-  <ul>
-    <li><a href="clients.html">👥 Clients</a></li>
-    <li><a href="workers.html">👷 Workers</a></li>
-    <li><a href="job.html">📋 Jobs</a></li>
-    <li><a href="message.html">💬 Messages</a></li>
-    <li><a href="skills.html">Skills</a></li>
-    <li><a href="analytics.html">Analytics</a></li>
 
-  </ul>
-</nav>
+  <div class="container">
+    <div class="welcome-section">
+      <h2>Welcome back, Administrator</h2>
+      <p>Here's an overview of your management tools. Click on any section to get started.</p>
+    </div>
+
+    <div class="dashboard-grid">
+      <a href="clients.html" class="management-card">
+        <div class="card-icon">👥</div>
+        <h3 class="card-title">Client Management</h3>
+        <p class="card-description">
+          Manage client profiles, contact info, and history. View analytics and communication logs.
+        </p>
+      </a>
+
+      <a href="workers.html" class="management-card">
+        <div class="card-icon">👷</div>
+        <h3 class="card-title">Worker Management</h3>
+        <p class="card-description">
+          Oversee worker profiles, approve applications, and track productivity.
+        </p>
+      </a>
+
+      <a href="job.html" class="management-card">
+        <div class="card-icon">📋</div>
+        <h3 class="card-title">Jobs Management</h3>
+        <p class="card-description">
+          Monitor job progress, deadlines, and generate reports.
+        </p>
+      </a>
+
+      <a href="skills.html" class="management-card">
+        <div class="card-icon">🎓</div>
+        <h3 class="card-title">Skills Management</h3>
+        <p class="card-description">
+          Add, edit, or deactivate skills offered on the platform.
+        </p>
+      </a>
+
+      <a href="analytics.html" class="management-card">
+        <div class="card-icon">📊</div>
+        <h3 class="card-title">Analytics</h3>
+        <p class="card-description">
+          Visualize platform activity and trends with reports and charts.
+        </p>
+      </a>
+    </div>
+  </div>
+
   <script src="js/admin_dash.js"></script>
 </body>
 </html>

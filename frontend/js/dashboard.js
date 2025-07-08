@@ -75,7 +75,7 @@ function createJobCard(job) {
         <div class="job-card" data-status="${job.status}" data-id="${job.id}">
             <div class="job-header">
                 <div>
-                    <div class="job-title">${job.skill_name || "Skill not loaded"}</div>
+                    <div class="job-title">${job.skill_name?.toUpperCase() || "Skill not loaded"}</div>
                     <div class="job-date">Posted on ${formattedDate}</div>
                 </div>
                 <span class="job-status ${statusClass}">${formatStatus(job.status)}</span>
@@ -167,7 +167,7 @@ function showJobDetails(jobId) {
 
     content.innerHTML = `
     <div class="job-detail-grid">
-        <div class="detail-item"><label>Skill:</label><span>${job.skill_name}</span></div>
+        <div class="detail-item"><label>Skill:</label><span class="job-detail-value">${job.skill_name?.toUpperCase()}</span></div> 
         <div class="detail-item"><label>Description:</label><span>${job.description}</span></div>
         <div class="detail-item"><label>Location:</label><span>${job.location || "Not specified"}</span></div>
         ${job.road ? `<div class="detail-item"><label>Road:</label><span>${job.road}</span></div>` : ''}

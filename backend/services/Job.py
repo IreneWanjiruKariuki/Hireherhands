@@ -56,14 +56,16 @@ class JobService:
         job = Job.query.get(job_id)
         if not job:
             return {'error': 'Job not found'}, 404
+
         workers = (
             Worker.query
-            .options(joinedload(Worker.skills))
             .filter(
                 Worker.skills.any(Skill.skill_id == job.skill_id),
-                Worker.status == WorkerStatus.AVAILABLE,
-                Worker.is_approved == True
+                Worker.status == WorkerStatus.APPROVED,
+                Worker.is_approved == True,
+                Worker.is_deleted == False
             )
+            .options(joinedload(Worker.skills))
             .all()
         )
 
@@ -71,11 +73,13 @@ class JobService:
         worker_list = []
         for worker in workers:
             skills = [s.skill_name for s in worker.skills]
-            avg_rating = db.session.query(func.avg(Rating.stars))\
-                .filter_by(receiver_id=worker.worker_id, receiver_type="worker")\
+
+            avg_rating = db.session.query(func.avg(Rating.stars)) \
+                .filter_by(receiver_id=worker.worker_id, receiver_type="worker") \
                 .scalar() or 0
-            review_count = db.session.query(func.count(Rating.rating_id))\
-                .filter_by(receiver_id=worker.worker_id, receiver_type="worker")\
+
+            review_count = db.session.query(func.count(Rating.rating_id)) \
+                .filter_by(receiver_id=worker.worker_id, receiver_type="worker") \
                 .scalar()
 
             worker_list.append({
@@ -88,8 +92,8 @@ class JobService:
                 'reviews': review_count,
                 'skills': skills
             })
-        return {'matched_workers': worker_list}, 200
 
+        return {'matched_workers': worker_list}, 200
 
     @staticmethod
     def request_worker(job_id, worker_id):
