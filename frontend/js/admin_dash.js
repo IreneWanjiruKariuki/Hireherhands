@@ -1,6 +1,6 @@
 const BASE_URL = 'http://127.0.0.1:5000';
 
-// 🔒 Session check
+//  Session check
 function checkSession() {
     const token = localStorage.getItem("access_token");
     const role = localStorage.getItem("role");

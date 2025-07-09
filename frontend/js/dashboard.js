@@ -79,6 +79,12 @@ function createJobCard(job) {
                     <div class="job-date">Posted on ${formattedDate}</div>
                 </div>
                 <span class="job-status ${statusClass}">${formatStatus(job.status)}</span>
+                ${job.status === 'open' ? `
+                    <button class="find-workers-btn" onclick="findWorkersForJob(${job.id})">
+                    Find Workers
+                    </button>
+                ` : ''}
+
             </div>
             ${job.original_status === 'worker_completed' ? '<span class="pending-confirmation-tag">⏳ Pending Client Confirmation</span>' : ''}
             <div class="job-description">${job.description}</div>
@@ -192,6 +198,16 @@ function showJobDetails(jobId) {
 
     popup.style.display = "flex";
     document.body.style.overflow = "hidden";
+}
+function findWorkersForJob(jobId) {
+    const job = window.allJobs.find(j => j.id === jobId);
+    if (!job) return alert("Job not found.");
+
+    // Save job details in local storage for the next page
+    localStorage.setItem('lastPostedJobData', JSON.stringify(job));
+
+    // Redirect to your view_workers.html page
+    window.location.href = "viewWorkers.html";
 }
 
 function closeJobDetails() {

@@ -23,24 +23,3 @@ async function loadSkillsToDropdown(dropdownId) {
     }
 }
 
-/*async function loadSkillsAsCheckboxes(containerId, toggleHandler) {
-    try {
-        const response = await fetch(`${BASE_URL}/skills`);
-        const data = await response.json();
-
-        const container = document.getElementById(containerId);
-        container.innerHTML = '';
-
-        data.skills.forEach(skill => {
-            const label = document.createElement('label');
-            label.classList.add('skill-option');
-            label.innerHTML = `
-                <input type="checkbox" value="${skill.skill_id}" onchange="${toggleHandler.name}(${skill.skill_id})">
-                ${skill.skill_name}
-            `;
-            container.appendChild(label);
-        });
-    } catch (error) {
-        console.error("Failed to load skills as checkboxes:", error);
-    }
-}*/

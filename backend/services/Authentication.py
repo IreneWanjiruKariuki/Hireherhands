@@ -73,11 +73,28 @@ class AuthenticationService:
                     claims["role"] = "worker"
                     claims["worker_id"] = worker.worker_id
                     claims["roles"] = ["client", "worker"]
-                if worker:
+                """if worker:
                     if worker.status != WorkerStatus.APPROVED:
-                        return {"error": "Your application is not approved yet."}, 403
+                        return {"error": "Your application is pending approval."}, 403
                     if worker.is_deleted:
-                        return {"error": "Your account has been deactivated."}, 403
+                        return {"error": "Your account has been deactivated."}, 403"""
+                if worker:
+                        if worker.status != WorkerStatus.APPROVED: 
+                            # Pending worker: allow login but keep client role
+                            token = create_access_token(identity=str(client.client_id), additional_claims=claims)
+                            client_data = client.to_dict(only=("client_id", "fullname", "email", "phone", "created_at"))
+                            response_data = {
+                                "message": "Pending approval",
+                                "access_token": token,
+                                "role": claims["role"],
+                                "user": {
+                                    "client_id": client.client_id,
+                                    "fullname": client.fullname,
+                                    "email": client.email,
+                                    "phone": client.phone
+                                }
+                            }
+                            return response_data, 200
 
                 token = create_access_token(identity=str(client.client_id), additional_claims=claims)
                 client_data = client.to_dict(only=("client_id", "fullname", "email", "phone", "created_at"))

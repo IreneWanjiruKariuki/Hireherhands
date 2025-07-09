@@ -173,9 +173,22 @@ const BASE_URL = 'http://127.0.0.1:5000';
                     throw new Error('Invalid server response');
                 }
 
-                if (!response.ok || !data.access_token) {
+                if (!response.ok) {
+                    // Check for pending approval specifically
+                    if (
+                        response.status === 403 &&
+                        data.error?.toLowerCase().includes("pending approval")
+                    ) {
+                        localStorage.setItem('worker_application_status', 'pending');
+                        showAlert('Pending Approval', 'Your application is still pending admin approval.', 'error');
+                        setTimeout(() => {
+                            window.location.href = 'pending.html';
+                        }, 2000);
+                        return;
+                    }
+
                     throw new Error(data.error || 'Login failed');
-           }
+                }
 
                 localStorage.setItem('access_token', data.access_token);
                 localStorage.setItem('currentUser', JSON.stringify(data.user));

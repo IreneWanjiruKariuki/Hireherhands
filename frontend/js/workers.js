@@ -28,7 +28,7 @@ async function fetchWorkersFromBackend() {
             certificate_url: w.certificate_url,
             experience_years: w.experience_years,
             status: w.status,
-            is_verified: w.is_verified || false,
+            //is_verified: w.is_verified || false,
             skills: w.skills,
             rating: w.rating || 0,
             completedJobs: w.completed_jobs || 0,
@@ -69,8 +69,9 @@ function filterAndDisplayWorkers() {
 
     let workers = allWorkers.filter(worker => {
         if (currentFilter === 'all') return true;
-        if (currentFilter === 'deactivated') return worker.is_deleted;
-        return worker.status === currentFilter && !worker.is_deleted;
+        if (currentFilter === 'deactivated') {
+            return worker.status === 'deactivated';
+        }
     });
 
     if (searchTerm !== '') {
@@ -105,11 +106,11 @@ function displayWorkers() {
 
     workersList.innerHTML = workersToShow.map(worker => `
         <div class="worker-item ${selectedWorkerId === worker.id ? 'active' : ''} ${worker.is_deleted ? 'inactive' : ''}" onclick="selectWorker(${worker.id})">
-            <div class="worker-info">
+                <div class="worker-info">
                 <h4>${worker.name}</h4>
                 <div class="worker-meta">${worker.skills.slice(0, 2).join(', ')}</div>
-                <div class="worker-status status-${worker.status}">
-                    ${worker.is_deleted ? 'deactivated' : worker.status}
+                <div class="worker-status ${worker.is_deleted ? 'status-inactive' : `status-${worker.status}`}">
+                    ${worker.is_deleted ? 'inactive' : worker.status}
                 </div>
             </div>
         </div>`).join('');
@@ -132,10 +133,8 @@ function selectWorker(workerId) {
                 <div class="detail-item"><div class="detail-label">Email</div><div class="detail-value">${worker.email}</div></div>
                 <div class="detail-item"><div class="detail-label">Phone</div><div class="detail-value">${worker.phone}</div></div>
                 <div class="detail-item"><div class="detail-label">Location</div><div class="detail-value">${worker.location}</div></div>
-                <div class="detail-item"><div class="detail-label">Hourly Rate</div><div class="detail-value">Ksh ${worker.hourly_rate || 'N/A'}</div></div>
                 <div class="detail-item"><div class="detail-label">Experience</div><div class="detail-value">${worker.experience_years || 'N/A'} years</div></div>
                 <div class="detail-item"><div class="detail-label">Status</div><div class="detail-value">${worker.is_deleted ? 'deactivated' : worker.status}</div></div>
-                <div class="detail-item"><div class="detail-label">Verified</div><div class="detail-value">${worker.is_verified ? '✅ Yes' : '❌ No'}</div></div>
                 ${worker.certificate_url ? `
                     <div class="detail-item">
                         <div class="detail-label">Certificate</div>
@@ -152,14 +151,17 @@ function selectWorker(workerId) {
             </div>`;
     }
 
-    if (worker.status === 'approved') {
+    if (worker.status === 'approved' || worker.status === 'deactivated') {
         detailsHTML += `
             <div class="action-buttons">
-                <button onclick="toggleWorkerStatus(${worker.id})">
-                    ${worker.is_deleted ? "Reactivate" : "Deactivate"} Worker
+                <button class="gradient-btn"
+                    onclick="toggleWorkerStatus(${worker.id})">
+                    ${worker.status === "deactivated" ? "Reactivate" : "Deactivate"} Worker
                 </button>
             </div>`;
-    }
+        }
+
+
 
     workerDetails.innerHTML = detailsHTML;
     displayWorkers();

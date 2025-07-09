@@ -11,6 +11,8 @@ class WorkerStatus(Enum):
     REQUESTS = 'requests'
     APPROVED = 'approved'
     REJECTED = 'rejected'
+    DEACTIVATED = 'deactivated'
+    REACTIVATED = 'reactivated'
 
     
 class Worker(db.Model, SerializerMixin):

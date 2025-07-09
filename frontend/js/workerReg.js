@@ -58,7 +58,15 @@ async function prefillClientInfo() {
         const res = await fetch(`${BASE_URL}/client/profile`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        const data = await res.json();
+        
+        let data;
+        try {
+            data = await res.json();
+        } catch (err) {
+            console.error("Failed to parse JSON:", err);
+            data = {};
+        }
+
         if (!res.ok) throw new Error(data.error || "Failed to load client info");
 
         // Match your HTML field IDs here
@@ -168,6 +176,7 @@ function setupApplicationForm() {
 
             alert('Application submitted. Await admin approval.');
             window.location.href = 'pending.html';
+            //window.location.href = 'dashboard.html';
         } catch (err) {
             console.error(err);
             alert(err.message);
