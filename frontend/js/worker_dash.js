@@ -1,38 +1,133 @@
 const BASE_URL = "http://localhost:5000";
 let currentFilter = "all";
 
-function checkSession() {
-    const token = localStorage.getItem("access_token");
-    const role = localStorage.getItem("role");
+function showAccessModal(message, redirectUrl) {
+  const modal = document.getElementById("accessModal");
+  const messageElem = document.getElementById("accessModalMessage");
+  const button = document.getElementById("accessModalBtn");
 
-    if (!token) {
-        alert("Session expired. Please login again.");
-        window.location.href = "login.html";
-        return;
-    }
-
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    const now = Math.floor(Date.now() / 1000);
-
-    if (payload.exp && payload.exp < now) {
-        localStorage.clear();
-        alert("Session expired. Please login again.");
-        window.location.href = "login.html";
-    }
+  if (modal && messageElem && button) {
+    messageElem.textContent = message;
+    modal.style.display = "flex";
+    document.body.style.overflow = "hidden";
+    button.onclick = () => {
+      modal.style.display = "none";
+      document.body.style.overflow = "auto";
+      window.location.href = redirectUrl;
+    };
+  }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+function checkSession() {
+  const token = localStorage.getItem("access_token");
+  if (!token) {
+    showAccessModal("Your session has expired. Please log in again.", "login.html");
+    return;
+  }
+
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const now = Math.floor(Date.now() / 1000);
+    if (payload.exp && payload.exp < now) {
+      showAccessModal("Your session has expired. Please log in again.", "login.html");
+    }
+  } catch (err) {
+    console.error("Token decode failed:", err);
+    showAccessModal("Session invalid. Please log in again.", "login.html");
+  }
+}
+
+// ✅ This runs before loading profile or jobs
+async function verifyWorkerAccess() {
+  const token = localStorage.getItem("access_token");
+  if (!token) {
+    showAccessModal("Please login first.", "login.html");
+    return false;
+  }
+
+  try {
+    const res = await fetch(`${BASE_URL}/worker/profile`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+
+    if (res.status === 403) {
+      const data = await res.json();
+      if (data.error?.includes("pending")) {
+        showAccessModal("Your worker application is still pending approval.", "pending.html");
+      } else {
+        showAccessModal("Access denied.", "dashboard.html");
+      }
+      return false;
+    }
+
+    if (!res.ok) {
+      showAccessModal("Only Approved Workers can access the Worker.", "dashboard.html");
+      return false;
+    }
+
+    const data = await res.json();
+    localStorage.setItem("currentUser", JSON.stringify({ ...data, is_worker: true, status: "approved" }));
+    return true;
+
+  } catch (err) {
+    console.error("Worker check failed:", err);
+    showAccessModal("Error verifying worker access.", "dashboard.html");
+    return false;
+  }
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
   checkSession();
+
+  const accessGranted = await verifyWorkerAccess();
+  if (!accessGranted) return;
+
+  // ✅ User is verified worker
   loadWorkerProfile();
   initializeBio();
   initializeRate();
   loadJobs();
+
+  // Optional: Protect the dashboard button too
+  const workerBtn = document.getElementById('workerDashBtn');
+  const currentUser = JSON.parse(localStorage.getItem('currentUser')) || {};
+
+  if (workerBtn) {
+    if (!currentUser.is_worker) {
+      workerBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        alert("Only registered workers can access the Worker Dashboard. Please apply first.");
+        window.location.href = "workerReg.html";
+      });
+    } else if (currentUser.status !== 'approved') {
+      workerBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        alert("Your worker application is still pending approval.");
+        window.location.href = "pending.html";
+      });
+    }
+  }
 });
+
+
+
+function showSessionModal() {
+    const modal = document.getElementById("sessionModal");
+    if (modal) {
+        modal.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
+    }
+}
+
+function redirectToLogin() {
+    localStorage.clear();
+    window.location.href = "login.html";
+}
 
 async function loadWorkerProfile() {
   const token = localStorage.getItem("access_token");
   if (!token) {
-    alert("Please login.");
+    showErrorModal("Please login.");
     window.location.href = "login.html";
     return;
   }
@@ -65,7 +160,7 @@ async function loadWorkerProfile() {
 
   } catch (err) {
     console.error(err);
-    alert("Could not load profile.");
+    showErrorModal("Could not load profile.");
   }
 }
 function normalizeStatus(job) {
@@ -150,9 +245,7 @@ function saveBio() {
   cancelBioEdit();
 }
 function saveRate() {
-  const newRate = document.getElementById("rateInput").value;
-  document.getElementById("hourlyRate").textContent = newRate;
-  cancelRateEdit();
+   saveProfileChanges();
 }
 
 
@@ -192,6 +285,8 @@ function createJobCard(job) {
 
   const jobData = encodeURIComponent(JSON.stringify(job));
   actionButtons += `<button class="action-btn" onclick='showJobDetails("${jobData}")'>View Details</button>`;
+  
+
 
   return `
     <div class="job-card" data-status="${job.status}">
@@ -319,11 +414,11 @@ async function acceptJob(jobId) {
       headers: { "Authorization": `Bearer ${localStorage.getItem("access_token")}` }
     });
     if (!res.ok) throw new Error();
-    alert("Job accepted successfully!");
+    showErrorModal("Job accepted successfully!");
     filterJobs("in_progress");
 
   } catch {
-    alert("Could not accept job.");
+    showErrorModal("Could not accept job.");
   }
 }
 
@@ -335,10 +430,10 @@ async function declineJob(jobId) {
       headers: { "Authorization": `Bearer ${localStorage.getItem("access_token")}` }
     });
     if (!res.ok) throw new Error();
-    alert("Job declined. It will return to open jobs.");
+    showErrorModal("Job declined. It will return to open jobs.");
     loadJobs();
   } catch {
-    alert("Could not decline job.");
+    showErrorModal("Could not decline job.");
   }
 }
 
@@ -349,10 +444,10 @@ async function completeJob(jobId) {
       headers: { "Authorization": `Bearer ${localStorage.getItem("access_token")}` }
     });
     if (!res.ok) throw new Error();
-    alert("Job marked complete. Awaiting client confirmation.");
+    showErrorModal("Job marked complete. Awaiting client confirmation.");
     loadJobs();
   } catch {
-    alert("Could not complete job.");
+    showErrorModal("Could not complete job.");
   }
 }
 async function saveProfileChanges() {
@@ -374,12 +469,12 @@ async function saveProfileChanges() {
       throw new Error("Failed to update profile");
     }
 
-    alert("Profile updated successfully.");
+    showErrorModal("Profile updated successfully.");
     loadWorkerProfile();  // Refresh the data
 
   } catch (err) {
     console.error(err);
-    alert("Could not update profile.");
+    showErrorModal("Could not update profile.");
   }
 }
 

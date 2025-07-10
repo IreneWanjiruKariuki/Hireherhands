@@ -55,6 +55,7 @@ class Job(db.Model, SerializerMixin):
             "description": self.description,
             "budget": self.budget,
             "status": self.status.value,
+            "original_status": self.status.value,
             "client_id": self.client_id,
             "client_name": self.client.fullname if self.client else None,
             "client_phone": self.client.phone if self.client else None,

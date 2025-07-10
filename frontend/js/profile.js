@@ -15,7 +15,6 @@ function populateProfileFields() {
     }
 }
 
-// Re-fetch latest profile from server just in case
 async function fetchLatestProfile() {
     try {
         const res = await fetch(`${BASE_URL}/client/profile`, {
@@ -40,9 +39,8 @@ async function fetchLatestProfile() {
 
 document.addEventListener('DOMContentLoaded', () => {
     populateProfileFields();
-    fetchLatestProfile(); // Make sure it's fresh
+    fetchLatestProfile();
 
-    // Edit button logic
     document.getElementById('editBtn').addEventListener('click', () => {
         nameInput.disabled = false;
         emailInput.disabled = false;
@@ -52,7 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('editBtn').style.display = 'none';
     });
 
-    // Cancel logic
     document.getElementById('cancelBtn').addEventListener('click', () => {
         populateProfileFields();
         nameInput.disabled = true;
@@ -63,10 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('editBtn').style.display = 'inline-block';
     });
 
-    // Submit update
     document.getElementById('profileForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-
         const updatedData = {
             fullname: nameInput.value.trim(),
             email: emailInput.value.trim(),
@@ -86,13 +81,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await res.json();
             if (!res.ok) throw new Error(data.message || 'Update failed');
 
-            // Update localStorage
             localStorage.setItem('currentUser', JSON.stringify(updatedData));
-
             statusMessage.textContent = "Profile updated successfully!";
             statusMessage.style.color = 'green';
 
-            // Reset form state
             nameInput.disabled = true;
             emailInput.disabled = true;
             phoneInput.disabled = true;
@@ -105,4 +97,34 @@ document.addEventListener('DOMContentLoaded', () => {
             statusMessage.style.color = 'red';
         }
     });
+
+    document.getElementById('deleteAccountBtn').addEventListener('click', async () => {
+        const confirmDelete = confirm("Are you sure you want to delete your account? This action cannot be undone.");
+        if (!confirmDelete) return;
+
+        try {
+            const res = await fetch(`${BASE_URL}/client/profile`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || data.message || 'Failed to delete account');
+
+            alert("Your account has been deleted.");
+            localStorage.clear();
+            window.location.href = 'login.html';
+        } catch (err) {
+            console.error(err);
+            statusMessage.textContent = err.message;
+            statusMessage.classList.remove('success');
+            statusMessage.classList.add('error');
+            statusMessage.style.display = 'block';
+        }
+    });
 });
+
+
+

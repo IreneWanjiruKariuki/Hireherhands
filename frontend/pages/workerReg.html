@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Worker Application</title>
-    <link rel="stylesheet" href="css/workerReg.css">
+    <link rel="stylesheet" href="../css/workerReg.css">
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>Worker Application</h1>
             <p>Join our team of skilled professionals</p>
+            <a href="dashboard.html" class="back-dashboard-btn">← Back to Dashboard</a>
         </div>
-
         <div class="form-container">
             <div class="success-message" id="successMessage">
                 Application submitted successfully! We'll get back to you soon.
@@ -56,16 +56,19 @@
                     <div class="error-message" id="skillsError"></div>
                 </div>
                 <div class="form-group">
-                    <label for="experience">Years of Experience<span class="required">*</span></label>
-                    <input type="number" id="experience" name="experience" min="0" />
+                    <label for="experience">Years of Experience</label>
+                    <input type="number" id="experience" min="0" placeholder="e.g. 3">
                 </div>
                 <div class="form-group">
                     <label for="bio">Bio <span class="required">*</span></label>
                     <textarea id="bio" name="bio" placeholder="Describe your experience" required></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="certificate">Upload Certification (optional)</label>
-                    <input type="file" id="certificate" name="certificate" accept=".pdf,.jpg,.jpeg,.png" />
+                    <label for="certificate">Upload Certificate (optional)</label>
+                    <div class="custom-file-input">
+                        <input type="file" id="certificate" accept=".pdf,.jpg,.jpeg,.png">
+                        <span class="file-label" id="certificateLabel">Choose file</span>
+                    </div>
                 </div>
                 <div class="loading" id="loading">
                     <div class="spinner"></div>
@@ -76,6 +79,14 @@
             </form>  
         </div>
     </div>
-    <script src="js/workerReg.js"></script>
+    <div id="errorModal" class="modal-overlay" style="display: none;">
+        <div class="modal">
+            <h2>Error</h2>
+            <p id="errorModalMessage"></p>
+            <button id="closeModalBtn" class="modal-btn">OK</button>
+        </div>
+    </div>
+    <script src="../modal.js"></script>
+    <script src="../js/workerReg.js"></script>
 </body>
 </html>

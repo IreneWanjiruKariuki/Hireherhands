@@ -60,8 +60,10 @@ class AdminWorkerService:
 
         if action == "approve":
             worker.status = WorkerStatus.APPROVED
+            worker.is_approved = True
         elif action == "reject":
             worker.status = WorkerStatus.REJECTED
+            worker.is_approved = False
         else:
             return {"error": "Invalid action"}, 400
 
@@ -81,12 +83,12 @@ class AdminWorkerService:
     def toggle_worker_status(worker_id):
         worker = Worker.query.get(worker_id)
         if worker.status == WorkerStatus.DEACTIVATED:
-            worker.status = WorkerStatus.ACTIVE
+            worker.status = WorkerStatus.REACTIVATED
         else:
             worker.status = WorkerStatus.DEACTIVATED
         if not worker:
             return {"error": "Worker not found"}, 404
         
         db.session.commit()
-        return {"message": f"Worker {status} successfully."}, 200
+        return {"message": f"Worker {worker.status.value} successfully."}, 200
 

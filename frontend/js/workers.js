@@ -9,14 +9,35 @@ let allWorkers = [];
 async function fetchWorkersFromBackend() {
     try {
         const token = localStorage.getItem("access_token");
+        if (!token) {
+            showSessionExpiredModal();
+            return;
+        }
+
         const res = await fetch(`${BASE_URL}/admin/workers`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
 
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Failed to load workers");
+        if (res.status === 401) {
+            showSessionExpiredModal();
+            return;
+        }
+
+        let data;
+        try {
+            data = await res.json();
+        } catch (jsonErr) {
+            console.error("Invalid JSON response from backend.", jsonErr);
+            document.getElementById("workersList").innerHTML = `
+                <div class="error">Server response is invalid.</div>`;
+            return;
+        }
+
+        if (!res.ok) {
+            throw new Error(data.error || "Failed to load workers");
+        }
 
         allWorkers = data.workers.map(w => ({
             id: w.worker_id,
@@ -28,7 +49,7 @@ async function fetchWorkersFromBackend() {
             certificate_url: w.certificate_url,
             experience_years: w.experience_years,
             status: w.status,
-            is_verified: w.is_verified || false,
+            //is_verified: w.is_verified || false,
             skills: w.skills,
             rating: w.rating || 0,
             completedJobs: w.completed_jobs || 0,
@@ -36,11 +57,14 @@ async function fetchWorkersFromBackend() {
         }));
 
         filterAndDisplayWorkers();
+
     } catch (err) {
         console.error("Worker fetch error:", err);
-        document.getElementById("workersList").innerHTML = `<div class="error">Error loading workers</div>`;
+        document.getElementById("workersList").innerHTML = `
+            <div class="error">Error loading workers.</div>`;
     }
 }
+
 
 function setFilter(status, event) {
     currentFilter = status;
@@ -69,8 +93,19 @@ function filterAndDisplayWorkers() {
 
     let workers = allWorkers.filter(worker => {
         if (currentFilter === 'all') return true;
-        if (currentFilter === 'deactivated') return worker.is_deleted;
-        return worker.status === currentFilter && !worker.is_deleted;
+        if (currentFilter === 'requests') {
+            return worker.status === 'requests';
+        }
+        if (currentFilter === 'approved') {
+            return worker.status === 'approved';
+        }
+        if (currentFilter === 'rejected') {
+            return worker.status === 'rejected';
+        }
+        if (currentFilter === 'deactivated') {
+            return worker.status === 'deactivated';
+        }
+        return false;
     });
 
     if (searchTerm !== '') {
@@ -83,6 +118,15 @@ function filterAndDisplayWorkers() {
 
     filteredWorkers = workers;
     displayWorkers();
+}
+
+function showSessionExpiredModal() {
+    localStorage.clear();
+    document.getElementById("sessionModal").classList.remove("hidden");
+}
+
+function redirectToLogin() {
+    window.location.href = "login.html";
 }
 
 function displayWorkers() {
@@ -105,11 +149,11 @@ function displayWorkers() {
 
     workersList.innerHTML = workersToShow.map(worker => `
         <div class="worker-item ${selectedWorkerId === worker.id ? 'active' : ''} ${worker.is_deleted ? 'inactive' : ''}" onclick="selectWorker(${worker.id})">
-            <div class="worker-info">
+                <div class="worker-info">
                 <h4>${worker.name}</h4>
                 <div class="worker-meta">${worker.skills.slice(0, 2).join(', ')}</div>
-                <div class="worker-status status-${worker.status}">
-                    ${worker.is_deleted ? 'deactivated' : worker.status}
+                <div class="worker-status ${worker.is_deleted ? 'status-inactive' : `status-${worker.status}`}">
+                    ${worker.is_deleted ? 'inactive' : worker.status}
                 </div>
             </div>
         </div>`).join('');
@@ -132,10 +176,8 @@ function selectWorker(workerId) {
                 <div class="detail-item"><div class="detail-label">Email</div><div class="detail-value">${worker.email}</div></div>
                 <div class="detail-item"><div class="detail-label">Phone</div><div class="detail-value">${worker.phone}</div></div>
                 <div class="detail-item"><div class="detail-label">Location</div><div class="detail-value">${worker.location}</div></div>
-                <div class="detail-item"><div class="detail-label">Hourly Rate</div><div class="detail-value">Ksh ${worker.hourly_rate || 'N/A'}</div></div>
                 <div class="detail-item"><div class="detail-label">Experience</div><div class="detail-value">${worker.experience_years || 'N/A'} years</div></div>
                 <div class="detail-item"><div class="detail-label">Status</div><div class="detail-value">${worker.is_deleted ? 'deactivated' : worker.status}</div></div>
-                <div class="detail-item"><div class="detail-label">Verified</div><div class="detail-value">${worker.is_verified ? '✅ Yes' : '❌ No'}</div></div>
                 ${worker.certificate_url ? `
                     <div class="detail-item">
                         <div class="detail-label">Certificate</div>
@@ -147,19 +189,23 @@ function selectWorker(workerId) {
     if (worker.status === 'requests') {
         detailsHTML += `
             <div class="action-buttons">
-                <button onclick="handleApproval(${worker.id}, 'approve')">Approve</button>
-                <button onclick="handleApproval(${worker.id}, 'reject')">Reject</button>
+                <button class="approve-btn" onclick="handleApproval(${worker.id}, 'approve')">Approve</button>
+                <button class="reject-btn" onclick="handleApproval(${worker.id}, 'reject')">Reject</button>
             </div>`;
+
     }
 
-    if (worker.status === 'approved') {
+    if (worker.status === 'approved' || worker.status === 'deactivated') {
         detailsHTML += `
             <div class="action-buttons">
-                <button onclick="toggleWorkerStatus(${worker.id})">
-                    ${worker.is_deleted ? "Reactivate" : "Deactivate"} Worker
+                <button class="gradient-btn"
+                    onclick="toggleWorkerStatus(${worker.id})">
+                    ${worker.status === "deactivated" ? "Reactivate" : "Deactivate"} Worker
                 </button>
             </div>`;
-    }
+        }
+
+
 
     workerDetails.innerHTML = detailsHTML;
     displayWorkers();
@@ -246,6 +292,28 @@ function nextPage() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    function checkSession() {
+        const token = localStorage.getItem("access_token");
+        const role = localStorage.getItem("role");
+
+        if (!token || role !== "admin") {
+            window.location.href = "login.html";
+            return false;
+        }
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            const now = Math.floor(Date.now() / 1000);
+            if (payload.exp && payload.exp < now) {
+                showSessionExpiredModal();
+                return false;
+            }
+        } catch (e) {
+            localStorage.clear();
+            window.location.href = "login.html";
+            return false;
+        }
+        return true;
+    }
     fetchWorkersFromBackend();
     document.getElementById('searchInput').addEventListener('input', filterAndDisplayWorkers);
 });

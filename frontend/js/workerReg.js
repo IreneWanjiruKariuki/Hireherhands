@@ -58,15 +58,23 @@ async function prefillClientInfo() {
         const res = await fetch(`${BASE_URL}/client/profile`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        const data = await res.json();
+        
+        let data;
+        try {
+            data = await res.json();
+        } catch (err) {
+            console.error("Failed to parse JSON:", err);
+            data = {};
+        }
+
         if (!res.ok) throw new Error(data.error || "Failed to load client info");
 
         // Match your HTML field IDs here
         document.getElementById('fullName').value = data.fullname || '';
         document.getElementById('email').value = data.email || '';
         if (data.gender?.toLowerCase() !== "female") {
-            alert("Only female clients can apply to be workers.");
-            window.location.href = "dashboard.html"; 
+            showErrorModal("Only female clients can apply to be workers.");
+            return;
         }
 
         document.getElementById('phone').value = data.phone?.replace(/^\+254/, '') || '';
@@ -80,11 +88,57 @@ async function prefillClientInfo() {
         console.error("Autofill error:", err);
     }
 }
+function showErrorModal(message) {
+    document.getElementById('errorModalMessage').textContent = message;
+    document.getElementById('errorModal').style.display = 'flex';
+}
 
-document.addEventListener('DOMContentLoaded', () => {
+document.getElementById('closeModalBtn').addEventListener('click', () => {
+    document.getElementById('errorModal').style.display = 'none';
+    window.location.href = "dashboard.html";
+});
+
+/*document.addEventListener('DOMContentLoaded', () => {
     prefillClientInfo();
     loadSkillsAsCheckboxes('skillsContainer', toggleSkill);
     setupApplicationForm();
+});*/
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    try {
+        const res = await fetch(`${BASE_URL}/client/profile`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed to load client");
+
+        // If they already have a worker object → block
+        if (data.worker_id) {
+            showErrorModal("You have already submitted a worker application.");
+            return;
+        }
+
+        // Continue if not registered
+        prefillClientInfo();
+        loadSkillsAsCheckboxes('skillsContainer', toggleSkill);
+        setupApplicationForm();
+
+    } catch (err) {
+        console.error("Worker check failed:", err);
+        showErrorModal("There was a problem verifying your application status.");
+    }
+});
+
+document.getElementById('certificate').addEventListener('change', function () {
+    const fileName = this.files[0] ? this.files[0].name : "Choose file";
+    document.getElementById('certificateLabel').textContent = fileName;
 });
 
 
@@ -167,7 +221,14 @@ function setupApplicationForm() {
             localStorage.setItem('worker_application_status', 'pending');
 
             alert('Application submitted. Await admin approval.');
+            if (data.message === "Application submitted") {
+                window.location.href = 'pending.html';
+            } else {
+                window.location.href = 'dashboard.html';
+            }
+
             window.location.href = 'pending.html';
+            //window.location.href = 'dashboard.html';
         } catch (err) {
             console.error(err);
             alert(err.message);

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
     <title>Dashboard</title>
     <style>
         body {
@@ -14,6 +14,7 @@
     </style>
 </head>
 <body>
+
     <div class="dashboard-container">
         <!--Header-->
         <div class="header">
@@ -23,6 +24,7 @@
                     <p>Manage your jobs and find skilled workers for your projects</p>
                 </div>
                 <div class="user-actions">
+                    <a href="profile.html" class="logout-btn">👤 Profile</a>
                     <a href="worker_dash.html" class="logout-btn">Worker's Dashboard</a>
                     <a href="login.html" class="logout-btn">Sign Out</a>
                 </div>
@@ -99,8 +101,21 @@
                 <p>Loading job details...</p>
             </div>
         </div>
+    </div> 
+    <div id="accessModal" class="popup-overlay" style="display: none;">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h3>Access Required</h3>
+                <button class="close-popup" onclick="document.getElementById('accessModal').style.display='none'">&times;</button>
+            </div>
+            <div class="popup-body">
+                <p id="accessModalMessage">Your session has expired. Please log in again.</p>
+                <button id="accessModalBtn" class="action-btn">Okay</button>
+            </div>
+        </div>
     </div>
-    
-    <script src="js/dashboard.js"></script>
+
+    <script src="../js/modal.js"></script>
+    <script src="../js/dashboard.js"></script>
 </body>
 </html>

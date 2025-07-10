@@ -139,12 +139,7 @@ const BASE_URL = 'http://127.0.0.1:5000';
 
             return isValid;
         }
-        // Mock credentials for demo purposes
-        const mockCredentials = {
-            'admin@example.com': { password: 'admin123' },
-            'client@example.com': { password: 'client123' },
-            'worker@example.com': { password: 'worker123' }
-        };
+        
 
         // Form submission
         form.addEventListener('submit', async function(e) {
@@ -173,9 +168,22 @@ const BASE_URL = 'http://127.0.0.1:5000';
                     throw new Error('Invalid server response');
                 }
 
-                if (!response.ok || !data.access_token) {
+                if (!response.ok) {
+                    // Check for pending approval specifically
+                    if (
+                        response.status === 403 &&
+                        data.error?.toLowerCase().includes("pending approval")
+                    ) {
+                        localStorage.setItem('worker_application_status', 'pending');
+                        showAlert('Pending Approval', 'Your application is still pending admin approval.', 'error');
+                        setTimeout(() => {
+                            window.location.href = 'pending.html';
+                        }, 2000);
+                        return;
+                    }
+
                     throw new Error(data.error || 'Login failed');
-           }
+                }
 
                 localStorage.setItem('access_token', data.access_token);
                 localStorage.setItem('currentUser', JSON.stringify(data.user));
@@ -201,8 +209,6 @@ const BASE_URL = 'http://127.0.0.1:5000';
             }
             const user = getCurrentUser(); 
             console.log("Logged in user:", user);
-
-        
         });
 
 
