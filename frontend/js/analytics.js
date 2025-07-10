@@ -45,24 +45,27 @@ async function fetchAndRenderAnalytics() {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Analytics fetch failed");
 
+    renderSummary(data);
     renderCharts(data);
+
   } catch (err) {
     console.error("Analytics error:", err);
     alert("Could not load analytics.");
   }
 }
 
+function renderSummary(data) {
+  document.querySelectorAll('.summary-card')[0].querySelector('.summary-value').textContent = data.clients.total;
+  document.querySelectorAll('.summary-card')[0].querySelector('.summary-subtext').textContent = `New this month: ${data.clients.this_month}`;
+
+  document.querySelectorAll('.summary-card')[1].querySelector('.summary-value').textContent = data.workers.approved;
+  document.querySelectorAll('.summary-card')[1].querySelector('.summary-subtext').textContent = `Pending approvals: ${data.workers.pending}`;
+
+  document.querySelectorAll('.summary-card')[2].querySelector('.summary-value').textContent = data.jobs.completed;
+  document.querySelectorAll('.summary-card')[2].querySelector('.summary-subtext').textContent = `In progress: ${data.jobs.in_progress}`;
+}
 
 function renderCharts(data) {
-    const summaryHTML = `
-      <h3> Overrall Summary</h3>
-      <ul>
-        <li><strong>${data.clients.total}</strong> total clients:${data.clients.this_month} this month, ${data.clients.this_week} this week</li>
-        <li><strong>${data.workers.total}</strong> workers: ${data.workers.approved} approved, ${data.workers.pending} pending</li>
-        <li><strong>${data.jobs.completed}</strong> jobs completed, ${data.jobs.in_progress} in progress, ${data.jobs.open} open</li>
-      </ul>
-    `;
-    document.getElementById("reportSummary").innerHTML = summaryHTML;
     new Chart(document.getElementById("clientSignupChart"), {
         type: 'bar',
         data: {
@@ -88,8 +91,6 @@ function renderCharts(data) {
         }
     });
 
-
-    // Client Gender Chart
     new Chart(document.getElementById("genderChart"), {
         type: "pie",
         data: {
@@ -101,7 +102,6 @@ function renderCharts(data) {
         }
     });
 
-    // Top Skills Chart
     const topSkillNames = data.skills.top.map(s => s.name);
     const topSkillCounts = data.skills.top.map(s => s.count);
 
@@ -121,7 +121,6 @@ function renderCharts(data) {
         }
     });
 
-    // Job Trend Line
     new Chart(document.getElementById("trendChart"), {
         type: "line",
         data: {
@@ -141,7 +140,6 @@ function renderCharts(data) {
         }
     });
 
-    // Job Status Chart
     new Chart(document.getElementById("jobStatusChart"), {
         type: "bar",
         data: {
@@ -164,7 +162,6 @@ function renderCharts(data) {
         }
     });
 
-    // Worker Approval Pie
     new Chart(document.getElementById("workerStatusChart"), {
         type: "pie",
         data: {
@@ -179,6 +176,7 @@ function renderCharts(data) {
         }
     });
 }
+
 
 function signOut() {
     localStorage.clear();

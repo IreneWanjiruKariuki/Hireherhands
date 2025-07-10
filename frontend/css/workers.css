@@ -393,6 +393,7 @@ body {
     pointer-events: auto;
 }
 
+
 @media (max-width: 768px) {
     .workers-grid {
         grid-template-columns: 1fr;

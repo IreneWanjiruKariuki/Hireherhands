@@ -59,6 +59,12 @@ class AuthenticationService:
             # Attempt client login
             client = Client.query.filter_by(email=email).first()
             if client and bcrypt.check_password_hash(client.hashed_password, password):
+                if client.is_deleted:
+                    if client.deactivated_by == "self":
+                        return {"error": "You have deleted your account."}, 403
+                    else:
+                        return {"error": "Your account has been deactivated by admin."}, 403
+
                 claims = {
                     "client_id": client.client_id,
                     "role": "client"
@@ -69,6 +75,9 @@ class AuthenticationService:
 
                 # Check if client is also a worker
                 worker = Worker.query.filter_by(client_id=client.client_id).first()
+                if worker:
+                    if worker.is_deleted:
+                        return {"error": "Your worker account has been deactivated by admin."}, 403
                 if worker:
                     claims["role"] = "worker"
                     claims["worker_id"] = worker.worker_id

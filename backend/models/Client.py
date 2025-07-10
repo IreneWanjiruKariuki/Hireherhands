@@ -13,6 +13,7 @@ class Client(db.Model, SerializerMixin):
     hashed_password = db.Column(db.Text, nullable=False)  
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_deleted = db.Column(db.Boolean, default=False) 
+    deactivated_by = db.Column(db.String, nullable=True)
 
     #relationships
     workers = db.relationship('Worker', back_populates='client', uselist=False)

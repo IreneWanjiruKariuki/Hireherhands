@@ -32,6 +32,7 @@ body {
     right: 0;
     bottom: 0;
     background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23ffffff" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="%23ffffff" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="%23ffffff" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="%23ffffff" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="%23ffffff" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    z-index: 0;
 }
 .header h1 {
     font-size: 2.5rem;
@@ -174,6 +175,27 @@ body {
     animation: spin 1s linear infinite;
     margin-right: 0.5rem;
 }
+.back-btn {
+    background: rgba(222, 242, 201, 0.2);
+    color: #2d5016;
+    border: 1px solid #def2c9;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+.back-btn:hover {
+    background: #def2c9;
+}
+.back-btn:focus {
+    outline: 3px solid #def2c9;
+    outline-offset: 2px;
+}
+
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }

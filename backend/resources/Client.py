@@ -26,4 +26,11 @@ class ClientProfileResource(Resource):
     @jwt_required()
     def delete(self):
         claims = get_jwt()
-        return ClientService.deactivate_account(claims.get("client_id"))
+        client_id = claims.get("client_id")
+        if not client_id:
+            return {"error": "Unauthorized"}, 401
+        return ClientService.deactivate_account(client_id, by="self")
+        
+        
+    
+    

@@ -4,9 +4,8 @@ function checkSession(requiredRole = null) {
     const role = localStorage.getItem("role");
 
     if (!token) {
-        alert("Session expired. Please login again.");
+        showAccessModal("Your session has expired. Please log in again.", "login.html");
         localStorage.clear();
-        window.location.href = "login.html";
         return;
     }
 
@@ -16,14 +15,12 @@ function checkSession(requiredRole = null) {
 
         if (payload.exp && payload.exp < now) {
             localStorage.clear();
-            alert("Session expired. Please login again.");
-            window.location.href = "login.html";
+           showAccessModal("Your session has expired. Please log in again.", "login.html");
             return;
         }
     } catch (err) {
         console.error("Invalid token", err);
-        localStorage.clear();
-        window.location.href = "login.html";
+        showAccessModal("Your session has expired. Please log in again.", "login.html");
     }
 }
 document.addEventListener("DOMContentLoaded", () => {
@@ -201,7 +198,7 @@ function showJobDetails(jobId) {
 }
 function findWorkersForJob(jobId) {
     const job = window.allJobs.find(j => j.id === jobId);
-    if (!job) return alert("Job not found.");
+    if (!job) return showErrorModal("Job not found.");
 
     // Save job details in local storage for the next page
     localStorage.setItem('lastPostedJobData', JSON.stringify(job));
@@ -237,11 +234,33 @@ function displayJobs(jobs = []) {
     }
     jobsContainer.innerHTML = jobs.map(createJobCard).join('');
 }
+function showAccessModal(message, redirectUrl) {
+    const modal = document.getElementById("accessModal");
+    const messageElem = document.getElementById("accessModalMessage");
+    const button = document.getElementById("accessModalBtn");
+
+    if (modal && messageElem && button) {
+        messageElem.textContent = message;
+        modal.style.display = "flex";
+        document.body.style.overflow = "hidden";
+
+        button.onclick = () => {
+            modal.style.display = "none";
+            document.body.style.overflow = "auto";
+            window.location.href = redirectUrl;
+        };
+    }
+}
 
 async function fetchClientJobs() {
     const token = localStorage.getItem('access_token');
     const user = getCurrentUser();
-    if (!user || !token) return showError("User not logged in or token missing.");
+    if (!user || !token) {
+        showAccessModal("Your session has expired. Please log in again.", "login.html");
+        localStorage.clear();
+        return;
+    }
+
 
     try {
         const response = await fetch(`${BASE_URL}/client/jobs`, {
@@ -310,7 +329,7 @@ async function approveJobCompletion(jobId) {
 
         if (!res.ok) throw new Error("Failed to confirm job completion");
 
-        alert("Job marked as completed!");
+        showErrorModal("Job marked as completed!");
         fetchClientJobs();
         closeJobDetails();
     } catch (err) {

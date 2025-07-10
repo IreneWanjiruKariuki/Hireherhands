@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Analytics & Reports</title>
-  <link rel="stylesheet" href="css/analytics.css" />
+  <link rel="stylesheet" href="../css/analytics.css" />
 </head>
 <body>
   <header class="header">
@@ -16,9 +16,26 @@
 
   <div class="container">
     <section class="summary-section">
-      <h2> System Summary</h2>
-      <div id="reportSummary">Loading summary...</div>
+      <h2>System Overview</h2>
+      <div id="reportSummary" class="summary-cards">
+        <div class="summary-card">
+          <h4>Total Clients</h4>
+          <p class="summary-value">Loading...</p>
+          <small class="summary-subtext">New this month: ...</small>
+        </div>
+        <div class="summary-card">
+          <h4>Approved Workers</h4>
+          <p class="summary-value">Loading...</p>
+          <small class="summary-subtext">Pending approvals: ...</small>
+        </div>
+        <div class="summary-card">
+          <h4>Jobs Completed</h4>
+          <p class="summary-value">Loading...</p>
+          <small class="summary-subtext">In progress: ...</small>
+        </div>
+      </div>
     </section>
+
 
     <section class="charts-grid">
       <div class="chart-box">
@@ -52,8 +69,8 @@
       </div>
     </section>
   </div>
-
+  
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="js/analytics.js"></script>
+  <script src="../js/analytics.js"></script>
 </body>
 </html>

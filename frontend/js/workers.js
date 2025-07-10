@@ -9,14 +9,35 @@ let allWorkers = [];
 async function fetchWorkersFromBackend() {
     try {
         const token = localStorage.getItem("access_token");
+        if (!token) {
+            showSessionExpiredModal();
+            return;
+        }
+
         const res = await fetch(`${BASE_URL}/admin/workers`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
 
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Failed to load workers");
+        if (res.status === 401) {
+            showSessionExpiredModal();
+            return;
+        }
+
+        let data;
+        try {
+            data = await res.json();
+        } catch (jsonErr) {
+            console.error("Invalid JSON response from backend.", jsonErr);
+            document.getElementById("workersList").innerHTML = `
+                <div class="error">Server response is invalid.</div>`;
+            return;
+        }
+
+        if (!res.ok) {
+            throw new Error(data.error || "Failed to load workers");
+        }
 
         allWorkers = data.workers.map(w => ({
             id: w.worker_id,
@@ -36,11 +57,14 @@ async function fetchWorkersFromBackend() {
         }));
 
         filterAndDisplayWorkers();
+
     } catch (err) {
         console.error("Worker fetch error:", err);
-        document.getElementById("workersList").innerHTML = `<div class="error">Error loading workers</div>`;
+        document.getElementById("workersList").innerHTML = `
+            <div class="error">Error loading workers.</div>`;
     }
 }
+
 
 function setFilter(status, event) {
     currentFilter = status;
@@ -69,9 +93,19 @@ function filterAndDisplayWorkers() {
 
     let workers = allWorkers.filter(worker => {
         if (currentFilter === 'all') return true;
+        if (currentFilter === 'requests') {
+            return worker.status === 'requests';
+        }
+        if (currentFilter === 'approved') {
+            return worker.status === 'approved';
+        }
+        if (currentFilter === 'rejected') {
+            return worker.status === 'rejected';
+        }
         if (currentFilter === 'deactivated') {
             return worker.status === 'deactivated';
         }
+        return false;
     });
 
     if (searchTerm !== '') {
@@ -84,6 +118,15 @@ function filterAndDisplayWorkers() {
 
     filteredWorkers = workers;
     displayWorkers();
+}
+
+function showSessionExpiredModal() {
+    localStorage.clear();
+    document.getElementById("sessionModal").classList.remove("hidden");
+}
+
+function redirectToLogin() {
+    window.location.href = "login.html";
 }
 
 function displayWorkers() {
@@ -146,9 +189,10 @@ function selectWorker(workerId) {
     if (worker.status === 'requests') {
         detailsHTML += `
             <div class="action-buttons">
-                <button onclick="handleApproval(${worker.id}, 'approve')">Approve</button>
-                <button onclick="handleApproval(${worker.id}, 'reject')">Reject</button>
+                <button class="approve-btn" onclick="handleApproval(${worker.id}, 'approve')">Approve</button>
+                <button class="reject-btn" onclick="handleApproval(${worker.id}, 'reject')">Reject</button>
             </div>`;
+
     }
 
     if (worker.status === 'approved' || worker.status === 'deactivated') {
@@ -248,6 +292,28 @@ function nextPage() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    function checkSession() {
+        const token = localStorage.getItem("access_token");
+        const role = localStorage.getItem("role");
+
+        if (!token || role !== "admin") {
+            window.location.href = "login.html";
+            return false;
+        }
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            const now = Math.floor(Date.now() / 1000);
+            if (payload.exp && payload.exp < now) {
+                showSessionExpiredModal();
+                return false;
+            }
+        } catch (e) {
+            localStorage.clear();
+            window.location.href = "login.html";
+            return false;
+        }
+        return true;
+    }
     fetchWorkersFromBackend();
     document.getElementById('searchInput').addEventListener('input', filterAndDisplayWorkers);
 });

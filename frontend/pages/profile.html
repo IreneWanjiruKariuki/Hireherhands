@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile page</title>
-    <link rel="stylesheet" href="css/profile.css">
+    <link rel="stylesheet" href="../css/profile.css">
 </head>
 <body>
     <div class="container">
@@ -36,16 +36,18 @@
                         <label for="phone">Phone Number</label>
                         <input type="tel" id="phone" name="phone" disabled>
                     </div>
-
                     <div class="button-group">
                         <button type="button" id="editBtn" class="btn btn-primary">Edit Profile</button>
                         <button type="submit" id="saveBtn" class="btn btn-success" style="display: none;">Save Changes</button>
                         <button type="button" id="cancelBtn" class="btn btn-secondary" style="display: none;">Cancel</button>
                     </div>
+                    <div class="nav-buttons" style="display: flex; justify-content: space-between; margin: 1rem 2rem;">
+                        <a href="dashboard.html" class="btn btn-secondary">⬅ Dashboard</a>
+                        <button id="deleteAccountBtn" class="btn btn-danger">🗑 Delete Account</button></div>
                 </form>
             </div>
         </div>
     </div>
-    <script src="js/profile.js"></script>
+    <script src="../js/profile.js"></script>
 </body>
 </html>

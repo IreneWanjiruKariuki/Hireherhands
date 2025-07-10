@@ -12,7 +12,8 @@ class ClientService:
             "fullname": client.fullname,
             "email": client.email,
             "phone": client.phone,
-            "gender": client.gender
+            "gender": client.gender,
+            "worker_id": client.workers.worker_id if client.workers else None
         }, 200
 
     @staticmethod
@@ -29,12 +30,13 @@ class ClientService:
         return {"message": "Profile updated"}, 200
 
     @staticmethod
-    def deactivate_account(client_id):
+    def deactivate_account(client_id,by="self"):
         client = Client.query.get(client_id)
         if not client:
             return {"error": "Client not found"}, 404
 
         client.is_deleted = True
+        client.deactivated_by = by or "admin"
         db.session.commit()
         return {"message": "Account deactivated"}, 200
 

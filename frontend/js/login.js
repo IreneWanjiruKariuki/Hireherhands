@@ -139,12 +139,7 @@ const BASE_URL = 'http://127.0.0.1:5000';
 
             return isValid;
         }
-        // Mock credentials for demo purposes
-        const mockCredentials = {
-            'admin@example.com': { password: 'admin123' },
-            'client@example.com': { password: 'client123' },
-            'worker@example.com': { password: 'worker123' }
-        };
+        
 
         // Form submission
         form.addEventListener('submit', async function(e) {
@@ -214,8 +209,6 @@ const BASE_URL = 'http://127.0.0.1:5000';
             }
             const user = getCurrentUser(); 
             console.log("Logged in user:", user);
-
-        
         });
 
 

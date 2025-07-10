@@ -60,8 +60,7 @@ document.getElementById('jobPostingForm').addEventListener('submit', async funct
 
     const token = localStorage.getItem('access_token');
     if (isTokenExpired(token)) {
-        alert('Session expired. Please log in again.');
-        window.location.href = 'login.html';
+        showErrorModal("Session expired. Please log in again.", "login.html");
         return;
     }
 
