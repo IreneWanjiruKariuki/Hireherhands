@@ -42,11 +42,15 @@ body {
 .hero {
     justify-content: center;
     overflow: hidden;
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
 }
 .hero-background {
     position: absolute;
     inset: 0;
-    background-image: url('images/img2.jpg');
+    background-image: url('https://images.pexels.com/photos/5691659/pexels-photo-5691659.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -169,6 +173,7 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     transform: scale(1);
+    text-decoration: none;
 }
 .btn-primary:hover {
     background-color: #047857;
@@ -190,6 +195,7 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.2);
     cursor: pointer;
     transition: all 0.3s ease;
+    text-decoration: none;
 }
 .btn-secondary:hover {
     background-color: rgba(255, 255, 255, 0.2);
