@@ -195,3 +195,29 @@ body {
     background-color: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.4);
 }
+.users-icon {
+    background-color: #10b981;
+}
+.award-icon {
+    background-color: #14b8a6;
+}
+.hammer-icon {
+    background: linear-gradient(to right, #10b981, #14b8a6);
+}
+.feature-card h3 {
+    color: white;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+.feature-card p {
+    color: #d1d5db;
+    font-size: 0.875rem;
+}
+.hero-bottom-gradient {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 8rem;
+    background: linear-gradient(to top, white, transparent);
+}
