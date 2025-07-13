@@ -244,10 +244,29 @@ function saveBio() {
   document.getElementById("bioText").textContent = newBio;
   cancelBioEdit();
 }
-function saveRate() {
-   saveProfileChanges();
+
+/*async function saveRate() {
+  await saveProfileChanges(); 
+  document.getElementById("hourlyRate").textContent = document.getElementById("rateInput").value;
+  cancelRateEdit();
+}*/
+async function saveBio() {
+    const newBio = document.getElementById("bioEditor").value;
+    // Assume you have an API call here to save the bio to the backend
+    // For now, let's just update the UI and then call the saveProfileChanges
+    // You should integrate the actual API call here.
+    await saveProfileChanges(); // This will save both bio and rate
+    document.getElementById("bioText").textContent = newBio;
+    cancelBioEdit();
+    loadWorkerProfile(); // Add this line to refresh
 }
 
+async function saveRate() {
+    await saveProfileChanges();
+    document.getElementById("hourlyRate").textContent = document.getElementById("rateInput").value;
+    cancelRateEdit();
+    loadWorkerProfile(); // Add this line to refresh
+}
 
 function createJobCard(job) {
   const statusClass = `status-${job.status}`;
@@ -414,7 +433,7 @@ async function acceptJob(jobId) {
       headers: { "Authorization": `Bearer ${localStorage.getItem("access_token")}` }
     });
     if (!res.ok) throw new Error();
-    showErrorModal("Job accepted successfully!");
+    showErrorModal("Job accepted successfully!", 'success');
     filterJobs("in_progress");
 
   } catch {
@@ -444,7 +463,7 @@ async function completeJob(jobId) {
       headers: { "Authorization": `Bearer ${localStorage.getItem("access_token")}` }
     });
     if (!res.ok) throw new Error();
-    showErrorModal("Job marked complete. Awaiting client confirmation.");
+    showErrorModal("Job marked complete. Awaiting client confirmation.",'success');
     loadJobs();
   } catch {
     showErrorModal("Could not complete job.");
@@ -462,15 +481,15 @@ async function saveProfileChanges() {
         "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ bio: bio, hourly_rate: rate })
+        body: JSON.stringify({ bio: bio, hourly_rate: rate })
     });
+
 
     if (!res.ok) {
       throw new Error("Failed to update profile");
     }
 
-    showErrorModal("Profile updated successfully.");
-    loadWorkerProfile();  // Refresh the data
+    showMessageModal("Profile updated successfully.", 'success');
 
   } catch (err) {
     console.error(err);
@@ -478,9 +497,30 @@ async function saveProfileChanges() {
   }
 }
 
-
 function formatStatus(status) {
   return status.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+// Ensure this function is present and correct
+function showErrorModal(message) {
+    const modal = document.getElementById("errorModal");
+    const messageElem = document.getElementById("errorModalMessage");
+    const closeButton = document.getElementById("errorModalCloseBtn"); // This is your "OK" button
+
+    if (modal && messageElem && closeButton) {
+        messageElem.textContent = message;
+        modal.style.display = "flex";
+        document.body.style.overflow = "hidden"; // Prevent scrolling
+
+        // Crucial: Attach the click handler to the close button
+        closeButton.onclick = () => {
+            modal.style.display = "none";
+            document.body.style.overflow = "auto"; // Re-enable scrolling
+        };
+    } else {
+        // Fallback for debugging if modal elements aren't found
+        console.error("Error: Modal elements not found for showErrorModal. Message:", message);
+        alert("Error: " + message);
+    }
 }
 
 

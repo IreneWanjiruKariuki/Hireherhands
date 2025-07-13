@@ -137,7 +137,7 @@ function showJobDetails(jobId) {
         ${workerPhoneLine}`
         
     : `<span>${job.assignedWorker || "Not assigned yet"}</span>`;
-  
+    console.log("Confirm button clicked for job", jobId);
     let completionApprovalSection = normalizeStatus(job.original_status) === "worker_completed" ?
         `<div class="detail-item">
             <button class="approve-completion-btn" onclick="approveJobCompletion(${job.id})">
@@ -319,7 +319,7 @@ function filterJobs(status, event) {
     );
 }
 
-async function approveJobCompletion(jobId) {
+/*async function approveJobCompletion(jobId) {
     const token = localStorage.getItem('access_token');
     try {
         const res = await fetch(`${BASE_URL}/jobs/${jobId}/client-complete`, {
@@ -334,6 +334,30 @@ async function approveJobCompletion(jobId) {
         closeJobDetails();
     } catch (err) {
         showError(err.message || "Error completing job.");
+    }
+}*/
+
+async function approveJobCompletion(jobId) {
+    const token = localStorage.getItem('access_token');
+    try {
+        const res = await fetch(`${BASE_URL}/jobs/${jobId}/client-complete`, {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+
+        if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.error || "Failed to confirm job completion");
+        }
+
+        // Changed: Use showMessageModal for success
+        showMessageModal("Job confirmed as completed!", 'success'); // SUCCESS MESSAGE HERE
+        fetchClientJobs();
+        closeJobDetails();
+    } catch (err) {
+        console.error("Error approving job completion:", err);
+        // Changed: Use showMessageModal for error
+        showMessageModal(err.message || "Error confirming job completion.", 'error');
     }
 }
 
