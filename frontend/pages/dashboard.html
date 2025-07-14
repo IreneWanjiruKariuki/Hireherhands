@@ -114,6 +114,17 @@
             </div>
         </div>
     </div>
+    <div id="errorModal" class="popup-overlay" style="display: none;">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h2 id="errorModalTitle">Error!</h2> <button class="close-popup" onclick="document.getElementById('errorModal').style.display='none'">&times;</button>
+            </div>
+            <div class="popup-body">
+                <p id="errorModalMessage"></p>
+                <button id="errorModalCloseBtn" class="action-btn">OK</button>
+            </div>
+        </div>
+    </div>
 
     <script src="../js/modal.js"></script>
     <script src="../js/dashboard.js"></script>

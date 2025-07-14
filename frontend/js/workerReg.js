@@ -29,7 +29,7 @@ async function loadSkillsAsCheckboxes(containerId, toggleHandler) {
                     selectedSkills = selectedSkills.filter(s => s !== id);
                 }
 
-                console.log('Selected skills:', selectedSkills); 
+                console.log('Selected skills:', selectedSkills);
             });
 
             label.appendChild(checkbox);
@@ -40,7 +40,6 @@ async function loadSkillsAsCheckboxes(containerId, toggleHandler) {
         console.error("Failed to load skills:", error);
     }
 }
-
 
 function toggleSkill(id) {
     if (selectedSkills.includes(id)) {
@@ -58,7 +57,7 @@ async function prefillClientInfo() {
         const res = await fetch(`${BASE_URL}/client/profile`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        
+
         let data;
         try {
             data = await res.json();
@@ -69,7 +68,6 @@ async function prefillClientInfo() {
 
         if (!res.ok) throw new Error(data.error || "Failed to load client info");
 
-        // Match your HTML field IDs here
         document.getElementById('fullName').value = data.fullname || '';
         document.getElementById('email').value = data.email || '';
         if (data.gender?.toLowerCase() !== "female") {
@@ -78,7 +76,6 @@ async function prefillClientInfo() {
         }
 
         document.getElementById('phone').value = data.phone?.replace(/^\+254/, '') || '';
-
         document.getElementById('fullName').readOnly = true;
         document.getElementById('email').readOnly = true;
         document.getElementById('phone').readOnly = true;
@@ -88,9 +85,22 @@ async function prefillClientInfo() {
         console.error("Autofill error:", err);
     }
 }
+
+// ========== Modals ==========
 function showErrorModal(message) {
     document.getElementById('errorModalMessage').textContent = message;
     document.getElementById('errorModal').style.display = 'flex';
+}
+
+function showSuccessModal(message) {
+    const modal = document.getElementById('errorModal');
+    modal.querySelector('h2').textContent = 'Thank you';
+    modal.querySelector('#errorModalMessage').textContent = message;
+    modal.style.display = 'flex';
+    document.getElementById('closeModalBtn').onclick = () => {
+        modal.style.display = 'none';
+        window.location.href = 'pending.html';
+    };
 }
 
 document.getElementById('closeModalBtn').addEventListener('click', () => {
@@ -98,12 +108,7 @@ document.getElementById('closeModalBtn').addEventListener('click', () => {
     window.location.href = "dashboard.html";
 });
 
-/*document.addEventListener('DOMContentLoaded', () => {
-    prefillClientInfo();
-    loadSkillsAsCheckboxes('skillsContainer', toggleSkill);
-    setupApplicationForm();
-});*/
-
+// ========== DOM Ready ==========
 document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('access_token');
     if (!token) {
@@ -119,48 +124,38 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Failed to load client");
 
-        // If they already have a worker object → block
-        if (data.worker_id) {
-            showErrorModal("You have already submitted a worker application.");
-            return;
-        }
+        // Optional block check — disabled by default
+        // if (data.worker_id) {
+        //     showErrorModal("You have already submitted a worker application.");
+        //     return;
+        // }
 
-        // Continue if not registered
         prefillClientInfo();
         loadSkillsAsCheckboxes('skillsContainer', toggleSkill);
         setupApplicationForm();
-
     } catch (err) {
         console.error("Worker check failed:", err);
         showErrorModal("There was a problem verifying your application status.");
     }
 });
 
+// ========== File Upload ==========
 document.getElementById('certificate').addEventListener('change', function () {
     const fileName = this.files[0] ? this.files[0].name : "Choose file";
     document.getElementById('certificateLabel').textContent = fileName;
 });
-
-
 
 // ========== Form Handling ==========
 function setupApplicationForm() {
     const form = document.getElementById('applicationForm');
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         const location = document.getElementById('location').value.trim();
         const idNumber = document.getElementById('id')?.value.trim();
         const rate = parseFloat(document.getElementById('hourlyRate')?.value || 0);
         const bio = document.getElementById('bio')?.value.trim();
         const token = localStorage.getItem('access_token');
-        console.log("idNumber", idNumber);
-        console.log("location", location);
-        console.log("rate", rate);
-        console.log("bio", bio);
-        console.log("selectedSkills", selectedSkills);
-
-        
 
         if (!token) {
             alert("You must be logged in to apply as a worker.");
@@ -186,9 +181,9 @@ function setupApplicationForm() {
             if (experience) {
                 formData.append('experience_years', experience);
             }
-            
+
             const fileInput = document.getElementById('certificate');
-            const maxSize = 5 * 1024 * 1024; // 5MB
+            const maxSize = 5 * 1024 * 1024;
             if (fileInput && fileInput.files.length > 0) {
                 const file = fileInput.files[0];
                 if (file.size > maxSize) {
@@ -198,7 +193,7 @@ function setupApplicationForm() {
                 }
                 formData.append('certificate', file);
             }
-  
+
             const res = await fetch(`${BASE_URL}/worker/register`, {
                 method: 'POST',
                 headers: {
@@ -207,28 +202,17 @@ function setupApplicationForm() {
                 body: formData
             });
 
-
             const data = await res.json();
             if (!res.ok) {
                 if (data.error === "Worker already registered") {
-                    alert("You have already submitted an application.");
+                    showSuccessModal("You’ve already applied. Your application is pending review.");
                     return;
                 }
                 throw new Error(data.error || 'Failed to register as worker');
             }
 
-            // Store application status in localStorage
             localStorage.setItem('worker_application_status', 'pending');
-
-            alert('Application submitted. Await admin approval.');
-            if (data.message === "Application submitted") {
-                window.location.href = 'pending.html';
-            } else {
-                window.location.href = 'dashboard.html';
-            }
-
-            window.location.href = 'pending.html';
-            //window.location.href = 'dashboard.html';
+            showSuccessModal("Your application has been sent to the admin. We’ll be in touch soon.");
         } catch (err) {
             console.error(err);
             alert(err.message);
@@ -237,7 +221,6 @@ function setupApplicationForm() {
             selectedSkills = [];
             loadSkillsAsCheckboxes('skillsContainer', toggleSkill);
         }
-
     });
 }
 

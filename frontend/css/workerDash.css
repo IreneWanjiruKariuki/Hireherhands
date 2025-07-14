@@ -619,3 +619,28 @@ body {
 .modal-btn:hover {
     background: linear-gradient(135deg, #c53030, #9b2c2c);
 }
+/* --- Visual Feedback for Buttons --- */
+
+/* For general action buttons */
+.action-btn:active,
+.edit-btn:active,
+.save-btn:active,
+.cancel-btn:active,
+.close-popup:active {
+    transform: translateY(1px); /* Slight downward push */
+    box-shadow: none; /* Remove shadow on press */
+    filter: brightness(0.95); /* Slightly dim the button */
+}
+
+/* For primary action buttons (green ones) */
+.action-btn.primary:active {
+    background: linear-gradient(135deg, #065f46 0%, #047857 100%); /* A slightly darker shade of green */
+}
+
+/* For filter tabs */
+.filter-tab:active {
+    transform: none; /* No movement needed here, just background change */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.15); /* Inset shadow for pressed look */
+    background: #e5e7eb; /* Slightly darker background */
+}
+

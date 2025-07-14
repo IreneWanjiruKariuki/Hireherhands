@@ -5,7 +5,7 @@ from models.Skill import Skill
 from models.Rating import Rating
 from models.schemas.Job import JobCreateSchema, JobOutputSchema
 from models.association import worker_skills
-
+from decimal import Decimal
 from sqlalchemy.orm import joinedload
 from sqlalchemy import func
 from extensions import db
@@ -81,14 +81,15 @@ class JobService:
             review_count = db.session.query(func.count(Rating.rating_id)) \
                 .filter_by(receiver_id=worker.worker_id, receiver_type="worker") \
                 .scalar()
-
+            def to_float(value):
+                return float(value) if isinstance(value, Decimal) else value
             worker_list.append({
                 'worker_id': worker.worker_id,
                 'name': worker.client.fullname,
                 'bio': worker.bio,
                 'location': worker.location,
-                'hourly_rate': worker.hourly_rate,
-                'rating': round(avg_rating, 1),
+                'hourly_rate': to_float(worker.hourly_rate),
+                'rating': to_float(round(avg_rating, 1)),
                 'reviews': review_count,
                 'skills': skills
             })
